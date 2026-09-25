@@ -1,0 +1,547 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile | CampusX{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .profile-header {
+        margin-bottom: 28px;
+    }
+
+    .profile-sidebar {
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        background: white;
+        box-shadow: 0 10px 35px rgba(15, 23, 42, 0.05);
+    }
+
+    .profile-cover {
+        height: 110px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #4338ca,
+                #6366f1,
+                #8b5cf6
+            );
+    }
+
+    .profile-summary {
+        padding: 0 25px 25px;
+    }
+
+    .profile-photo {
+        width: 120px;
+        height: 120px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-top: -60px;
+        margin-bottom: 16px;
+
+        overflow: hidden;
+
+        border: 5px solid white;
+        border-radius: 50%;
+
+        background: #eef2ff;
+        color: #4f46e5;
+
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+
+        font-size: 2.6rem;
+        font-weight: 800;
+    }
+
+    .profile-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .student-name {
+        color: #0f172a;
+        font-size: 1.3rem;
+        font-weight: 800;
+    }
+
+    .student-email {
+        color: #64748b;
+        font-size: 0.84rem;
+        word-break: break-word;
+    }
+
+    .role-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 11px;
+        margin-top: 10px;
+        border-radius: 30px;
+        background: #eef2ff;
+        color: #4338ca;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    .profile-divider {
+        margin: 22px 0;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .protected-item {
+        display: flex;
+        gap: 12px;
+        padding: 10px 0;
+    }
+
+    .protected-icon {
+        width: 36px;
+        height: 36px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        border-radius: 9px;
+
+        background: #f8fafc;
+        color: #64748b;
+    }
+
+    .protected-label {
+        color: #94a3b8;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .protected-value {
+        color: #0f172a;
+        font-size: 0.88rem;
+        font-weight: 700;
+    }
+
+    .protected-note {
+        padding: 13px;
+        margin-top: 18px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        background: #f8fafc;
+        color: #64748b;
+        font-size: 0.76rem;
+    }
+
+    .edit-card {
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        background: white;
+        box-shadow: 0 10px 35px rgba(15, 23, 42, 0.05);
+    }
+
+    .edit-card-header {
+        padding: 23px 25px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .edit-card-body {
+        padding: 25px;
+    }
+
+    .edit-card input,
+    .edit-card select,
+    .edit-card textarea {
+        width: 100%;
+        padding: 10px 13px;
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+        outline: none;
+    }
+
+    .edit-card input:not([type="file"]),
+    .edit-card select {
+        min-height: 46px;
+    }
+
+    .edit-card textarea {
+        min-height: 110px;
+    }
+
+    .edit-card input:focus,
+    .edit-card select:focus,
+    .edit-card textarea:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.12);
+    }
+
+    .edit-card input[type="file"] {
+        padding: 9px;
+        background: #f8fafc;
+    }
+
+    .field-label {
+        margin-bottom: 7px;
+        color: #334155;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .field-help {
+        margin-top: 5px;
+        color: #94a3b8;
+        font-size: 0.74rem;
+    }
+
+    .save-btn {
+        min-height: 48px;
+        font-weight: 700;
+    }
+
+    @media (max-width: 767.98px) {
+
+        .profile-header .btn {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .edit-card-body {
+            padding: 22px 20px;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-4 py-lg-5">
+
+
+    <!-- HEADER -->
+
+    <div class="profile-header">
+
+        <div class="d-md-flex
+                    justify-content-between
+                    align-items-center">
+
+            <div>
+
+                <h1 class="page-title h2 mb-1">
+                    My Profile
+                </h1>
+
+                <p class="page-subtitle mb-0">
+                    Manage your CampusX student information.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'student_dashboard' %}"
+                class="btn btn-outline-secondary"
+            >
+
+                <i class="bi bi-arrow-left me-1"></i>
+
+                Dashboard
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="row g-4">
+
+
+        <!-- PROFILE SUMMARY -->
+
+        <div class="col-lg-4">
+
+            <div class="profile-sidebar">
+
+                <div class="profile-cover"></div>
+
+
+                <div class="profile-summary">
+
+                    <div class="profile-photo">
+
+                        {% if profile.profile_photo %}
+
+                            <img
+                                src="{{ profile.profile_photo.url }}"
+                                alt="{{ profile.full_name }}"
+                            >
+
+                        {% else %}
+
+                            {{ profile.full_name|first|upper }}
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="student-name">
+                        {{ profile.full_name }}
+                    </div>
+
+
+                    <div class="student-email mt-1">
+                        {{ user.email }}
+                    </div>
+
+
+                    <span class="role-badge">
+
+                        <i class="bi bi-mortarboard"></i>
+
+                        {{ user.get_role_display }}
+
+                    </span>
+
+
+                    <div class="profile-divider"></div>
+
+
+                    <!-- USERNAME -->
+
+                    <div class="protected-item">
+
+                        <div class="protected-icon">
+                            <i class="bi bi-person"></i>
+                        </div>
+
+                        <div>
+
+                            <div class="protected-label">
+                                Username
+                            </div>
+
+                            <div class="protected-value">
+                                {{ user.username }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ROLL NUMBER -->
+
+                    <div class="protected-item">
+
+                        <div class="protected-icon">
+                            <i class="bi bi-credit-card-2-front"></i>
+                        </div>
+
+                        <div>
+
+                            <div class="protected-label">
+                                Roll Number
+                            </div>
+
+                            <div class="protected-value">
+                                {{ profile.roll_number }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- COURSE -->
+
+                    <div class="protected-item">
+
+                        <div class="protected-icon">
+                            <i class="bi bi-book"></i>
+                        </div>
+
+                        <div>
+
+                            <div class="protected-label">
+                                Course
+                            </div>
+
+                            <div class="protected-value">
+                                {{ profile.course|default:"Not added" }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="protected-note">
+
+                        <i class="bi bi-shield-lock me-1"></i>
+
+                        Username, role and roll number are protected
+                        account fields and cannot be changed here.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- EDIT PROFILE -->
+
+        <div class="col-lg-8">
+
+            <div class="edit-card">
+
+                <div class="edit-card-header">
+
+                    <h4 class="section-title mb-1">
+                        Edit Profile
+                    </h4>
+
+                    <p class="small text-muted mb-0">
+                        Keep your contact and academic information
+                        up to date.
+                    </p>
+
+                </div>
+
+
+                <div class="edit-card-body">
+
+                    <form
+                        method="POST"
+                        enctype="multipart/form-data"
+                    >
+
+                        {% csrf_token %}
+
+
+                        {% if form.non_field_errors %}
+
+                            <div class="alert alert-danger">
+
+                                {{ form.non_field_errors }}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <div class="row g-3">
+
+                            {% for field in form %}
+
+                                <div class="
+                                    {% if field.name == 'interests' or field.name == 'profile_photo' %}
+                                        col-12
+                                    {% else %}
+                                        col-md-6
+                                    {% endif %}
+                                ">
+
+                                    <label
+                                        for="{{ field.id_for_label }}"
+                                        class="field-label"
+                                    >
+
+                                        {{ field.label }}
+
+                                        {% if field.field.required %}
+                                            <span class="text-danger">*</span>
+                                        {% endif %}
+
+                                    </label>
+
+
+                                    {{ field }}
+
+
+                                    {% if field.help_text %}
+
+                                        <div class="field-help">
+
+                                            {{ field.help_text }}
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    {% for error in field.errors %}
+
+                                        <div class="text-danger small mt-1">
+
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+
+                                            {{ error }}
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div class="d-flex
+                                    justify-content-end
+                                    gap-2
+                                    mt-4">
+
+                            <a
+                                href="{% url 'student_dashboard' %}"
+                                class="btn btn-outline-secondary px-4"
+                            >
+                                Cancel
+                            </a>
+
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary save-btn px-4"
+                            >
+
+                                <i class="bi bi-check2-circle me-1"></i>
+
+                                Save Changes
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

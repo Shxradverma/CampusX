@@ -1,0 +1,447 @@
+{% extends "base.html" %}
+
+{% block title %}
+Certificate | {{ event.title }} | CampusX
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .certificate-page {
+        padding: 35px 0 70px;
+        background: #f8fafc;
+    }
+
+    .certificate-actions {
+        max-width: 1050px;
+        margin: 0 auto 18px;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .certificate {
+        position: relative;
+
+        max-width: 1050px;
+        min-height: 680px;
+
+        margin: auto;
+        padding: 65px 70px;
+
+        background: #ffffff;
+
+        border: 10px solid #1e3a8a;
+        outline: 2px solid #c9a227;
+        outline-offset: -22px;
+
+        box-shadow:
+            0 20px 55px rgba(15, 23, 42, .12);
+
+        text-align: center;
+
+        overflow: hidden;
+    }
+
+    .certificate::before,
+    .certificate::after {
+        content: "";
+
+        position: absolute;
+
+        width: 180px;
+        height: 180px;
+
+        border-radius: 50%;
+
+        background: rgba(79, 70, 229, .06);
+    }
+
+    .certificate::before {
+        top: -80px;
+        left: -80px;
+    }
+
+    .certificate::after {
+        right: -80px;
+        bottom: -80px;
+    }
+
+    .certificate-brand {
+        color: #1e3a8a;
+
+        font-size: 1rem;
+        font-weight: 800;
+
+        letter-spacing: .12em;
+        text-transform: uppercase;
+    }
+
+    .certificate-institute {
+        margin: 8px 0 30px;
+
+        color: #0f172a;
+
+        font-size: clamp(1.4rem, 4vw, 2rem);
+        font-weight: 800;
+    }
+
+    .certificate-title {
+        margin: 15px 0 5px;
+
+        color: #1e3a8a;
+
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(2.2rem, 6vw, 4rem);
+        font-weight: 700;
+
+        letter-spacing: .03em;
+    }
+
+    .certificate-subtitle {
+        color: #64748b;
+
+        font-size: .95rem;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+    }
+
+    .presented-text {
+        margin-top: 38px;
+
+        color: #64748b;
+
+        font-size: 1rem;
+    }
+
+    .student-name {
+        display: inline-block;
+
+        min-width: 60%;
+
+        margin: 15px 0 20px;
+        padding: 0 25px 8px;
+
+        border-bottom: 2px solid #c9a227;
+
+        color: #111827;
+
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 700;
+    }
+
+    .certificate-text {
+        max-width: 760px;
+
+        margin: 0 auto;
+
+        color: #475569;
+
+        font-size: 1rem;
+        line-height: 1.9;
+    }
+
+    .event-name {
+        color: #1e3a8a;
+        font-weight: 800;
+    }
+
+    .certificate-footer {
+        margin-top: 55px;
+
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+
+        gap: 25px;
+
+        align-items: end;
+    }
+
+    .certificate-meta {
+        color: #64748b;
+
+        font-size: .72rem;
+        line-height: 1.7;
+
+        overflow-wrap: anywhere;
+    }
+
+    .certificate-meta strong {
+        display: block;
+
+        color: #0f172a;
+
+        font-size: .78rem;
+    }
+
+    .signature-line {
+        width: 160px;
+
+        margin: 0 auto 8px;
+
+        border-top: 1px solid #334155;
+    }
+
+    .signature-title {
+        color: #0f172a;
+
+        font-size: .78rem;
+        font-weight: 700;
+    }
+
+    .signature-subtitle {
+        color: #64748b;
+
+        font-size: .68rem;
+    }
+
+    .certificate-id {
+        margin-top: 38px;
+
+        color: #94a3b8;
+
+        font-size: .68rem;
+
+        overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 767px) {
+        .certificate {
+            min-height: auto;
+
+            padding: 45px 25px;
+
+            border-width: 7px;
+            outline-offset: -16px;
+        }
+
+        .certificate-footer {
+            grid-template-columns: 1fr;
+
+            gap: 30px;
+        }
+
+        .student-name {
+            min-width: 90%;
+        }
+    }
+
+   @media print {
+
+    @page {
+        size: A4 landscape;
+        margin: 6mm;
+    }
+
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+    }
+
+    nav,
+    footer,
+    .certificate-actions,
+    .navbar,
+    #chatbot-widget {
+        display: none !important;
+    }
+
+    .certificate-page {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+    }
+
+    .certificate-page .container {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .certificate {
+        box-sizing: border-box !important;
+
+        width: 100% !important;
+        max-width: none !important;
+
+        height: 190mm !important;
+        min-height: 0 !important;
+
+        margin: 0 !important;
+        padding: 18mm 18mm 10mm !important;
+
+        border-width: 6px !important;
+
+        box-shadow: none !important;
+
+        overflow: hidden !important;
+
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    .certificate-institute {
+        margin-bottom: 12px !important;
+    }
+
+    .certificate-title {
+        margin: 8px 0 3px !important;
+        font-size: 3rem !important;
+    }
+
+    .presented-text {
+        margin-top: 20px !important;
+    }
+
+    .student-name {
+        margin: 8px 0 12px !important;
+        font-size: 2.4rem !important;
+    }
+
+    .certificate-text {
+        line-height: 1.6 !important;
+    }
+
+    .certificate-footer {
+        margin-top: 28px !important;
+    }
+
+    .certificate-id {
+        margin-top: 20px !important;
+    }
+}
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="certificate-page">
+
+    <div class="container">
+
+        <div class="certificate-actions">
+
+            <a
+                href="{% url 'student_event_detail' event.id %}"
+                class="btn btn-outline-secondary"
+            >
+                <i class="bi bi-arrow-left me-1"></i>
+                Back to Event
+            </a>
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="window.print()"
+            >
+                <i class="bi bi-download me-1"></i>
+                Print / Save PDF
+            </button>
+
+        </div>
+
+
+        <div class="certificate">
+
+            <div class="certificate-brand">
+                CampusX
+            </div>
+
+            <div class="certificate-institute">
+                Techno Institute of Higher Studies
+            </div>
+
+
+            <div class="certificate-title">
+                Certificate
+            </div>
+
+            <div class="certificate-subtitle">
+                of Participation
+            </div>
+
+
+            <div class="presented-text">
+                This certificate is proudly presented to
+            </div>
+
+
+            <div class="student-name">
+                {{ student_profile.full_name }}
+            </div>
+
+
+            <p class="certificate-text">
+
+                For successfully participating in
+
+                <span class="event-name">
+                    "{{ event.title }}"
+                </span>
+
+                organized through the CampusX Event Management
+                Platform at Techno Institute of Higher Studies.
+
+            </p>
+
+
+            <div class="certificate-footer">
+
+                <div class="certificate-meta">
+
+                    <strong>Event Date</strong>
+
+                    {{ event.start_datetime|date:"d F Y" }}
+
+                </div>
+
+
+                <div>
+
+                    <div class="signature-line"></div>
+
+                    <div class="signature-title">
+                        Event Organizer
+                    </div>
+
+                    <div class="signature-subtitle">
+                        CampusX
+                    </div>
+
+                </div>
+
+
+                <div class="certificate-meta">
+
+                    <strong>Issued On</strong>
+
+                    {{ certificate.issued_at|date:"d F Y" }}
+
+                </div>
+
+            </div>
+
+
+            <div class="certificate-id">
+
+                Certificate ID:
+                {{ certificate.certificate_id }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

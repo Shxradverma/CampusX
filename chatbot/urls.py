@@ -1,0 +1,17 @@
+from django.urls import path
+
+from . import views
+
+
+urlpatterns = [
+    path(
+        "",
+        views.chatbot_home,
+        name="chatbot_home",
+    ),
+    path(
+        "api/",
+        views.chatbot_api,
+        name="chatbot_api",
+    ),
+]

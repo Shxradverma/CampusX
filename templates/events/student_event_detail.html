@@ -1,0 +1,1524 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.title }} | CampusX{% endblock %}
+
+
+{% block extra_css %}
+<style>
+
+    /* ==========================================================
+       STUDENT EVENT DETAIL V2
+    ========================================================== */
+
+    .event-detail-page {
+        padding: clamp(18px, 4vw, 42px) 0 clamp(48px, 7vw, 75px);
+    }
+
+
+    /* TOP BAR */
+
+    .event-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 16px;
+
+        margin-bottom: 20px;
+    }
+
+
+    .event-breadcrumb {
+        margin-bottom: 3px;
+
+        color: #94a3b8;
+
+        font-size: .67rem;
+        font-weight: 650;
+    }
+
+
+    .event-page-heading {
+        margin: 0;
+
+        color: #0f172a;
+
+        font-size: clamp(1.15rem, 3vw, 1.4rem);
+        font-weight: 800;
+
+        letter-spacing: -.025em;
+    }
+
+
+    .event-back-btn {
+        min-height: 41px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        font-size: .74rem;
+        font-weight: 700;
+    }
+
+
+    /* ==========================================================
+       EVENT CARD
+    ========================================================== */
+
+    .event-detail-card {
+        overflow: hidden;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 20px;
+
+        background: white;
+
+        box-shadow:
+            0 14px 42px rgba(15, 23, 42, .06);
+    }
+
+
+    /* HERO */
+
+    .event-detail-hero {
+        position: relative;
+
+        height: clamp(290px, 35vw, 390px);
+
+        overflow: hidden;
+
+        background:
+            linear-gradient(
+                135deg,
+                #312e81,
+                #4f46e5,
+                #7c3aed
+            );
+    }
+
+
+    .event-detail-hero img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+    }
+
+
+    .event-detail-hero::after {
+        content: "";
+
+        position: absolute;
+        inset: 0;
+
+        background:
+            linear-gradient(
+                to top,
+                rgba(15, 23, 42, .78) 0%,
+                rgba(15, 23, 42, .28) 45%,
+                rgba(15, 23, 42, .04) 75%
+            );
+    }
+
+
+    .event-banner-placeholder {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: rgba(255, 255, 255, .82);
+
+        font-size: 3.5rem;
+    }
+
+
+    .event-hero-overlay {
+        position: absolute;
+        z-index: 2;
+
+        left: clamp(20px, 4vw, 30px);
+        right: clamp(20px, 4vw, 30px);
+        bottom: clamp(21px, 4vw, 30px);
+
+        color: white;
+    }
+
+
+    .event-category {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        margin-bottom: 11px;
+        padding: 6px 10px;
+
+        border: 1px solid rgba(255, 255, 255, .13);
+        border-radius: 999px;
+
+        background: rgba(255, 255, 255, .15);
+
+        font-size: .65rem;
+        font-weight: 700;
+
+        backdrop-filter: blur(10px);
+    }
+
+
+    .event-main-title {
+        max-width: 800px;
+
+        margin: 0;
+
+        color: white;
+
+        font-size: clamp(1.45rem, 4vw, 2.15rem);
+        font-weight: 800;
+
+        line-height: 1.2;
+        letter-spacing: -.035em;
+    }
+
+
+    /* ==========================================================
+       CONTENT
+    ========================================================== */
+
+    .event-content {
+        padding: clamp(21px, 4vw, 30px);
+    }
+
+
+    .event-section-heading {
+        margin-bottom: 12px;
+
+        color: #0f172a;
+
+        font-size: 1.02rem;
+        font-weight: 800;
+
+        letter-spacing: -.02em;
+    }
+
+
+    .event-description {
+        color: #64748b;
+
+        font-size: .8rem;
+        line-height: 1.8;
+
+        overflow-wrap: anywhere;
+    }
+
+
+    .event-divider {
+        margin: 25px 0;
+
+        border-color: #e2e8f0;
+
+        opacity: 1;
+    }
+
+
+    /* INFO CARDS */
+
+    .event-info-card {
+        height: 100%;
+
+        display: flex;
+        align-items: flex-start;
+
+        gap: 12px;
+
+        padding: 15px;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 13px;
+
+        background: #f8fafc;
+    }
+
+
+    .event-info-icon {
+        width: 38px;
+        height: 38px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 10px;
+
+        background: #eef2ff;
+        color: #4f46e5;
+
+        font-size: .9rem;
+    }
+
+
+    .event-info-content {
+        min-width: 0;
+    }
+
+
+    .event-info-label {
+        margin-bottom: 3px;
+
+        color: #94a3b8;
+
+        font-size: .57rem;
+        font-weight: 750;
+
+        text-transform: uppercase;
+        letter-spacing: .05em;
+    }
+
+
+    .event-info-value {
+        overflow-wrap: anywhere;
+
+        color: #334155;
+
+        font-size: .76rem;
+        font-weight: 700;
+
+        line-height: 1.5;
+    }
+
+
+    /* ==========================================================
+       REGISTRATION PANEL
+    ========================================================== */
+
+    .registration-panel {
+        position: sticky;
+        top: 92px;
+
+        padding: 22px;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 18px;
+
+        background: white;
+
+        box-shadow:
+            0 10px 35px rgba(15, 23, 42, .06);
+    }
+
+
+    .registration-icon {
+        width: 50px;
+        height: 50px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 15px;
+
+        border-radius: 13px;
+
+        background: #eef2ff;
+        color: #4f46e5;
+
+        font-size: 1.2rem;
+    }
+
+
+    .registration-icon.registered {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+
+    .registration-icon.closed {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+
+    .registration-title {
+        margin-bottom: 6px;
+
+        color: #0f172a;
+
+        font-size: 1rem;
+        font-weight: 800;
+
+        letter-spacing: -.02em;
+    }
+
+
+    .registration-text {
+        margin: 0;
+
+        color: #64748b;
+
+        font-size: .75rem;
+        line-height: 1.65;
+    }
+
+
+    /* STATUS */
+
+    .registration-status-box {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 7px;
+
+        margin: 16px 0;
+        padding: 12px;
+
+        border-radius: 10px;
+
+        font-size: .72rem;
+        line-height: 1.55;
+    }
+
+
+    .registration-status-box i {
+        flex-shrink: 0;
+
+        margin-top: 2px;
+    }
+
+
+    .registration-success {
+        border: 1px solid #bbf7d0;
+
+        background: #f0fdf4;
+        color: #166534;
+    }
+
+
+    .registration-open {
+        border: 1px solid #c7d2fe;
+
+        background: #eef2ff;
+        color: #4338ca;
+    }
+
+
+    .registration-closed {
+        border: 1px solid #e2e8f0;
+
+        background: #f8fafc;
+        color: #64748b;
+    }
+
+
+    /* ACTIONS */
+
+    .registration-actions {
+        display: grid;
+
+        gap: 9px;
+    }
+
+
+    .registration-action-btn {
+        min-height: 44px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: .74rem;
+        font-weight: 750;
+    }
+
+
+    .registered-button {
+        cursor: default;
+    }
+
+
+    /* DEADLINE */
+
+    .registration-deadline {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 9px;
+
+        margin-top: 17px;
+        padding-top: 15px;
+
+        border-top: 1px solid #e2e8f0;
+
+        color: #64748b;
+
+        font-size: .7rem;
+        line-height: 1.55;
+    }
+
+
+    .registration-deadline i {
+        flex-shrink: 0;
+
+        margin-top: 2px;
+
+        color: #6366f1;
+    }
+
+
+    .registration-deadline-title {
+        margin-bottom: 2px;
+
+        color: #334155;
+
+        font-weight: 750;
+    }
+
+
+    /* TRUST INFO */
+
+    .registration-security {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 8px;
+
+        margin-top: 14px;
+        padding: 10px;
+
+        border-radius: 9px;
+
+        background: #f8fafc;
+        color: #64748b;
+
+        font-size: .65rem;
+        line-height: 1.5;
+    }
+
+
+    .registration-security i {
+        flex-shrink: 0;
+
+        margin-top: 1px;
+
+        color: #4f46e5;
+    }
+
+
+    /* ==========================================================
+       TABLET
+    ========================================================== */
+
+    @media (max-width: 991.98px) {
+
+        .registration-panel {
+            position: static;
+        }
+
+    }
+
+
+    /* ==========================================================
+       MOBILE
+    ========================================================== */
+
+    @media (max-width: 767.98px) {
+
+        .event-detail-page {
+            padding-top: 18px;
+        }
+
+
+        .event-topbar {
+            align-items: flex-start;
+            flex-direction: column;
+
+            margin-bottom: 17px;
+        }
+
+
+        .event-back-btn {
+            width: 100%;
+        }
+
+
+        .event-detail-card {
+            border-radius: 17px;
+        }
+
+
+        .event-detail-hero {
+            height: 285px;
+        }
+
+
+        .event-content {
+            padding: 20px;
+        }
+
+
+        .registration-panel {
+            padding: 20px;
+
+            border-radius: 16px;
+        }
+
+    }
+
+
+    /* ==========================================================
+       SMALL MOBILE
+    ========================================================== */
+
+    @media (max-width: 575.98px) {
+
+        .event-detail-page {
+            padding-top: 14px;
+        }
+
+
+        .event-detail-hero {
+            height: 250px;
+        }
+
+
+        .event-hero-overlay {
+            left: 17px;
+            right: 17px;
+            bottom: 18px;
+        }
+
+
+        .event-main-title {
+            font-size: 1.4rem;
+        }
+
+
+        .event-content {
+            padding: 17px;
+        }
+
+
+        .event-info-card {
+            padding: 13px;
+        }
+
+
+        .event-info-icon {
+            width: 36px;
+            height: 36px;
+        }
+
+
+        .registration-panel {
+            padding: 17px;
+        }
+
+    }
+
+
+    @media (max-width: 374.98px) {
+
+        .event-detail-hero {
+            height: 225px;
+        }
+
+
+        .event-main-title {
+            font-size: 1.25rem;
+        }
+
+
+        .event-category {
+            font-size: .6rem;
+        }
+
+    }
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="event-detail-page">
+
+    <div class="container">
+
+
+        <!-- =====================================================
+             TOP NAVIGATION
+        ====================================================== -->
+
+        <div class="event-topbar">
+
+            <div>
+
+                <div class="event-breadcrumb">
+                    Student Portal / Events
+                </div>
+
+                <h1 class="event-page-heading">
+                    Event Details
+                </h1>
+
+            </div>
+
+
+            <a
+                href="{% url 'student_event_list' %}"
+                class="btn btn-outline-secondary event-back-btn"
+            >
+                <i class="bi bi-arrow-left me-1"></i>
+
+                Explore Events
+            </a>
+
+        </div>
+
+
+        <div class="row g-4 align-items-start">
+
+
+            <!-- =================================================
+                 MAIN EVENT
+            ================================================== -->
+
+            <div class="col-lg-8">
+
+                <article class="event-detail-card">
+
+
+                    <!-- BANNER -->
+
+                    <div class="event-detail-hero">
+
+                        {% if event.banner %}
+
+                            <img
+                                src="{{ event.banner.url }}"
+                                alt="{{ event.title }}"
+                            >
+
+                        {% else %}
+
+                            <div class="event-banner-placeholder">
+
+                                <i class="bi bi-calendar-event"></i>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <div class="event-hero-overlay">
+
+
+                            {% if event.category %}
+
+                                <span class="event-category">
+
+                                    <i class="bi bi-tag"></i>
+
+                                    {{ event.category.name }}
+
+                                </span>
+
+                            {% endif %}
+
+
+                            <h2 class="event-main-title">
+                                {{ event.title }}
+                            </h2>
+
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CONTENT -->
+
+                    <div class="event-content">
+
+
+                        <!-- ABOUT -->
+
+                        <section>
+
+                            <h3 class="event-section-heading">
+                                About This Event
+                            </h3>
+
+
+                            <div class="event-description">
+                                {{ event.description|linebreaksbr }}
+                            </div>
+
+                        </section>
+                    {% if announcements %}
+
+                        <hr class="event-divider">
+
+                        <section>
+
+                            <div class="d-flex align-items-center gap-2 mb-3">
+
+                                <i class="bi bi-megaphone-fill text-primary"></i>
+
+                                <h3 class="mb-0">
+                                    Latest Announcements
+                                </h3>
+
+                            </div>
+
+                            <div class="d-flex flex-column gap-3">
+
+                                {% for announcement in announcements %}
+
+                                    <div class="alert alert-light border shadow-sm mb-0">
+
+                                        <div class="d-flex justify-content-between align-items-start gap-3">
+
+                                            <div>
+
+                                                <h5 class="fw-bold mb-2">
+                                                    {{ announcement.title }}
+                                                </h5>
+
+                                                <div class="text-muted">
+                                                    {{ announcement.message|linebreaksbr }}
+                                                </div>
+
+                                            </div>
+
+                                            <i class="bi bi-bell text-primary"></i>
+
+                                        </div>
+
+                                        <div class="small text-muted mt-3">
+
+                                            <i class="bi bi-clock me-1"></i>
+
+                                            {{ announcement.created_at|date:"d M Y, h:i A" }}
+
+                                        </div>
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        </section>
+
+                    {% endif %}
+{% if faqs %}
+
+    <hr class="event-divider">
+
+    <section class="event-faq-section">
+
+        <div class="d-flex align-items-center gap-2 mb-3">
+
+            <i class="bi bi-question-circle-fill text-primary"></i>
+
+            <h3 class="mb-0">
+                Frequently Asked Questions
+            </h3>
+
+        </div>
+
+        <p class="text-muted mb-4">
+            Find answers to common questions about this event.
+        </p>
+
+        <div
+            class="accordion"
+            id="eventFAQAccordion"
+        >
+
+            {% for faq in faqs %}
+
+                <div class="accordion-item border rounded-3 mb-3 overflow-hidden">
+
+                    <h2
+                        class="accordion-header"
+                        id="faqHeading{{ faq.id }}"
+                    >
+
+                        <button
+                            class="accordion-button {% if not forloop.first %}collapsed{% endif %}"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#faqCollapse{{ faq.id }}"
+                            aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+                            aria-controls="faqCollapse{{ faq.id }}"
+                        >
+                            <span class="fw-semibold">
+                                {{ faq.question }}
+                            </span>
+                        </button>
+
+                    </h2>
+
+                    <div
+                        id="faqCollapse{{ faq.id }}"
+                        class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
+                        aria-labelledby="faqHeading{{ faq.id }}"
+                        data-bs-parent="#eventFAQAccordion"
+                    >
+
+                        <div class="accordion-body text-muted">
+                            {{ faq.answer|linebreaksbr }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+{% endif %}
+
+
+                        <hr class="event-divider">
+
+
+                        <!-- EVENT INFORMATION -->
+
+                        <section>
+
+                            <h3 class="event-section-heading">
+                                Event Information
+                            </h3>
+
+
+                            <div class="row g-3">
+
+
+                                <!-- VENUE -->
+
+                                <div class="col-12 col-sm-6">
+
+                                    <div class="event-info-card">
+
+                                        <div class="event-info-icon">
+                                            <i class="bi bi-geo-alt"></i>
+                                        </div>
+
+
+                                        <div class="event-info-content">
+
+                                            <div class="event-info-label">
+                                                Venue
+                                            </div>
+
+                                            <div class="event-info-value">
+                                                {{ event.venue }}
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- CAPACITY -->
+
+                                <div class="col-12 col-sm-6">
+
+                                    <div class="event-info-card">
+
+                                        <div class="event-info-icon">
+                                            <i class="bi bi-people"></i>
+                                        </div>
+
+
+                                        <div class="event-info-content">
+
+                                            <div class="event-info-label">
+                                                Capacity
+                                            </div>
+
+                                            <div class="event-info-value">
+
+                                                {{ event.capacity }}
+                                                participant{{ event.capacity|pluralize }}
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- START -->
+
+                                <div class="col-12 col-sm-6">
+
+                                    <div class="event-info-card">
+
+                                        <div class="event-info-icon">
+                                            <i class="bi bi-calendar-check"></i>
+                                        </div>
+
+
+                                        <div class="event-info-content">
+
+                                            <div class="event-info-label">
+                                                Starts
+                                            </div>
+
+                                            <div class="event-info-value">
+
+                                                {{ event.start_datetime|date:"d M Y, h:i A" }}
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- END -->
+
+                                <div class="col-12 col-sm-6">
+
+                                    <div class="event-info-card">
+
+                                        <div class="event-info-icon">
+                                            <i class="bi bi-calendar-x"></i>
+                                        </div>
+
+
+                                        <div class="event-info-content">
+
+                                            <div class="event-info-label">
+                                                Ends
+                                            </div>
+
+                                            <div class="event-info-value">
+
+                                                {{ event.end_datetime|date:"d M Y, h:i A" }}
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                    <!-- FAVORITE EVENT -->
+
+                    <div class="registration-actions mt-3">
+
+                        <form
+                            method="POST"
+                            action="{% url 'toggle_favorite_event' event.id %}"
+                        >
+                            {% csrf_token %}
+
+                            {% if is_favorite %}
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-outline-danger registration-action-btn w-100"
+                                >
+                                    <i class="bi bi-heart-fill me-1"></i>
+                                    Remove from Favorites
+                                </button>
+
+                            {% else %}
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-outline-primary registration-action-btn w-100"
+                                >
+                                    <i class="bi bi-heart me-1"></i>
+                                    Add to Favorites
+                                </button>
+
+                            {% endif %}
+
+                        </form>
+
+                    </div>
+{% if event.results_published and published_results %}
+
+<div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-body p-4">
+
+        <div class="d-flex align-items-center mb-4">
+
+            <div class="me-3 fs-2">
+                🏆
+            </div>
+
+            <div>
+                <h4 class="fw-bold mb-1">
+                    Event Results
+                </h4>
+
+                <p class="text-muted mb-0">
+                    Congratulations to the winners!
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="row g-3">
+
+            {% for result in published_results %}
+
+                <div class="col-12 col-md-4">
+
+                    <div class="border rounded-3 p-4 h-100 text-center">
+
+                        <div class="display-5 mb-2">
+
+                            {% if result.position == "FIRST" %}
+                                🥇
+                            {% elif result.position == "SECOND" %}
+                                🥈
+                            {% elif result.position == "THIRD" %}
+                                🥉
+                            {% else %}
+                                🏆
+                            {% endif %}
+
+                        </div>
+
+
+                        <h5 class="fw-bold mb-2">
+                            {{ result.get_position_display }}
+                        </h5>
+
+
+                        <div class="fw-semibold">
+
+                            {% if result.registration.student.student_profile.full_name %}
+
+                                {{ result.registration.student.student_profile.full_name }}
+
+                            {% else %}
+
+                                {{ result.registration.student.username }}
+
+                            {% endif %}
+
+                        </div>
+
+
+                        {% if result.prize %}
+
+                            <div class="mt-3">
+
+                                <span class="badge bg-warning text-dark">
+                                    <i class="bi bi-gift me-1"></i>
+                                    {{ result.prize }}
+                                </span>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        {% if result.remarks %}
+
+                            <p class="text-muted small mt-3 mb-0">
+                                {{ result.remarks }}
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        {% if event.results_published_at %}
+
+            <div class="text-muted small mt-4">
+                <i class="bi bi-check-circle-fill text-success me-1"></i>
+
+                Results published on
+                {{ event.results_published_at|date:"d M Y, h:i A" }}
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endif %}
+<!-- EVENT FEEDBACK -->
+
+{% if has_feedback %}
+
+    <div class="registration-actions mt-3">
+
+        <button
+            type="button"
+            class="btn btn-outline-success registration-action-btn w-100"
+            disabled
+        >
+            <i class="bi bi-check-circle-fill me-1"></i>
+            Feedback Submitted
+        </button>
+
+    </div>
+
+{% elif can_give_feedback %}
+
+    <div class="registration-actions mt-3">
+
+        <a
+            href="{% url 'submit_event_feedback' event.id %}"
+            class="btn btn-outline-warning registration-action-btn w-100"
+        >
+            <i class="bi bi-star-fill me-1"></i>
+            Give Feedback
+        </a>
+
+    </div>
+
+{% endif %}
+
+
+                                <!-- DEADLINE -->
+
+                                <div class="col-12 col-sm-6">
+
+                                    <div class="event-info-card">
+
+                                        <div class="event-info-icon">
+                                            <i class="bi bi-hourglass-split"></i>
+                                        </div>
+
+
+                                        <div class="event-info-content">
+
+                                            <div class="event-info-label">
+                                                Registration Deadline
+                                            </div>
+
+                                            <div class="event-info-value">
+
+                                                {{ event.registration_deadline|date:"d M Y, h:i A" }}
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- ORGANIZER -->
+
+                                <div class="col-12 col-sm-6">
+
+                                    <div class="event-info-card">
+
+                                        <div class="event-info-icon">
+                                            <i class="bi bi-person-workspace"></i>
+                                        </div>
+
+
+                                        <div class="event-info-content">
+
+                                            <div class="event-info-label">
+                                                Organizer
+                                            </div>
+
+                                            <div class="event-info-value">
+
+                                                {{ event.organizer.organizer_profile.name|default:event.organizer.username }}
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                        </section>
+
+
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <!-- =================================================
+                 REGISTRATION
+            ================================================== -->
+
+            <div class="col-lg-4">
+
+                <aside class="registration-panel">
+
+
+                    <!-- ICON -->
+
+                    {% if is_registered %}
+
+                        <div class="registration-icon registered">
+                            <i class="bi bi-check2-circle"></i>
+                        </div>
+
+                    {% elif event.registration_open %}
+
+                        <div class="registration-icon">
+                            <i class="bi bi-ticket-perforated"></i>
+                        </div>
+
+                    {% else %}
+
+                        <div class="registration-icon closed">
+                            <i class="bi bi-lock"></i>
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- =========================================
+                         REGISTERED
+                    ========================================== -->
+
+                    {% if is_registered %}
+
+
+                        <h3 class="registration-title">
+                            You're Registered
+                        </h3>
+
+
+                        <p class="registration-text">
+
+                            Your registration for this event is active.
+                            Keep your attendance QR ready for event
+                            check-in.
+
+                        </p>
+
+
+                        <div class="registration-status-box registration-success">
+
+                            <i class="bi bi-check-circle-fill"></i>
+
+                            <div>
+                                <strong>Registration Confirmed</strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="registration-actions">
+
+
+                            <button
+                                type="button"
+                                class="btn btn-success registration-action-btn registered-button"
+                                disabled
+                            >
+                                <i class="bi bi-check2 me-1"></i>
+
+                                Registered
+                            </button>
+
+
+                            <a
+                                href="{% url 'student_event_qr' event.id %}"
+                                class="btn btn-primary registration-action-btn"
+                            >
+                                <i class="bi bi-qr-code me-1"></i>
+
+                                Show Attendance QR
+                            </a>
+
+
+                            <form
+                                method="POST"
+                                action="{% url 'cancel_registration' event.id %}"
+                                onsubmit="return confirm('Are you sure you want to cancel your registration?');"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-outline-danger registration-action-btn w-100"
+                                >
+                                    <i class="bi bi-x-circle me-1"></i>
+
+                                    Cancel Registration
+                                </button>
+
+                            </form>
+
+
+                        </div>
+
+
+                    <!-- =========================================
+                         REGISTRATION OPEN
+                    ========================================== -->
+
+                    {% elif event.registration_open %}
+
+
+                        <h3 class="registration-title">
+                            Registration Open
+                        </h3>
+
+
+                        <p class="registration-text">
+
+                            Registration is currently available
+                            for this event.
+
+                        </p>
+
+
+                        <div class="registration-status-box registration-open">
+
+                            <i class="bi bi-lightning-charge-fill"></i>
+
+                            <div>
+
+                                Secure your place before the
+                                registration deadline.
+
+                            </div>
+
+                        </div>
+
+
+                        <form
+                            method="POST"
+                            action="{% url 'register_for_event' event.id %}"
+                        >
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary registration-action-btn w-100"
+                            >
+                                <i class="bi bi-ticket-perforated me-1"></i>
+
+                                Register for Event
+                            </button>
+
+                        </form>
+
+
+                    <!-- =========================================
+                         REGISTRATION CLOSED
+                    ========================================== -->
+
+                    {% else %}
+
+
+                        <h3 class="registration-title">
+                            Registration Closed
+                        </h3>
+
+
+                        <p class="registration-text">
+
+                            Registration is no longer available
+                            for this event.
+
+                        </p>
+
+
+                        <div class="registration-status-box registration-closed">
+
+                            <i class="bi bi-lock-fill"></i>
+
+                            <div>
+                                Registration is currently unavailable.
+                            </div>
+
+                        </div>
+
+
+                    {% endif %}
+
+
+                    <!-- DEADLINE -->
+
+                    <div class="registration-deadline">
+
+                        <i class="bi bi-clock-history"></i>
+
+
+                        <div>
+
+                            <div class="registration-deadline-title">
+                                Registration Deadline
+                            </div>
+
+                            {{ event.registration_deadline|date:"d M Y, h:i A" }}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="registration-security">
+
+                        <i class="bi bi-shield-check"></i>
+
+                        <div>
+
+                            Registration and attendance are managed
+                            securely through your CampusX account.
+
+                        </div>
+
+                    </div>
+
+
+                </aside>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

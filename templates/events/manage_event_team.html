@@ -1,0 +1,1699 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Team | {{ event.title }} | CampusX{% endblock %}
+
+
+{% block extra_css %}
+<style>
+
+    .team-page {
+        padding: clamp(18px, 4vw, 38px) 0 clamp(50px, 7vw, 75px);
+    }
+
+
+    /* =========================================================
+       HEADER
+    ========================================================= */
+
+    .team-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 18px;
+
+        margin-bottom: 22px;
+    }
+
+
+    .page-eyebrow {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 6px;
+
+        margin-bottom: 6px;
+
+        color: #4f46e5;
+
+        font-size: .65rem;
+        font-weight: 800;
+
+        letter-spacing: .06em;
+        text-transform: uppercase;
+    }
+
+
+    .page-title {
+        margin: 0 0 4px;
+
+        color: #0f172a;
+
+        font-size: clamp(1.45rem, 4vw, 1.95rem);
+        font-weight: 800;
+
+        letter-spacing: -.035em;
+    }
+
+
+    .page-subtitle {
+        max-width: 620px;
+
+        margin: 0;
+
+        color: #64748b;
+
+        font-size: .77rem;
+        line-height: 1.55;
+
+        overflow-wrap: anywhere;
+    }
+
+
+    .team-stat {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 6px;
+
+        margin-top: 10px;
+        padding: 6px 10px;
+
+        border-radius: 999px;
+
+        background: #eef2ff;
+        color: #4338ca;
+
+        font-size: .64rem;
+        font-weight: 800;
+    }
+
+
+    .back-button {
+        min-height: 41px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        font-size: .71rem;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       CONTENT CARD
+    ========================================================= */
+
+    .team-content-card {
+        overflow: hidden;
+
+        height: 100%;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 17px;
+
+        background: white;
+
+        box-shadow:
+            0 9px 32px rgba(15, 23, 42, .045);
+    }
+
+
+    .team-card-header {
+        padding: 18px 20px;
+
+        border-bottom: 1px solid var(--cx-border);
+
+        background: #f8fafc;
+    }
+
+
+    .team-card-heading {
+        margin: 0 0 3px;
+
+        color: #0f172a;
+
+        font-size: .9rem;
+        font-weight: 800;
+    }
+
+
+    .team-card-subheading {
+        margin: 0;
+
+        color: #94a3b8;
+
+        font-size: .67rem;
+        line-height: 1.5;
+    }
+
+
+    .team-card-body {
+        padding: 20px;
+    }
+
+
+    /* =========================================================
+       ASSIGNMENT GUIDE
+    ========================================================= */
+
+    .assignment-guide {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 10px;
+
+        margin-bottom: 19px;
+        padding: 13px;
+
+        border: 1px solid #c7d2fe;
+        border-radius: 11px;
+
+        background: #eef2ff;
+    }
+
+
+    .assignment-guide > i {
+        flex-shrink: 0;
+
+        margin-top: 2px;
+
+        color: #4f46e5;
+    }
+
+
+    .guide-title {
+        color: #3730a3;
+
+        font-size: .7rem;
+        font-weight: 800;
+    }
+
+
+    .guide-text {
+        margin: 3px 0 0;
+
+        color: #6366f1;
+
+        font-size: .64rem;
+        line-height: 1.55;
+    }
+
+
+    /* =========================================================
+       FORM
+    ========================================================= */
+
+    .team-page .form-label {
+        margin-bottom: 6px;
+
+        color: #334155;
+
+        font-size: .7rem;
+        font-weight: 800;
+    }
+
+
+    .team-page .form-control,
+    .team-page .form-select {
+        min-height: 43px;
+
+        width: 100%;
+
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+
+        font-size: .76rem;
+    }
+
+
+    .team-page textarea.form-control {
+        min-height: 105px;
+
+        resize: vertical;
+    }
+
+
+    .team-page .form-control:focus,
+    .team-page .form-select:focus {
+        border-color: #6366f1;
+
+        box-shadow:
+            0 0 0 .2rem rgba(99, 102, 241, .11);
+    }
+
+
+    .field-help {
+        margin-top: 6px;
+
+        color: #94a3b8;
+
+        font-size: .62rem;
+        line-height: 1.5;
+    }
+
+
+    .field-error {
+        margin-top: 5px;
+
+        color: #dc2626;
+
+        font-size: .65rem;
+        font-weight: 650;
+    }
+
+
+    .add-member-button {
+        min-height: 43px;
+
+        font-size: .72rem;
+        font-weight: 750;
+    }
+
+
+    /* =========================================================
+       TEAM COUNT
+    ========================================================= */
+
+    .assigned-team-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 12px;
+    }
+
+
+    .team-count-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 27px;
+        height: 27px;
+
+        padding: 0 8px;
+
+        border-radius: 999px;
+
+        background: #4f46e5;
+        color: white;
+
+        font-size: .64rem;
+        font-weight: 800;
+    }
+
+
+    /* =========================================================
+       DESKTOP TABLE
+    ========================================================= */
+
+    .team-table-wrapper {
+        overflow-x: auto;
+    }
+
+
+    .team-table {
+        min-width: 760px;
+
+        margin: 0;
+
+        white-space: nowrap;
+    }
+
+
+    .team-table thead th {
+        padding: 12px 13px;
+
+        border-bottom: 1px solid #e2e8f0;
+
+        background: #f8fafc;
+        color: #64748b;
+
+        font-size: .57rem;
+        font-weight: 800;
+
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+
+
+    .team-table tbody td {
+        padding: 14px 13px;
+
+        border-color: #f1f5f9;
+
+        color: #475569;
+
+        font-size: .68rem;
+
+        vertical-align: middle;
+    }
+
+
+    .team-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+
+    .team-table tbody tr {
+        transition: background .15s ease;
+    }
+
+
+    .team-table tbody tr:hover {
+        background: #fafbff;
+    }
+
+
+    /* =========================================================
+       MEMBER
+    ========================================================= */
+
+    .member-cell {
+        display: flex;
+        align-items: center;
+
+        gap: 9px;
+    }
+
+
+    .member-avatar {
+        width: 37px;
+        height: 37px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 50%;
+
+        background: #eef2ff;
+        color: #4f46e5;
+
+        font-size: .73rem;
+        font-weight: 800;
+
+        text-transform: uppercase;
+    }
+
+
+    .member-name {
+        max-width: 180px;
+
+        overflow: hidden;
+
+        color: #0f172a;
+
+        font-size: .72rem;
+        font-weight: 800;
+
+        text-overflow: ellipsis;
+    }
+
+
+    .member-email {
+        max-width: 190px;
+
+        margin-top: 1px;
+
+        overflow: hidden;
+
+        color: #94a3b8;
+
+        font-size: .59rem;
+
+        text-overflow: ellipsis;
+    }
+
+
+    /* =========================================================
+       ROLE BADGES
+    ========================================================= */
+
+    .role-badge {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        padding: 5px 8px;
+
+        border-radius: 999px;
+
+        font-size: .59rem;
+        font-weight: 800;
+
+        white-space: nowrap;
+    }
+
+
+    .role-teacher {
+        background: #e0f2fe;
+        color: #0369a1;
+    }
+
+
+    .role-committee {
+        background: #ffedd5;
+        color: #c2410c;
+    }
+
+
+    .role-other {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+
+    .team-role {
+        display: inline-flex;
+
+        padding: 5px 8px;
+
+        border-radius: 7px;
+
+        background: #f1f5f9;
+        color: #334155;
+
+        font-size: .61rem;
+        font-weight: 700;
+
+        white-space: nowrap;
+    }
+
+
+    .responsibility-text {
+        max-width: 210px;
+
+        color: #64748b;
+
+        font-size: .65rem;
+        line-height: 1.5;
+
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+
+    .remove-button {
+        min-height: 34px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: .62rem;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       MOBILE TEAM CARDS
+    ========================================================= */
+
+    .team-mobile-list {
+        display: none;
+
+        padding: 13px;
+    }
+
+
+    .team-mobile-card {
+        padding: 14px;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 13px;
+
+        background: white;
+    }
+
+
+    .team-mobile-card + .team-mobile-card {
+        margin-top: 10px;
+    }
+
+
+    .mobile-member-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        gap: 10px;
+
+        margin-bottom: 13px;
+    }
+
+
+    .mobile-member-main {
+        display: flex;
+        align-items: center;
+
+        min-width: 0;
+
+        gap: 9px;
+    }
+
+
+    .mobile-member-text {
+        min-width: 0;
+    }
+
+
+    .mobile-member-name {
+        overflow-wrap: anywhere;
+
+        color: #0f172a;
+
+        font-size: .76rem;
+        font-weight: 800;
+    }
+
+
+    .mobile-member-email {
+        overflow-wrap: anywhere;
+
+        color: #94a3b8;
+
+        font-size: .6rem;
+    }
+
+
+    .mobile-team-details {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        gap: 11px;
+
+        padding-top: 12px;
+
+        border-top: 1px solid #f1f5f9;
+    }
+
+
+    .mobile-team-detail {
+        min-width: 0;
+    }
+
+
+    .mobile-team-detail.full {
+        grid-column: 1 / -1;
+    }
+
+
+    .mobile-team-label {
+        margin-bottom: 3px;
+
+        color: #94a3b8;
+
+        font-size: .53rem;
+        font-weight: 750;
+
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+
+
+    .mobile-team-value {
+        overflow-wrap: anywhere;
+
+        color: #475569;
+
+        font-size: .66rem;
+        font-weight: 650;
+
+        line-height: 1.5;
+    }
+
+
+    .mobile-remove-form {
+        margin-top: 13px;
+    }
+
+
+    .mobile-remove-form .btn {
+        width: 100%;
+    }
+
+
+    /* =========================================================
+       EMPTY STATE
+    ========================================================= */
+
+    .team-empty {
+        padding: clamp(45px, 7vw, 65px) 20px;
+
+        text-align: center;
+    }
+
+
+    .team-empty-icon {
+        width: 62px;
+        height: 62px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 15px;
+
+        border-radius: 50%;
+
+        background: #eef2ff;
+        color: #4f46e5;
+
+        font-size: 1.3rem;
+    }
+
+
+    .team-empty-title {
+        margin-bottom: 5px;
+
+        color: #0f172a;
+
+        font-size: .9rem;
+        font-weight: 800;
+    }
+
+
+    .team-empty-text {
+        max-width: 370px;
+
+        margin: auto;
+
+        color: #94a3b8;
+
+        font-size: .7rem;
+        line-height: 1.6;
+    }
+
+
+    /* =========================================================
+       PERMISSIONS
+    ========================================================= */
+
+    .permission-box {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 11px;
+
+        margin-top: 22px;
+        padding: 15px;
+
+        border: 1px solid #bae6fd;
+        border-radius: 12px;
+
+        background: #f0f9ff;
+    }
+
+
+    .permission-box > i {
+        flex-shrink: 0;
+
+        margin-top: 2px;
+
+        color: #0284c7;
+
+        font-size: .95rem;
+    }
+
+
+    .permission-title {
+        color: #0c4a6e;
+
+        font-size: .72rem;
+        font-weight: 800;
+    }
+
+
+    .permission-text {
+        margin: 3px 0 0;
+
+        color: #0369a1;
+
+        font-size: .65rem;
+        line-height: 1.55;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 991.98px) {
+
+        .team-content-card {
+            height: auto;
+        }
+
+
+        .team-table-wrapper {
+            display: none;
+        }
+
+
+        .team-mobile-list {
+            display: block;
+        }
+
+    }
+
+
+    @media (max-width: 767.98px) {
+
+        .team-page {
+            padding-top: 18px;
+        }
+
+
+        .team-header {
+            align-items: flex-start;
+            flex-direction: column;
+
+            margin-bottom: 18px;
+        }
+
+
+        .back-button {
+            width: 100%;
+        }
+
+
+        .team-card-body {
+            padding: 16px;
+        }
+
+    }
+
+
+    @media (max-width: 575.98px) {
+
+        .team-page {
+            padding-top: 14px;
+        }
+
+
+        .team-content-card {
+            border-radius: 15px;
+        }
+
+
+        .team-card-header,
+        .team-card-body {
+            padding: 15px;
+        }
+
+
+        .team-mobile-list {
+            padding: 10px;
+        }
+
+
+        .team-mobile-card {
+            padding: 13px;
+        }
+
+
+        .mobile-member-header {
+            flex-direction: column;
+        }
+
+
+        .mobile-team-details {
+            grid-template-columns: 1fr;
+        }
+
+
+        .mobile-team-detail.full {
+            grid-column: auto;
+        }
+
+    }
+
+
+    @media (max-width: 374.98px) {
+
+        .page-title {
+            font-size: 1.35rem;
+        }
+
+
+        .team-stat {
+            font-size: .59rem;
+        }
+
+    }
+
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .team-table tbody tr {
+            transition: none;
+        }
+
+    }
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="team-page">
+
+    <div class="container">
+
+
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
+
+        <div class="team-header">
+
+            <div>
+
+                <div class="page-eyebrow">
+
+                    <i class="bi bi-person-gear"></i>
+
+                    Event Operations
+
+                </div>
+
+
+                <h1 class="page-title">
+                    Manage Event Team
+                </h1>
+
+
+                <p class="page-subtitle">
+                    {{ event.title }}
+                </p>
+
+
+                <div class="team-stat">
+
+                    <i class="bi bi-people"></i>
+
+                    {{ total_team_members }}
+
+                    Member{{ total_team_members|pluralize }}
+
+                    Assigned
+
+                </div>
+
+            </div>
+
+
+            <a
+                href="{% url 'event_detail' event.id %}"
+                class="btn btn-outline-secondary back-button"
+            >
+                <i class="bi bi-arrow-left me-1"></i>
+
+                Back to Event
+            </a>
+
+        </div>
+
+
+        <div class="row g-4 align-items-start">
+
+
+            <!-- =================================================
+                 ADD MEMBER
+            ================================================== -->
+
+            <div class="col-lg-5">
+
+                <section class="team-content-card">
+
+                    <div class="team-card-header">
+
+                        <h2 class="team-card-heading">
+                            Add Team Member
+                        </h2>
+
+                        <p class="team-card-subheading">
+
+                            Assign a Teacher or Core Committee member
+                            to a specific event responsibility.
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="team-card-body">
+
+
+                        <div class="assignment-guide">
+
+                            <i class="bi bi-info-circle-fill"></i>
+
+
+                            <div>
+
+                                <div class="guide-title">
+                                    Role Assignment
+                                </div>
+
+
+                                <p class="guide-text">
+
+                                    Select an eligible member, choose
+                                    their event role and describe their
+                                    specific responsibility.
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <form method="POST">
+
+                            {% csrf_token %}
+
+
+                            {% if form.non_field_errors %}
+
+                                <div class="alert alert-danger">
+
+                                    {% for error in form.non_field_errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- MEMBER -->
+
+                            <div class="mb-3">
+
+                                <label
+                                    for="{{ form.member.id_for_label }}"
+                                    class="form-label"
+                                >
+                                    Team Member
+                                </label>
+
+
+                                {{ form.member }}
+
+
+                                {% if form.member.errors %}
+
+                                    <div class="field-error">
+
+                                        {% for error in form.member.errors %}
+
+                                            <div>
+                                                {{ error }}
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- TEAM ROLE -->
+
+                            <div class="mb-3">
+
+                                <label
+                                    for="{{ form.team_role.id_for_label }}"
+                                    class="form-label"
+                                >
+                                    Event Team Role
+                                </label>
+
+
+                                {{ form.team_role }}
+
+
+                                {% if form.team_role.errors %}
+
+                                    <div class="field-error">
+
+                                        {% for error in form.team_role.errors %}
+
+                                            <div>
+                                                {{ error }}
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- RESPONSIBILITY -->
+
+                            <div class="mb-4">
+
+                                <label
+                                    for="{{ form.responsibility.id_for_label }}"
+                                    class="form-label"
+                                >
+                                    Responsibility
+                                </label>
+
+
+                                {{ form.responsibility }}
+
+
+                                <div class="field-help">
+
+                                    Example: Manage registration desk,
+                                    supervise technical setup or coordinate
+                                    event activities.
+
+                                </div>
+
+
+                                {% if form.responsibility.errors %}
+
+                                    <div class="field-error">
+
+                                        {% for error in form.responsibility.errors %}
+
+                                            <div>
+                                                {{ error }}
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary w-100 add-member-button"
+                            >
+                                <i class="bi bi-person-plus me-1"></i>
+
+                                Add to Event Team
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- =================================================
+                 ASSIGNED TEAM
+            ================================================== -->
+
+            <div class="col-lg-7">
+
+                <section class="team-content-card">
+
+                    <div class="team-card-header">
+
+                        <div class="assigned-team-heading">
+
+                            <div>
+
+                                <h2 class="team-card-heading">
+                                    Assigned Team
+                                </h2>
+
+                                <p class="team-card-subheading">
+
+                                    Members currently assigned
+                                    to this event.
+
+                                </p>
+
+                            </div>
+
+
+                            <span class="team-count-badge">
+                                {{ total_team_members }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    {% if team_members %}
+
+
+                        <!-- =====================================
+                             DESKTOP TABLE
+                        ====================================== -->
+
+                        <div class="team-table-wrapper">
+
+                            <table class="table team-table">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>Member</th>
+
+                                        <th>CampusX Role</th>
+
+                                        <th>Event Role</th>
+
+                                        <th>Responsibility</th>
+
+                                        <th class="text-end">
+                                            Action
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    {% for assignment in team_members %}
+
+                                        <tr>
+
+
+                                            <!-- MEMBER -->
+
+                                            <td>
+
+                                                <div class="member-cell">
+
+                                                    <div class="member-avatar">
+
+                                                        {% if assignment.member.role == "TEACHER" %}
+
+                                                            {% if assignment.member.teacher_profile %}
+
+                                                                {{ assignment.member.teacher_profile.full_name|first }}
+
+                                                            {% else %}
+
+                                                                {{ assignment.member.username|first }}
+
+                                                            {% endif %}
+
+
+                                                        {% elif assignment.member.role == "CORE_COMMITTEE" %}
+
+                                                            {% if assignment.member.core_committee_profile %}
+
+                                                                {{ assignment.member.core_committee_profile.full_name|first }}
+
+                                                            {% else %}
+
+                                                                {{ assignment.member.username|first }}
+
+                                                            {% endif %}
+
+
+                                                        {% else %}
+
+                                                            {{ assignment.member.username|first }}
+
+                                                        {% endif %}
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <div class="member-name">
+
+                                                            {% if assignment.member.role == "TEACHER" %}
+
+                                                                {% if assignment.member.teacher_profile %}
+
+                                                                    {{ assignment.member.teacher_profile.full_name }}
+
+                                                                {% else %}
+
+                                                                    {{ assignment.member.username }}
+
+                                                                {% endif %}
+
+
+                                                            {% elif assignment.member.role == "CORE_COMMITTEE" %}
+
+                                                                {% if assignment.member.core_committee_profile %}
+
+                                                                    {{ assignment.member.core_committee_profile.full_name }}
+
+                                                                {% else %}
+
+                                                                    {{ assignment.member.username }}
+
+                                                                {% endif %}
+
+
+                                                            {% else %}
+
+                                                                {{ assignment.member.username }}
+
+                                                            {% endif %}
+
+                                                        </div>
+
+
+                                                        <div class="member-email">
+
+                                                            {{ assignment.member.email }}
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </td>
+
+
+                                            <!-- CAMPUSX ROLE -->
+
+                                            <td>
+
+                                                {% if assignment.member.role == "TEACHER" %}
+
+                                                    <span class="role-badge role-teacher">
+
+                                                        <i class="bi bi-person-badge"></i>
+
+                                                        Teacher
+
+                                                    </span>
+
+
+                                                {% elif assignment.member.role == "CORE_COMMITTEE" %}
+
+                                                    <span class="role-badge role-committee">
+
+                                                        <i class="bi bi-people"></i>
+
+                                                        Core Committee
+
+                                                    </span>
+
+
+                                                {% else %}
+
+                                                    <span class="role-badge role-other">
+
+                                                        {{ assignment.member.get_role_display }}
+
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </td>
+
+
+                                            <!-- EVENT ROLE -->
+
+                                            <td>
+
+                                                <span class="team-role">
+
+                                                    {{ assignment.get_team_role_display }}
+
+                                                </span>
+
+                                            </td>
+
+
+                                            <!-- RESPONSIBILITY -->
+
+                                            <td>
+
+                                                <div class="responsibility-text">
+
+                                                    {% if assignment.responsibility %}
+
+                                                        {{ assignment.responsibility }}
+
+                                                    {% else %}
+
+                                                        <span class="text-muted">
+                                                            No specific responsibility
+                                                        </span>
+
+                                                    {% endif %}
+
+                                                </div>
+
+                                            </td>
+
+
+                                            <!-- REMOVE -->
+
+                                            <td class="text-end">
+
+                                                <form
+                                                    method="POST"
+                                                    action="{% url 'remove_event_team_member' event.id assignment.id %}"
+                                                    onsubmit="return confirm('Remove this member from this event role?');"
+                                                >
+                                                    {% csrf_token %}
+
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-outline-danger remove-button"
+                                                        title="Remove assignment"
+                                                    >
+                                                        <i class="bi bi-person-dash me-1"></i>
+
+                                                        Remove
+                                                    </button>
+
+                                                </form>
+
+                                            </td>
+
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <!-- =====================================
+                             TABLET / MOBILE CARDS
+                        ====================================== -->
+
+                        <div class="team-mobile-list">
+
+                            {% for assignment in team_members %}
+
+                                <article class="team-mobile-card">
+
+
+                                    <div class="mobile-member-header">
+
+                                        <div class="mobile-member-main">
+
+                                            <div class="member-avatar">
+
+                                                {% if assignment.member.role == "TEACHER" %}
+
+                                                    {% if assignment.member.teacher_profile %}
+
+                                                        {{ assignment.member.teacher_profile.full_name|first }}
+
+                                                    {% else %}
+
+                                                        {{ assignment.member.username|first }}
+
+                                                    {% endif %}
+
+
+                                                {% elif assignment.member.role == "CORE_COMMITTEE" %}
+
+                                                    {% if assignment.member.core_committee_profile %}
+
+                                                        {{ assignment.member.core_committee_profile.full_name|first }}
+
+                                                    {% else %}
+
+                                                        {{ assignment.member.username|first }}
+
+                                                    {% endif %}
+
+
+                                                {% else %}
+
+                                                    {{ assignment.member.username|first }}
+
+                                                {% endif %}
+
+                                            </div>
+
+
+                                            <div class="mobile-member-text">
+
+                                                <div class="mobile-member-name">
+
+                                                    {% if assignment.member.role == "TEACHER" %}
+
+                                                        {% if assignment.member.teacher_profile %}
+
+                                                            {{ assignment.member.teacher_profile.full_name }}
+
+                                                        {% else %}
+
+                                                            {{ assignment.member.username }}
+
+                                                        {% endif %}
+
+
+                                                    {% elif assignment.member.role == "CORE_COMMITTEE" %}
+
+                                                        {% if assignment.member.core_committee_profile %}
+
+                                                            {{ assignment.member.core_committee_profile.full_name }}
+
+                                                        {% else %}
+
+                                                            {{ assignment.member.username }}
+
+                                                        {% endif %}
+
+
+                                                    {% else %}
+
+                                                        {{ assignment.member.username }}
+
+                                                    {% endif %}
+
+                                                </div>
+
+
+                                                <div class="mobile-member-email">
+
+                                                    {{ assignment.member.email }}
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        {% if assignment.member.role == "TEACHER" %}
+
+                                            <span class="role-badge role-teacher">
+
+                                                <i class="bi bi-person-badge"></i>
+
+                                                Teacher
+
+                                            </span>
+
+
+                                        {% elif assignment.member.role == "CORE_COMMITTEE" %}
+
+                                            <span class="role-badge role-committee">
+
+                                                <i class="bi bi-people"></i>
+
+                                                Core Committee
+
+                                            </span>
+
+
+                                        {% else %}
+
+                                            <span class="role-badge role-other">
+
+                                                {{ assignment.member.get_role_display }}
+
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <div class="mobile-team-details">
+
+
+                                        <div class="mobile-team-detail">
+
+                                            <div class="mobile-team-label">
+                                                Event Role
+                                            </div>
+
+                                            <div class="mobile-team-value">
+
+                                                {{ assignment.get_team_role_display }}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="mobile-team-detail full">
+
+                                            <div class="mobile-team-label">
+                                                Responsibility
+                                            </div>
+
+                                            <div class="mobile-team-value">
+
+                                                {% if assignment.responsibility %}
+
+                                                    {{ assignment.responsibility }}
+
+                                                {% else %}
+
+                                                    No specific responsibility
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+
+
+                                    <form
+                                        method="POST"
+                                        action="{% url 'remove_event_team_member' event.id assignment.id %}"
+                                        class="mobile-remove-form"
+                                        onsubmit="return confirm('Remove this member from this event role?');"
+                                    >
+                                        {% csrf_token %}
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-outline-danger remove-button"
+                                        >
+                                            <i class="bi bi-person-dash me-1"></i>
+
+                                            Remove Assignment
+                                        </button>
+
+                                    </form>
+
+
+                                </article>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                    {% else %}
+
+
+                        <!-- =====================================
+                             EMPTY STATE
+                        ====================================== -->
+
+                        <div class="team-empty">
+
+                            <div class="team-empty-icon">
+
+                                <i class="bi bi-people"></i>
+
+                            </div>
+
+
+                            <div class="team-empty-title">
+                                No Team Members Assigned
+                            </div>
+
+
+                            <p class="team-empty-text">
+
+                                Use the assignment form to add Teachers
+                                and Core Committee members to this event.
+
+                            </p>
+
+                        </div>
+
+
+                    {% endif %}
+
+                </section>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =====================================================
+             PERMISSION INFORMATION
+        ====================================================== -->
+
+        <div class="permission-box">
+
+            <i class="bi bi-shield-check"></i>
+
+
+            <div>
+
+                <div class="permission-title">
+                    Team Permission Rules
+                </div>
+
+
+                <p class="permission-text">
+
+                    Faculty Coordinator can only be assigned to a Teacher.
+                    QR attendance scanning is available to the event
+                    organizer and authorized Attendance Team or Event
+                    Coordinator members.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

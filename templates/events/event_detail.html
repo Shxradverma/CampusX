@@ -1,0 +1,2037 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.title }} | CampusX{% endblock %}
+
+
+{% block extra_css %}
+<style>
+
+    .manage-event-page {
+        padding: clamp(18px, 4vw, 42px) 0 clamp(50px, 7vw, 75px);
+    }
+
+
+    /* =========================================================
+       TOP BAR
+    ========================================================= */
+
+    .event-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+
+        margin-bottom: 20px;
+    }
+
+
+    .event-breadcrumb {
+        margin-bottom: 3px;
+
+        color: #94a3b8;
+
+        font-size: .67rem;
+        font-weight: 650;
+    }
+
+
+    .event-page-title {
+        margin: 0;
+
+        color: #0f172a;
+
+        font-size: clamp(1.15rem, 3vw, 1.4rem);
+        font-weight: 800;
+
+        letter-spacing: -.025em;
+    }
+
+
+    .dashboard-button {
+        min-height: 41px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        font-size: .74rem;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       HERO
+    ========================================================= */
+
+    .event-hero {
+        position: relative;
+
+        min-height: clamp(300px, 37vw, 410px);
+
+        display: flex;
+        align-items: flex-end;
+
+        overflow: hidden;
+
+        margin-bottom: 20px;
+
+        border-radius: 21px;
+
+        background:
+            radial-gradient(
+                circle at 88% 16%,
+                rgba(255,255,255,.14),
+                transparent 28%
+            ),
+            linear-gradient(
+                135deg,
+                #172554,
+                #3730a3 52%,
+                #6d28d9
+            );
+
+        box-shadow:
+            0 18px 48px rgba(15, 23, 42, .11);
+    }
+
+
+    .event-hero img {
+        position: absolute;
+        inset: 0;
+
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+    }
+
+
+    .event-hero-overlay {
+        position: absolute;
+        inset: 0;
+
+        background:
+            linear-gradient(
+                to top,
+                rgba(15, 23, 42, .88) 0%,
+                rgba(15, 23, 42, .48) 48%,
+                rgba(15, 23, 42, .08) 78%
+            );
+    }
+
+
+    .event-hero-content {
+        position: relative;
+        z-index: 2;
+
+        width: 100%;
+
+        padding: clamp(22px, 5vw, 36px);
+
+        color: white;
+    }
+
+
+    .hero-category {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 4px;
+
+        margin-bottom: 11px;
+        padding: 6px 10px;
+
+        border: 1px solid rgba(255,255,255,.15);
+        border-radius: 999px;
+
+        background: rgba(255,255,255,.14);
+
+        font-size: .64rem;
+        font-weight: 700;
+
+        backdrop-filter: blur(9px);
+    }
+
+
+    .hero-title {
+        max-width: 850px;
+
+        margin: 0 0 10px;
+
+        color: white;
+
+        font-size: clamp(1.55rem, 4vw, 2.3rem);
+        font-weight: 800;
+
+        line-height: 1.18;
+        letter-spacing: -.04em;
+    }
+
+
+    .hero-description {
+        max-width: 760px;
+
+        margin: 0;
+
+        color: rgba(255,255,255,.8);
+
+        font-size: .78rem;
+        line-height: 1.65;
+    }
+
+
+    /* =========================================================
+       ROLE ACCESS
+    ========================================================= */
+
+    .access-box {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 12px;
+
+        margin-bottom: 20px;
+        padding: 15px 17px;
+
+        border: 1px solid #c7d2fe;
+        border-radius: 13px;
+
+        background: #eef2ff;
+        color: #4338ca;
+    }
+
+
+    .access-box > i {
+        flex-shrink: 0;
+
+        margin-top: 2px;
+
+        font-size: 1rem;
+    }
+
+
+    .access-title {
+        margin-bottom: 2px;
+
+        color: #312e81;
+
+        font-size: .78rem;
+        font-weight: 800;
+    }
+
+
+    .access-text {
+        margin: 0;
+
+        color: #6366f1;
+
+        font-size: .7rem;
+        line-height: 1.55;
+    }
+
+
+    /* =========================================================
+       CONTENT CARD
+    ========================================================= */
+
+    .content-card {
+        overflow: hidden;
+
+        margin-bottom: 20px;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 18px;
+
+        background: white;
+
+        box-shadow:
+            0 8px 30px rgba(15, 23, 42, .045);
+    }
+
+
+    .content-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 14px;
+
+        padding: 19px 21px;
+
+        border-bottom: 1px solid var(--cx-border);
+    }
+
+
+    .card-heading {
+        margin: 0 0 3px;
+
+        color: #0f172a;
+
+        font-size: 1rem;
+        font-weight: 800;
+
+        letter-spacing: -.02em;
+    }
+
+
+    .card-subheading {
+        margin: 0;
+
+        color: #64748b;
+
+        font-size: .7rem;
+        line-height: 1.5;
+    }
+
+
+    .content-card-body {
+        padding: 21px;
+    }
+
+
+    /* =========================================================
+       APPROVAL WORKFLOW
+    ========================================================= */
+
+    .workflow-state {
+        padding: 15px;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+
+        background: #f8fafc;
+    }
+
+
+    .workflow-state.pending {
+        border-color: #fde68a;
+
+        background: #fffbeb;
+    }
+
+
+    .workflow-state.approved {
+        border-color: #bbf7d0;
+
+        background: #f0fdf4;
+    }
+
+
+    .workflow-state.rejected {
+        border-color: #fecaca;
+
+        background: #fef2f2;
+    }
+
+
+    .workflow-state-title {
+        margin-bottom: 5px;
+
+        color: #0f172a;
+
+        font-size: .79rem;
+        font-weight: 800;
+    }
+
+
+    .workflow-state p {
+        margin: 0;
+
+        color: #64748b;
+
+        font-size: .7rem;
+        line-height: 1.6;
+    }
+
+
+    .workflow-meta {
+        margin-top: 9px;
+
+        color: #64748b;
+
+        font-size: .67rem;
+        line-height: 1.55;
+
+        overflow-wrap: anywhere;
+    }
+
+
+    .workflow-actions {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 8px;
+
+        margin-top: 13px;
+    }
+
+
+    .workflow-actions form {
+        margin: 0;
+    }
+
+
+    .workflow-actions .btn,
+    .workflow-state > form .btn {
+        min-height: 40px;
+
+        font-size: .71rem;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       STATUS
+    ========================================================= */
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        padding: 5px 9px;
+
+        border-radius: 999px;
+
+        font-size: .61rem;
+        font-weight: 750;
+
+        white-space: nowrap;
+    }
+
+
+    .status-published {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+
+    /* =========================================================
+       INFORMATION
+    ========================================================= */
+
+    .info-card {
+        height: 100%;
+
+        display: flex;
+        align-items: flex-start;
+
+        gap: 11px;
+
+        padding: 14px;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+
+        background: #f8fafc;
+    }
+
+
+    .info-icon {
+        width: 37px;
+        height: 37px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 9px;
+
+        background: #eef2ff;
+        color: #4f46e5;
+
+        font-size: .85rem;
+    }
+
+
+    .info-content {
+        min-width: 0;
+    }
+
+
+    .info-label {
+        margin-bottom: 2px;
+
+        color: #94a3b8;
+
+        font-size: .56rem;
+        font-weight: 750;
+
+        text-transform: uppercase;
+        letter-spacing: .05em;
+    }
+
+
+    .info-value {
+        overflow-wrap: anywhere;
+
+        color: #334155;
+
+        font-size: .74rem;
+        font-weight: 700;
+
+        line-height: 1.45;
+    }
+
+
+    .info-subvalue {
+        margin-top: 2px;
+
+        color: #64748b;
+
+        font-size: .65rem;
+    }
+
+
+    .owner-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 14px;
+
+        margin-top: 14px;
+        padding: 13px 15px;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+
+        background: #fff;
+    }
+
+
+    .owner-label {
+        color: #94a3b8;
+
+        font-size: .59rem;
+        font-weight: 750;
+
+        text-transform: uppercase;
+        letter-spacing: .045em;
+    }
+
+
+    .owner-name {
+        color: #0f172a;
+
+        font-size: .76rem;
+        font-weight: 750;
+
+        text-align: right;
+
+        overflow-wrap: anywhere;
+    }
+
+
+    /* =========================================================
+       OPERATION CARDS
+    ========================================================= */
+
+    .operation-card {
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+
+        padding: 17px;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 13px;
+
+        background: #fff;
+
+        transition:
+            transform .18s ease,
+            border-color .18s ease,
+            box-shadow .18s ease;
+    }
+
+
+    .operation-card:hover {
+        transform: translateY(-2px);
+
+        border-color: #c7d2fe;
+
+        box-shadow:
+            0 10px 25px rgba(15,23,42,.055);
+    }
+
+
+    .operation-icon {
+        width: 41px;
+        height: 41px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 12px;
+
+        border-radius: 10px;
+
+        background: #eef2ff;
+        color: #4f46e5;
+
+        font-size: .95rem;
+    }
+
+
+    .operation-icon.green {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+
+    .operation-icon.orange {
+        background: #fff7ed;
+        color: #ea580c;
+    }
+
+
+    .operation-icon.red {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+
+    .operation-title {
+        margin-bottom: 5px;
+
+        color: #0f172a;
+
+        font-size: .82rem;
+        font-weight: 800;
+    }
+
+
+    .operation-description {
+        flex: 1;
+
+        margin-bottom: 14px;
+
+        color: #64748b;
+
+        font-size: .69rem;
+        line-height: 1.55;
+    }
+
+
+    .operation-card .btn {
+        align-self: flex-start;
+
+        min-height: 39px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: .7rem;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 767.98px) {
+
+        .manage-event-page {
+            padding-top: 18px;
+        }
+
+
+        .event-topbar {
+            align-items: flex-start;
+            flex-direction: column;
+
+            margin-bottom: 17px;
+        }
+
+
+        .dashboard-button {
+            width: 100%;
+        }
+
+
+        .event-hero {
+            min-height: 300px;
+
+            border-radius: 17px;
+        }
+
+
+        .content-card {
+            border-radius: 16px;
+        }
+
+
+        .content-card-header {
+            align-items: flex-start;
+            flex-direction: column;
+
+            padding: 17px;
+        }
+
+
+        .content-card-body {
+            padding: 17px;
+        }
+
+
+        .owner-box {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+
+        .owner-name {
+            text-align: left;
+        }
+
+
+        .operation-card .btn {
+            width: 100%;
+        }
+
+    }
+
+
+    @media (max-width: 575.98px) {
+
+        .manage-event-page {
+            padding-top: 14px;
+        }
+
+
+        .event-hero {
+            min-height: 270px;
+
+            border-radius: 15px;
+        }
+
+
+        .event-hero-content {
+            padding: 18px;
+        }
+
+
+        .hero-title {
+            font-size: 1.4rem;
+        }
+
+
+        .hero-description {
+            font-size: .72rem;
+        }
+
+
+        .access-box {
+            padding: 13px;
+        }
+
+
+        .content-card-header,
+        .content-card-body {
+            padding: 15px;
+        }
+
+
+        .workflow-actions {
+            display: grid;
+        }
+
+
+        .workflow-actions form,
+        .workflow-actions .btn,
+        .workflow-state > form,
+        .workflow-state > form .btn {
+            width: 100%;
+        }
+
+
+        .info-card {
+            padding: 13px;
+        }
+
+
+        .operation-card {
+            padding: 15px;
+        }
+
+    }
+
+
+    @media (max-width: 374.98px) {
+
+        .event-hero {
+            min-height: 250px;
+        }
+
+
+        .hero-title {
+            font-size: 1.27rem;
+        }
+
+
+        .hero-description {
+            font-size: .68rem;
+        }
+
+    }
+
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .operation-card {
+            transition: none;
+        }
+
+
+        .operation-card:hover {
+            transform: none;
+        }
+
+    }
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="manage-event-page">
+
+    <div class="container">
+
+
+        <!-- =====================================================
+             TOP NAVIGATION
+        ====================================================== -->
+
+        <div class="event-topbar">
+
+            <div>
+
+                <div class="event-breadcrumb">
+                    CampusX / Event Operations
+                </div>
+
+                <h1 class="event-page-title">
+                    Event Management
+                </h1>
+
+            </div>
+
+
+            <div>
+
+                {% if request.user.role == "ORGANIZER" %}
+
+                    <a
+                        href="{% url 'organizer_dashboard' %}"
+                        class="btn btn-outline-secondary dashboard-button"
+                    >
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Dashboard
+                    </a>
+
+                {% elif request.user.role == "TEACHER" %}
+
+                    <a
+                        href="{% url 'teacher_dashboard' %}"
+                        class="btn btn-outline-secondary dashboard-button"
+                    >
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Dashboard
+                    </a>
+
+                {% elif request.user.role == "CORE_COMMITTEE" %}
+
+                    <a
+                        href="{% url 'core_committee_dashboard' %}"
+                        class="btn btn-outline-secondary dashboard-button"
+                    >
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Dashboard
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             HERO
+        ====================================================== -->
+
+        <section class="event-hero">
+
+            {% if event.banner %}
+
+                <img
+                    src="{{ event.banner.url }}"
+                    alt="{{ event.title }}"
+                >
+
+            {% endif %}
+
+
+            <div class="event-hero-overlay"></div>
+
+
+            <div class="event-hero-content">
+
+                {% if event.category %}
+
+                    <div class="hero-category">
+
+                        <i class="bi bi-tag"></i>
+
+                        {{ event.category.name }}
+
+                    </div>
+
+                {% endif %}
+
+
+                <h2 class="hero-title">
+                    {{ event.title }}
+                </h2>
+
+
+                <div class="hero-description">
+                    {{ event.description|linebreaksbr }}
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             ROLE ACCESS
+        ====================================================== -->
+
+        {% if request.user.role == "TEACHER" %}
+
+            <div class="access-box">
+
+                <i class="bi bi-person-badge"></i>
+
+                <div>
+
+                    <div class="access-title">
+                        Faculty Access
+                    </div>
+
+                    <p class="access-text">
+
+                        You can view this event because you are assigned
+                        to its event team. Event management permissions
+                        are limited by your role.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        {% elif request.user.role == "CORE_COMMITTEE" %}
+
+            <div class="access-box">
+
+                <i class="bi bi-people"></i>
+
+                <div>
+
+                    <div class="access-title">
+                        Core Committee Access
+                    </div>
+
+                    <p class="access-text">
+
+                        Your event permissions depend on your assigned
+                        responsibility. QR attendance access is available
+                        only to authorized team roles.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- =====================================================
+             APPROVAL WORKFLOW
+        ====================================================== -->
+
+        {% if request.user.role == "ORGANIZER" %}
+
+            <section class="content-card">
+
+                <div class="content-card-header">
+
+                    <div>
+
+                        <h3 class="card-heading">
+
+                            <i class="bi bi-shield-check me-1"></i>
+
+                            Event Approval
+
+                        </h3>
+
+                        <p class="card-subheading">
+
+                            Administrator approval is required before
+                            publishing the event to students.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="content-card-body">
+
+
+                    <!-- DRAFT -->
+
+                    {% if event.approval_status == "DRAFT" %}
+
+                        <div class="workflow-state">
+
+                            <div class="workflow-state-title">
+
+                                <i class="bi bi-file-earmark me-1"></i>
+
+                                Draft Event
+
+                            </div>
+
+                            <p>
+
+                                Review event information and team assignments
+                                before sending this event for administrator
+                                approval.
+
+                            </p>
+
+                        </div>
+
+
+                        {% if can_submit_for_approval %}
+
+                            <div class="workflow-actions">
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'submit_event_for_approval' event.id %}"
+                                >
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary"
+                                        onclick="return confirm('Submit this event for administrator approval?');"
+                                    >
+                                        <i class="bi bi-send me-1"></i>
+
+                                        Submit for Approval
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        {% endif %}
+
+
+                    <!-- PENDING -->
+
+                    {% elif event.approval_status == "PENDING" %}
+
+                        <div class="workflow-state pending">
+
+                            <div class="workflow-state-title">
+
+                                <i class="bi bi-hourglass-split me-1"></i>
+
+                                Waiting for Administrator Approval
+
+                            </div>
+
+
+                            <p>
+
+                                This event has been submitted and is currently
+                                under administrator review.
+
+                            </p>
+
+
+                            {% if event.submitted_for_approval_at %}
+
+                                <div class="workflow-meta">
+
+                                    Submitted:
+                                    {{ event.submitted_for_approval_at|date:"d M Y, h:i A" }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                    <!-- APPROVED -->
+
+                    {% elif event.approval_status == "APPROVED" %}
+
+                        <div class="workflow-state approved">
+
+                            <div class="workflow-state-title">
+
+                                <i class="bi bi-patch-check me-1"></i>
+
+                                Event Approved
+
+                            </div>
+
+
+                            <p>
+                                Administrator approval has been granted.
+                            </p>
+
+
+                            <div class="workflow-meta">
+
+                                {% if event.reviewed_by %}
+
+                                    Reviewed by:
+                                    {{ event.reviewed_by.username }}
+
+                                {% endif %}
+
+
+                                {% if event.reviewed_at %}
+
+                                    <br>
+
+                                    Reviewed:
+                                    {{ event.reviewed_at|date:"d M Y, h:i A" }}
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        {% if event.status == "PUBLISHED" %}
+
+                            <div class="workflow-state approved mt-3">
+
+                                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+
+                                    <div>
+
+                                        <div class="workflow-state-title">
+
+                                            <i class="bi bi-broadcast me-1"></i>
+
+                                            Event is Live
+
+                                        </div>
+
+                                        <p>
+
+                                            Students can discover and register
+                                            for this event.
+
+                                        </p>
+
+                                    </div>
+
+
+                                    <span class="status-pill status-published">
+
+                                        <i class="bi bi-circle-fill" style="font-size:5px;"></i>
+
+                                        Published
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                        {% elif event.status == "DRAFT" %}
+
+                            <div class="workflow-state mt-3">
+
+                                <div class="workflow-state-title">
+
+                                    <i class="bi bi-rocket-takeoff me-1"></i>
+
+                                    Ready to Publish
+
+                                </div>
+
+
+                                <p>
+
+                                    Approval is complete. Publish the event
+                                    to make it visible to students.
+
+                                </p>
+
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'publish_event' event.id %}"
+                                    class="mt-3"
+                                >
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success"
+                                        onclick="return confirm('Publish this event to students?');"
+                                    >
+                                        <i class="bi bi-broadcast me-1"></i>
+
+                                        Publish Event
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+
+                        {% elif event.status == "CANCELLED" %}
+
+                            <div class="workflow-state rejected mt-3">
+
+                                <div class="workflow-state-title">
+
+                                    <i class="bi bi-x-circle me-1"></i>
+
+                                    Event Cancelled
+
+                                </div>
+
+                                <p>
+                                    This approved event is currently marked
+                                    as cancelled.
+                                </p>
+
+                            </div>
+
+
+                        {% elif event.status == "COMPLETED" %}
+
+                            <div class="workflow-state mt-3">
+
+                                <div class="workflow-state-title">
+
+                                    <i class="bi bi-check-circle me-1"></i>
+
+                                    Event Completed
+
+                                </div>
+
+                                <p>
+                                    This event has already been completed.
+                                </p>
+
+                            </div>
+
+                        {% endif %}
+
+
+                    <!-- REJECTED -->
+
+                    {% elif event.approval_status == "REJECTED" %}
+
+                        <div class="workflow-state rejected">
+
+                            <div class="workflow-state-title">
+
+                                <i class="bi bi-exclamation-triangle me-1"></i>
+
+                                Event Requires Changes
+
+                            </div>
+
+
+                            <p>
+
+                                The event was not approved. Review the
+                                administrator feedback, update the event
+                                and submit it again.
+
+                            </p>
+
+
+                            {% if event.rejection_reason %}
+
+                                <div class="workflow-meta">
+
+                                    <strong>Reason:</strong>
+
+                                    {{ event.rejection_reason }}
+
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if event.reviewed_by %}
+
+                                <div class="workflow-meta">
+
+                                    Reviewed by:
+                                    {{ event.reviewed_by.username }}
+
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if event.reviewed_at %}
+
+                                <div class="workflow-meta">
+
+                                    Reviewed:
+                                    {{ event.reviewed_at|date:"d M Y, h:i A" }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="workflow-actions">
+
+                            {% if can_edit %}
+
+                                <a
+                                    href="{% url 'edit_event' event.id %}"
+                                    class="btn btn-outline-primary"
+                                >
+                                    <i class="bi bi-pencil me-1"></i>
+
+                                    Edit Event
+                                </a>
+
+                            {% endif %}
+
+
+                            {% if can_submit_for_approval %}
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'submit_event_for_approval' event.id %}"
+                                >
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary"
+                                        onclick="return confirm('Resubmit this event for administrator approval?');"
+                                    >
+                                        <i class="bi bi-send me-1"></i>
+
+                                        Resubmit
+                                    </button>
+
+                                </form>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+            </section>
+
+        {% endif %}
+
+
+        <!-- =====================================================
+             EVENT INFORMATION
+        ====================================================== -->
+
+        <section class="content-card">
+
+            <div class="content-card-header">
+
+                <div>
+
+                    <h3 class="card-heading">
+                        Event Information
+                    </h3>
+
+                    <p class="card-subheading">
+                        Schedule, venue, capacity and registration details.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="content-card-body">
+
+                <div class="row g-3">
+
+
+                    <!-- VENUE -->
+
+                    <div class="col-12 col-sm-6 col-lg-4">
+
+                        <div class="info-card">
+
+                            <div class="info-icon">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+
+
+                            <div class="info-content">
+
+                                <div class="info-label">
+                                    Venue
+                                </div>
+
+                                <div class="info-value">
+                                    {{ event.venue }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CAPACITY -->
+
+                    <div class="col-12 col-sm-6 col-lg-4">
+
+                        <div class="info-card">
+
+                            <div class="info-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+
+
+                            <div class="info-content">
+
+                                <div class="info-label">
+                                    Capacity
+                                </div>
+
+                                <div class="info-value">
+
+                                    {{ event.capacity }}
+                                    Participant{{ event.capacity|pluralize }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CATEGORY -->
+
+                    <div class="col-12 col-sm-6 col-lg-4">
+
+                        <div class="info-card">
+
+                            <div class="info-icon">
+                                <i class="bi bi-tag"></i>
+                            </div>
+
+
+                            <div class="info-content">
+
+                                <div class="info-label">
+                                    Category
+                                </div>
+
+                                <div class="info-value">
+
+                                    {% if event.category %}
+                                        {{ event.category.name }}
+                                    {% else %}
+                                        Not specified
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- START -->
+
+                    <div class="col-12 col-sm-6 col-lg-4">
+
+                        <div class="info-card">
+
+                            <div class="info-icon">
+                                <i class="bi bi-calendar-event"></i>
+                            </div>
+
+
+                            <div class="info-content">
+
+                                <div class="info-label">
+                                    Starts
+                                </div>
+
+                                <div class="info-value">
+                                    {{ event.start_datetime|date:"d M Y" }}
+                                </div>
+
+                                <div class="info-subvalue">
+                                    {{ event.start_datetime|date:"h:i A" }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- END -->
+
+                    <div class="col-12 col-sm-6 col-lg-4">
+
+                        <div class="info-card">
+
+                            <div class="info-icon">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+
+
+                            <div class="info-content">
+
+                                <div class="info-label">
+                                    Ends
+                                </div>
+
+                                <div class="info-value">
+                                    {{ event.end_datetime|date:"d M Y" }}
+                                </div>
+
+                                <div class="info-subvalue">
+                                    {{ event.end_datetime|date:"h:i A" }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DEADLINE -->
+
+                    <div class="col-12 col-sm-6 col-lg-4">
+
+                        <div class="info-card">
+
+                            <div class="info-icon">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+
+
+                            <div class="info-content">
+
+                                <div class="info-label">
+                                    Registration Deadline
+                                </div>
+
+                                <div class="info-value">
+                                    {{ event.registration_deadline|date:"d M Y" }}
+                                </div>
+
+                                <div class="info-subvalue">
+                                    {{ event.registration_deadline|date:"h:i A" }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="owner-box">
+
+                    <div class="owner-label">
+                        Organized By
+                    </div>
+
+
+                    <div class="owner-name">
+
+                        {% if event.organizer.organizer_profile %}
+
+                            {{ event.organizer.organizer_profile.name }}
+
+                        {% else %}
+
+                            {{ event.organizer.username }}
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             EVENT OPERATIONS
+        ====================================================== -->
+
+        <section class="content-card">
+
+            <div class="content-card-header">
+
+                <div>
+
+                    <h3 class="card-heading">
+                        Event Operations
+                    </h3>
+
+                    <p class="card-subheading">
+
+                        Participants and attendance operations
+                        for this event.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="content-card-body">
+
+                <div class="row g-3">
+
+
+                    <!-- PARTICIPANTS -->
+
+                    <div class="col-12 col-md-6">
+
+                        <div class="operation-card">
+
+                            <div class="operation-icon green">
+
+                                <i class="bi bi-people"></i>
+
+                            </div>
+
+
+                            <div class="operation-title">
+                                Participants
+                            </div>
+
+
+                            <p class="operation-description">
+
+                                View registered students and monitor
+                                attendance status.
+
+                            </p>
+
+
+                            <a
+                                href="{% url 'event_participants' event.id %}"
+                                class="btn btn-outline-success"
+                            >
+                                <i class="bi bi-people me-1"></i>
+
+                                View Participants
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- QR ATTENDANCE -->
+
+                    {% if can_scan %}
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="operation-card">
+
+                                <div class="operation-icon green">
+
+                                    <i class="bi bi-qr-code-scan"></i>
+
+                                </div>
+
+
+                                <div class="operation-title">
+                                    QR Attendance
+                                </div>
+
+
+                                <p class="operation-description">
+
+                                    Scan student QR codes and securely
+                                    record attendance for this event.
+
+                                </p>
+
+
+                                <a
+                                    href="{% url 'verify_attendance_qr' event.id %}"
+                                    class="btn btn-success"
+                                >
+                                    <i class="bi bi-camera me-1"></i>
+
+                                    Open QR Scanner
+                                </a>
+
+                            </div>
+
+                        </div>
+                    <!-- FEEDBACK & RATINGS -->
+
+                    <div class="col-12 col-md-6">
+
+                        <div class="operation-card">
+
+                            <div class="operation-icon orange">
+
+                                <i class="bi bi-star-fill"></i>
+
+                            </div>
+
+                            <div class="operation-title">
+                                Feedback & Ratings
+                            </div>
+
+                            <p class="operation-description">
+                                View student ratings, feedback comments,
+                                average rating and rating distribution.
+                            </p>
+
+                            <a
+                                href="{% url 'event_feedback_dashboard' event.id %}"
+                                class="btn btn-outline-warning"
+                            >
+                                <i class="bi bi-star me-1"></i>
+                                View Feedback
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             ORGANIZER CONTROLS
+        ====================================================== -->
+
+        {% if can_edit or can_delete %}
+
+            <section class="content-card">
+
+                <div class="content-card-header">
+
+                    <div>
+
+                        <h3 class="card-heading">
+                            Organizer Controls
+                        </h3>
+
+                        <p class="card-subheading">
+
+                            Configure the event and manage its team.
+
+                        </p>
+
+                    </div>
+
+
+                    <span class="badge bg-light text-dark border">
+                        Organizer Only
+                    </span>
+
+                </div>
+
+
+                <div class="content-card-body">
+
+                    <div class="row g-3">
+
+
+                        {% if can_edit %}
+
+
+                            <!-- EDIT -->
+
+                            <div class="col-12 col-md-6 col-lg-4">
+
+                                <div class="operation-card">
+
+                                    <div class="operation-icon">
+
+                                        <i class="bi bi-pencil-square"></i>
+
+                                    </div>
+
+
+                                    <div class="operation-title">
+                                        Edit Event
+                                    </div>
+
+
+                                    <p class="operation-description">
+
+                                        Update event information,
+                                        schedule, venue and settings.
+
+                                    </p>
+
+
+                                    {% if event.approval_status == "PENDING" %}
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-secondary"
+                                            disabled
+                                        >
+                                            <i class="bi bi-lock me-1"></i>
+
+                                            Review in Progress
+                                        </button>
+
+                                    {% else %}
+
+                                        <a
+                                            href="{% url 'edit_event' event.id %}"
+                                            class="btn btn-primary"
+                                        >
+                                            <i class="bi bi-pencil me-1"></i>
+
+                                            Edit Event
+                                        </a>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- TEAM -->
+
+                            <div class="col-12 col-md-6 col-lg-4">
+
+                                <div class="operation-card">
+
+                                    <div class="operation-icon orange">
+
+                                        <i class="bi bi-person-gear"></i>
+
+                                    </div>
+
+
+                                    <div class="operation-title">
+                                        Event Team
+                                    </div>
+
+
+                                    <p class="operation-description">
+
+                                        Assign Teachers and Core Committee
+                                        members to event responsibilities.
+
+                                    </p>
+
+
+                                    <a
+                                        href="{% url 'manage_event_team' event.id %}"
+                                        class="btn btn-outline-primary"
+                                    >
+                                        <i class="bi bi-people me-1"></i>
+
+                                        Manage Team
+                                    </a>
+
+                                </div>
+
+                            </div>
+                <!-- ANNOUNCEMENTS -->
+
+                <div class="col-12 col-md-6 col-lg-4">
+
+                    <div class="operation-card">
+
+                        <div class="operation-icon">
+                            <i class="bi bi-megaphone"></i>
+                        </div>
+
+                        <div class="operation-title">
+                            Announcements
+                        </div>
+
+                        <p class="operation-description">
+                            Publish important updates and notices
+                            for students participating in this event.
+                        </p>
+
+                        <a
+                            href="{% url 'create_event_announcement' event.id %}"
+                            class="btn btn-outline-primary"
+                        >
+                            <i class="bi bi-megaphone me-1"></i>
+                            Create Announcement
+                        </a>
+
+                    </div>
+
+                </div>
+                <!-- EVENT FAQ -->
+
+                <div class="col-12 col-md-6 col-lg-4">
+
+                    <div class="operation-card">
+
+                        <div class="operation-icon">
+                            <i class="bi bi-question-circle"></i>
+                        </div>
+
+                        <div class="operation-title">
+                            Event FAQ
+                        </div>
+
+                        <p class="operation-description">
+                            Add answers to common questions students
+                            may have about this event.
+                        </p>
+
+                        <a
+                            href="{% url 'create_event_faq' event.id %}"
+                            class="btn btn-outline-primary"
+                        >
+                            <i class="bi bi-plus-circle me-1"></i>
+                            Add FAQ
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                        {% endif %}
+
+
+                        <!-- DELETE -->
+
+                        {% if can_delete %}
+
+                            <div class="col-12 col-md-6 col-lg-4">
+
+                                <div class="operation-card">
+
+                                    <div class="operation-icon red">
+
+                                        <i class="bi bi-trash3"></i>
+
+                                    </div>
+
+
+                                    <div class="operation-title text-danger">
+                                        Delete Event
+                                    </div>
+
+
+                                    <p class="operation-description">
+
+                                        Permanently remove this event and
+                                        associated event information.
+
+                                    </p>
+
+
+                                    <a
+                                        href="{% url 'delete_event' event.id %}"
+                                        class="btn btn-outline-danger"
+                                    >
+                                        <i class="bi bi-trash3 me-1"></i>
+
+                                        Delete Event
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        {% endif %}
+
+
+    </div>
+
+</div>
+
+{% endblock %}

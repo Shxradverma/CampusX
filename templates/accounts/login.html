@@ -1,0 +1,473 @@
+{% extends "base.html" %}
+
+{% block title %}Login | CampusX{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .auth-section {
+        min-height: calc(100vh - 150px);
+        display: flex;
+        align-items: center;
+        padding: 45px 0;
+    }
+
+    .auth-wrapper {
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        border-radius: 22px;
+        background: white;
+        box-shadow: 0 20px 55px rgba(15, 23, 42, 0.09);
+    }
+
+    .auth-brand-panel {
+        position: relative;
+        min-height: 590px;
+        height: 100%;
+        padding: 50px;
+        overflow: hidden;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        background:
+            linear-gradient(
+                145deg,
+                #0f172a 0%,
+                #312e81 55%,
+                #4f46e5 100%
+            );
+
+        color: white;
+    }
+
+    .auth-brand-panel::before {
+        content: "";
+        position: absolute;
+        width: 280px;
+        height: 280px;
+        right: -120px;
+        top: -100px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.07);
+    }
+
+    .auth-brand-panel::after {
+        content: "";
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        left: -100px;
+        bottom: -100px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .brand-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .auth-logo {
+        width: 55px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 25px;
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.14);
+        font-size: 1.6rem;
+    }
+
+    .brand-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+
+    .brand-description {
+        max-width: 410px;
+        margin-top: 15px;
+        color: rgba(255, 255, 255, 0.78);
+        line-height: 1.7;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 18px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+    }
+
+    .feature-icon {
+        width: 34px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 9px;
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .auth-form-panel {
+        min-height: 590px;
+        padding: 50px;
+        display: flex;
+        align-items: center;
+    }
+
+    .auth-form-container {
+        width: 100%;
+        max-width: 420px;
+        margin: auto;
+    }
+
+    .auth-heading {
+        color: #0f172a;
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+    .auth-subtitle {
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+    .field-group {
+        margin-bottom: 20px;
+    }
+
+    .field-label {
+        display: block;
+        margin-bottom: 7px;
+        color: #334155;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .field-wrapper {
+        position: relative;
+    }
+
+    .field-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        z-index: 2;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+
+    .field-wrapper input {
+        width: 100%;
+        min-height: 48px;
+        padding: 10px 15px 10px 44px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        outline: none;
+        background: white;
+        transition: all 0.2s ease;
+    }
+
+    .field-wrapper input:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.12);
+    }
+
+    .login-btn {
+        min-height: 48px;
+        font-weight: 700;
+    }
+
+    .security-note {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 18px;
+        color: #94a3b8;
+        font-size: 0.75rem;
+    }
+
+    @media (max-width: 991.98px) {
+
+        .auth-brand-panel {
+            min-height: auto;
+            padding: 35px;
+        }
+
+        .auth-form-panel {
+            min-height: auto;
+            padding: 40px 30px;
+        }
+
+    }
+
+    @media (max-width: 575.98px) {
+
+        .auth-section {
+            padding: 25px 0;
+        }
+
+        .auth-brand-panel {
+            padding: 28px 24px;
+        }
+
+        .brand-title {
+            font-size: 1.7rem;
+        }
+
+        .auth-form-panel {
+            padding: 32px 22px;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<section class="auth-section">
+
+    <div class="container">
+
+        <div class="auth-wrapper">
+
+            <div class="row g-0">
+
+                <!-- BRAND SIDE -->
+
+                <div class="col-lg-6">
+
+                    <div class="auth-brand-panel">
+
+                        <div class="brand-content">
+
+                            <div class="auth-logo">
+                                <i class="bi bi-mortarboard-fill"></i>
+                            </div>
+
+                            <div class="brand-title">
+                                CampusX
+                            </div>
+
+                            <p class="brand-description">
+                                One smart platform for college events,
+                                student registrations, event teams and
+                                secure QR attendance.
+                            </p>
+
+                            <div class="mt-4">
+
+                                <div class="feature-item">
+
+                                    <div class="feature-icon">
+                                        <i class="bi bi-calendar-event"></i>
+                                    </div>
+
+                                    <span>
+                                        Discover and manage campus events
+                                    </span>
+
+                                </div>
+
+                                <div class="feature-item">
+
+                                    <div class="feature-icon">
+                                        <i class="bi bi-qr-code-scan"></i>
+                                    </div>
+
+                                    <span>
+                                        Secure QR-based attendance
+                                    </span>
+
+                                </div>
+
+                                <div class="feature-item">
+
+                                    <div class="feature-icon">
+                                        <i class="bi bi-people"></i>
+                                    </div>
+
+                                    <span>
+                                        Student, faculty and event operations
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LOGIN SIDE -->
+
+                <div class="col-lg-6">
+
+                    <div class="auth-form-panel">
+
+                        <div class="auth-form-container">
+
+                            <div class="mb-4">
+
+                                <div class="small text-campusx fw-bold mb-2">
+                                    WELCOME BACK
+                                </div>
+
+                                <h1 class="auth-heading mb-2">
+                                    Sign in to CampusX
+                                </h1>
+
+                                <p class="auth-subtitle mb-0">
+                                    Enter your account credentials to continue.
+                                </p>
+
+                            </div>
+
+
+                            {% if form.non_field_errors %}
+
+                                <div class="alert alert-danger">
+
+                                    <i class="bi bi-exclamation-circle me-1"></i>
+
+                                    Invalid username or password.
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <form method="POST">
+
+                                {% csrf_token %}
+
+
+                                <!-- USERNAME -->
+
+                                <div class="field-group">
+
+                                    <label
+                                        for="{{ form.username.id_for_label }}"
+                                        class="field-label"
+                                    >
+                                        Username
+                                    </label>
+
+                                    <div class="field-wrapper">
+
+                                        <i class="bi bi-person field-icon"></i>
+
+                                        {{ form.username }}
+
+                                    </div>
+
+                                    {% for error in form.username.errors %}
+
+                                        <div class="text-danger small mt-1">
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+
+                                <!-- PASSWORD -->
+
+                                <div class="field-group">
+
+                                    <label
+                                        for="{{ form.password.id_for_label }}"
+                                        class="field-label"
+                                    >
+                                        Password
+                                    </label>
+
+                                    <div class="field-wrapper">
+
+                                        <i class="bi bi-lock field-icon"></i>
+
+                                        {{ form.password }}
+
+                                    </div>
+
+                                    {% for error in form.password.errors %}
+
+                                        <div class="text-danger small mt-1">
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary login-btn w-100"
+                                >
+
+                                    Sign In
+
+                                    <i class="bi bi-arrow-right ms-1"></i>
+
+                                </button>
+
+                            </form>
+
+
+                            <div class="text-center mt-4">
+
+                                <span class="text-muted small">
+                                    New student?
+                                </span>
+
+                                <a
+                                    href="{% url 'register' %}"
+                                    class="fw-semibold small"
+                                >
+                                    Create an account
+                                </a>
+
+                            </div>
+
+
+                            <div class="security-note">
+
+                                <i class="bi bi-shield-lock"></i>
+
+                                Secure CampusX authentication
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

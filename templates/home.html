@@ -1,0 +1,2450 @@
+{% extends "base.html" %}
+
+{% block title %}CampusX | Smart College Event Management{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    /* ==========================================================
+       HOME PAGE V2
+    ========================================================== */
+
+    .home-page {
+        overflow: hidden;
+    }
+
+
+    /* ==========================================================
+       HERO
+    ========================================================== */
+
+    .home-hero {
+
+        position: relative;
+
+        overflow: hidden;
+
+        padding:
+            clamp(70px, 9vw, 115px)
+            0
+            clamp(70px, 8vw, 100px);
+
+        background:
+            radial-gradient(
+                circle at 82% 15%,
+                rgba(99, 102, 241, .30),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 8% 90%,
+                rgba(139, 92, 246, .18),
+                transparent 27%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a 0%,
+                #172554 52%,
+                #312e81 100%
+            );
+    }
+
+
+    .home-hero::before {
+
+        content: "";
+
+        position: absolute;
+
+        width: 480px;
+        height: 480px;
+
+        right: -220px;
+        top: -250px;
+
+        border-radius: 50%;
+
+        border:
+            1px solid rgba(255, 255, 255, .07);
+    }
+
+
+    .home-hero::after {
+
+        content: "";
+
+        position: absolute;
+
+        width: 360px;
+        height: 360px;
+
+        left: -190px;
+        bottom: -210px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(139, 92, 246, .10);
+    }
+
+
+    .hero-content {
+
+        position: relative;
+
+        z-index: 2;
+    }
+
+
+    .hero-copy {
+
+        max-width: 760px;
+    }
+
+
+    .hero-badge {
+
+        display: inline-flex;
+        align-items: center;
+
+        gap: 8px;
+
+        margin-bottom: 22px;
+
+        padding:
+            8px 14px;
+
+        border:
+            1px solid rgba(165, 180, 252, .24);
+
+        border-radius: 999px;
+
+        background:
+            rgba(99, 102, 241, .12);
+
+        color: #c7d2fe;
+
+        font-size: .74rem;
+        font-weight: 700;
+
+        letter-spacing: .02em;
+
+        backdrop-filter: blur(8px);
+    }
+
+
+    .hero-badge-dot {
+
+        width: 7px;
+        height: 7px;
+
+        flex-shrink: 0;
+
+        border-radius: 50%;
+
+        background: #86efac;
+
+        box-shadow:
+            0 0 0 4px
+            rgba(134, 239, 172, .10);
+    }
+
+
+    .hero-title {
+
+        max-width: 780px;
+
+        margin-bottom: 22px;
+
+        color: white;
+
+        font-size:
+            clamp(2.5rem, 5.6vw, 4.8rem);
+
+        font-weight: 800;
+
+        line-height: 1.03;
+
+        letter-spacing:
+            clamp(-2.8px, -.05em, -1px);
+    }
+
+
+    .hero-title span {
+
+        display: block;
+
+        color: #a5b4fc;
+    }
+
+
+    .hero-description {
+
+        max-width: 650px;
+
+        margin-bottom: 30px;
+
+        color: #cbd5e1;
+
+        font-size:
+            clamp(.94rem, 1.5vw, 1.06rem);
+
+        line-height: 1.8;
+    }
+
+
+    .hero-actions {
+
+        display: flex;
+        align-items: center;
+
+        flex-wrap: wrap;
+
+        gap: 12px;
+
+        margin-bottom: 32px;
+    }
+
+
+    .hero-actions .btn {
+
+        min-height: 48px;
+
+        padding:
+            .7rem 1.15rem;
+    }
+
+
+    .hero-actions .btn-outline-light {
+
+        background:
+            rgba(255, 255, 255, .03);
+
+        border-color:
+            rgba(255, 255, 255, .35);
+    }
+
+
+    .hero-actions .btn-outline-light:hover {
+
+        color: #0f172a;
+
+        background: white;
+
+        border-color: white;
+    }
+
+
+    /* HERO TRUST */
+
+    .hero-trust {
+
+        display: flex;
+        align-items: center;
+
+        flex-wrap: wrap;
+
+        gap:
+            12px 22px;
+    }
+
+
+    .hero-trust-item {
+
+        display: inline-flex;
+        align-items: center;
+
+        gap: 7px;
+
+        color: #94a3b8;
+
+        font-size: .73rem;
+        font-weight: 500;
+    }
+
+
+    .hero-trust-item i {
+
+        color: #a5b4fc;
+
+        font-size: .8rem;
+    }
+
+
+    /* ==========================================================
+       HERO OPERATIONS PANEL
+    ========================================================== */
+
+    .hero-panel {
+
+        position: relative;
+
+        max-width: 500px;
+
+        margin-left: auto;
+
+        padding: 22px;
+
+        border:
+            1px solid rgba(255, 255, 255, .12);
+
+        border-radius: 22px;
+
+        background:
+            rgba(255, 255, 255, .075);
+
+        box-shadow:
+            0 28px 80px
+            rgba(0, 0, 0, .24);
+
+        backdrop-filter: blur(18px);
+
+        -webkit-backdrop-filter: blur(18px);
+    }
+
+
+    .hero-panel::before {
+
+        content: "";
+
+        position: absolute;
+
+        inset: 0;
+
+        pointer-events: none;
+
+        border-radius: inherit;
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(255, 255, 255, .06),
+                transparent 45%
+            );
+    }
+
+
+    .panel-content {
+
+        position: relative;
+
+        z-index: 1;
+    }
+
+
+    .panel-top {
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 12px;
+
+        margin-bottom: 18px;
+    }
+
+
+    .panel-heading {
+
+        min-width: 0;
+    }
+
+
+    .panel-eyebrow {
+
+        margin-bottom: 3px;
+
+        color: #94a3b8;
+
+        font-size: .61rem;
+        font-weight: 700;
+
+        text-transform: uppercase;
+
+        letter-spacing: .09em;
+    }
+
+
+    .panel-title {
+
+        color: white;
+
+        font-size: .9rem;
+        font-weight: 700;
+    }
+
+
+    .live-badge {
+
+        display: inline-flex;
+        align-items: center;
+
+        flex-shrink: 0;
+
+        gap: 5px;
+
+        padding:
+            6px 9px;
+
+        border-radius: 999px;
+
+        background:
+            rgba(34, 197, 94, .13);
+
+        color: #86efac;
+
+        font-size: .63rem;
+        font-weight: 700;
+    }
+
+
+    .live-dot {
+
+        width: 6px;
+        height: 6px;
+
+        border-radius: 50%;
+
+        background: #4ade80;
+    }
+
+
+    .preview-list {
+
+        display: grid;
+
+        gap: 10px;
+    }
+
+
+    .preview-card {
+
+        display: flex;
+        align-items: center;
+
+        gap: 13px;
+
+        min-width: 0;
+
+        padding: 14px;
+
+        border:
+            1px solid rgba(255, 255, 255, .075);
+
+        border-radius: 13px;
+
+        background:
+            rgba(15, 23, 42, .36);
+
+        transition:
+            transform .18s ease,
+            background .18s ease,
+            border-color .18s ease;
+    }
+
+
+    .preview-card:hover {
+
+        transform:
+            translateX(3px);
+
+        background:
+            rgba(15, 23, 42, .48);
+
+        border-color:
+            rgba(165, 180, 252, .18);
+    }
+
+
+    .preview-icon {
+
+        width: 40px;
+        height: 40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 11px;
+
+        background:
+            rgba(99, 102, 241, .18);
+
+        color: #c7d2fe;
+
+        font-size: .95rem;
+    }
+
+
+    .preview-content {
+
+        min-width: 0;
+    }
+
+
+    .preview-name {
+
+        color: white;
+
+        font-size: .76rem;
+        font-weight: 700;
+    }
+
+
+    .preview-text {
+
+        margin-top: 3px;
+
+        color: #94a3b8;
+
+        font-size: .65rem;
+
+        line-height: 1.5;
+    }
+
+
+    .panel-footer {
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 12px;
+
+        margin-top: 16px;
+
+        padding-top: 15px;
+
+        border-top:
+            1px solid rgba(255, 255, 255, .08);
+    }
+
+
+    .panel-footer-text {
+
+        color: #94a3b8;
+
+        font-size: .62rem;
+    }
+
+
+    .panel-footer-status {
+
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        color: #c7d2fe;
+
+        font-size: .62rem;
+        font-weight: 600;
+    }
+
+
+    /* ==========================================================
+       COMMON SECTIONS
+    ========================================================== */
+
+    .home-section {
+
+        position: relative;
+
+        padding:
+            clamp(68px, 8vw, 100px)
+            0;
+    }
+
+
+    .section-heading {
+
+        max-width: 760px;
+
+        margin:
+            0 auto
+            clamp(35px, 5vw, 50px);
+
+        text-align: center;
+    }
+
+
+    .section-eyebrow {
+
+        display: inline-flex;
+        align-items: center;
+
+        gap: 7px;
+
+        margin-bottom: 10px;
+
+        color: var(--cx-primary);
+
+        font-size: .7rem;
+        font-weight: 800;
+
+        text-transform: uppercase;
+
+        letter-spacing: .09em;
+    }
+
+
+    .section-eyebrow::before {
+
+        content: "";
+
+        width: 18px;
+        height: 2px;
+
+        border-radius: 999px;
+
+        background: var(--cx-primary);
+    }
+
+
+    .home-section-title {
+
+        margin-bottom: 12px;
+
+        color: var(--cx-dark);
+
+        font-size:
+            clamp(1.75rem, 3.5vw, 2.7rem);
+
+        font-weight: 800;
+
+        line-height: 1.15;
+
+        letter-spacing: -.04em;
+    }
+
+
+    .home-section-description {
+
+        max-width: 650px;
+
+        margin:
+            0 auto;
+
+        color: var(--cx-muted);
+
+        font-size: .9rem;
+
+        line-height: 1.75;
+    }
+
+
+    /* ==========================================================
+       FEATURES
+    ========================================================== */
+
+    .features-section {
+
+        background:
+            linear-gradient(
+                180deg,
+                rgba(248, 250, 252, .6),
+                rgba(241, 245, 249, .7)
+            );
+    }
+
+
+    .feature-card {
+
+        position: relative;
+
+        height: 100%;
+
+        overflow: hidden;
+
+        padding:
+            clamp(20px, 3vw, 26px);
+
+        border:
+            1px solid var(--cx-border);
+
+        border-radius: 17px;
+
+        background: white;
+
+        box-shadow:
+            0 7px 25px
+            rgba(15, 23, 42, .035);
+
+        transition:
+            transform .2s ease,
+            border-color .2s ease,
+            box-shadow .2s ease;
+    }
+
+
+    .feature-card::after {
+
+        content: "";
+
+        position: absolute;
+
+        width: 100px;
+        height: 100px;
+
+        right: -55px;
+        top: -55px;
+
+        border-radius: 50%;
+
+        background:
+            var(--cx-primary-soft);
+
+        opacity: 0;
+
+        transition:
+            opacity .2s ease;
+    }
+
+
+    .feature-card:hover {
+
+        transform:
+            translateY(-5px);
+
+        border-color: #c7d2fe;
+
+        box-shadow:
+            0 18px 42px
+            rgba(15, 23, 42, .08);
+    }
+
+
+    .feature-card:hover::after {
+        opacity: 1;
+    }
+
+
+    .feature-icon {
+
+        position: relative;
+
+        z-index: 1;
+
+        width: 48px;
+        height: 48px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 18px;
+
+        border-radius: 13px;
+
+        background:
+            var(--cx-primary-soft);
+
+        color: var(--cx-primary);
+
+        font-size: 1.1rem;
+    }
+
+
+    .feature-title {
+
+        position: relative;
+
+        z-index: 1;
+
+        margin-bottom: 8px;
+
+        color: var(--cx-dark);
+
+        font-size: .94rem;
+        font-weight: 750;
+    }
+
+
+    .feature-description {
+
+        position: relative;
+
+        z-index: 1;
+
+        margin: 0;
+
+        color: var(--cx-muted);
+
+        font-size: .78rem;
+
+        line-height: 1.7;
+    }
+
+
+    /* ==========================================================
+       ROLES
+    ========================================================== */
+
+    .roles-section {
+
+        background: white;
+
+        border-top:
+            1px solid var(--cx-border);
+
+        border-bottom:
+            1px solid var(--cx-border);
+    }
+
+
+    .role-card {
+
+        position: relative;
+
+        height: 100%;
+
+        padding:
+            clamp(20px, 3vw, 25px);
+
+        overflow: hidden;
+
+        border:
+            1px solid var(--cx-border);
+
+        border-radius: 17px;
+
+        background:
+            linear-gradient(
+                145deg,
+                #ffffff,
+                #f8fafc
+            );
+
+        transition:
+            transform .2s ease,
+            border-color .2s ease,
+            box-shadow .2s ease;
+    }
+
+
+    .role-card:hover {
+
+        transform:
+            translateY(-4px);
+
+        border-color: #c7d2fe;
+
+        box-shadow:
+            0 15px 35px
+            rgba(15, 23, 42, .06);
+    }
+
+
+    .role-top {
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 10px;
+
+        margin-bottom: 18px;
+    }
+
+
+    .role-icon {
+
+        width: 43px;
+        height: 43px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 12px;
+
+        background:
+            var(--cx-primary-soft);
+
+        color: var(--cx-primary);
+    }
+
+
+    .role-number {
+
+        color: #94a3b8;
+
+        font-size: .61rem;
+        font-weight: 800;
+
+        letter-spacing: .09em;
+    }
+
+
+    .role-title {
+
+        margin-bottom: 8px;
+
+        color: var(--cx-dark);
+
+        font-size: .92rem;
+        font-weight: 750;
+    }
+
+
+    .role-text {
+
+        margin: 0;
+
+        color: var(--cx-muted);
+
+        font-size: .75rem;
+
+        line-height: 1.7;
+    }
+
+
+    /* ==========================================================
+       HOW IT WORKS
+    ========================================================== */
+
+    .workflow {
+
+        position: relative;
+    }
+
+
+    .workflow::before {
+
+        content: "";
+
+        position: absolute;
+
+        left: 12.5%;
+        right: 12.5%;
+        top: 31px;
+
+        height: 2px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #e0e7ff,
+                #c7d2fe,
+                #e0e7ff
+            );
+    }
+
+
+    .step-card {
+
+        position: relative;
+
+        z-index: 1;
+
+        height: 100%;
+
+        padding:
+            0 18px;
+
+        text-align: center;
+    }
+
+
+    .step-icon {
+
+        width: 64px;
+        height: 64px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin:
+            0 auto 17px;
+
+        border:
+            7px solid var(--cx-background);
+
+        border-radius: 50%;
+
+        background:
+            var(--cx-primary);
+
+        color: white;
+
+        font-size: 1.15rem;
+
+        box-shadow:
+            0 6px 18px
+            rgba(79, 70, 229, .16);
+    }
+
+
+    .step-number {
+
+        margin-bottom: 5px;
+
+        color: var(--cx-primary);
+
+        font-size: .62rem;
+        font-weight: 800;
+
+        text-transform: uppercase;
+
+        letter-spacing: .08em;
+    }
+
+
+    .step-title {
+
+        margin-bottom: 7px;
+
+        color: var(--cx-dark);
+
+        font-size: .88rem;
+        font-weight: 750;
+    }
+
+
+    .step-text {
+
+        max-width: 220px;
+
+        margin:
+            0 auto;
+
+        color: var(--cx-muted);
+
+        font-size: .72rem;
+
+        line-height: 1.65;
+    }
+
+
+    /* ==========================================================
+       CTA
+    ========================================================== */
+
+    .home-cta-section {
+
+        padding:
+            0 0
+            clamp(55px, 7vw, 80px);
+    }
+
+
+    .cta-wrapper {
+
+        position: relative;
+
+        overflow: hidden;
+
+        padding:
+            clamp(42px, 7vw, 68px)
+            clamp(20px, 6vw, 60px);
+
+        border-radius: 24px;
+
+        background:
+            radial-gradient(
+                circle at 85% 20%,
+                rgba(167, 139, 250, .35),
+                transparent 28%
+            ),
+            linear-gradient(
+                135deg,
+                #3730a3,
+                #5b21b6
+            );
+
+        text-align: center;
+
+        box-shadow:
+            0 22px 55px
+            rgba(79, 70, 229, .18);
+    }
+
+
+    .cta-wrapper::before {
+
+        content: "";
+
+        position: absolute;
+
+        width: 250px;
+        height: 250px;
+
+        left: -110px;
+        bottom: -150px;
+
+        border:
+            1px solid
+            rgba(255, 255, 255, .10);
+
+        border-radius: 50%;
+    }
+
+
+    .cta-content {
+
+        position: relative;
+
+        z-index: 1;
+
+        max-width: 720px;
+
+        margin:
+            0 auto;
+    }
+
+
+    .cta-eyebrow {
+
+        margin-bottom: 10px;
+
+        color: #c4b5fd;
+
+        font-size: .68rem;
+        font-weight: 800;
+
+        text-transform: uppercase;
+
+        letter-spacing: .09em;
+    }
+
+
+    .cta-title {
+
+        margin-bottom: 12px;
+
+        color: white;
+
+        font-size:
+            clamp(1.65rem, 4vw, 2.45rem);
+
+        font-weight: 800;
+
+        letter-spacing: -.04em;
+    }
+
+
+    .cta-text {
+
+        max-width: 580px;
+
+        margin:
+            0 auto 24px;
+
+        color: #ddd6fe;
+
+        font-size: .84rem;
+
+        line-height: 1.75;
+    }
+
+
+    .cta-actions {
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-wrap: wrap;
+
+        gap: 10px;
+    }
+
+
+    /* ==========================================================
+       TABLET
+    ========================================================== */
+
+    @media (max-width: 991.98px) {
+
+        .home-hero {
+
+            padding:
+                75px 0 80px;
+        }
+
+
+        .hero-copy {
+
+            max-width: 680px;
+
+            margin:
+                0 auto;
+
+            text-align: center;
+        }
+
+
+        .hero-description {
+
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+
+        .hero-actions {
+
+            justify-content: center;
+        }
+
+
+        .hero-trust {
+
+            justify-content: center;
+        }
+
+
+        .hero-panel {
+
+            max-width: 650px;
+
+            margin:
+                45px auto 0;
+        }
+
+
+        .workflow::before {
+            display: none;
+        }
+
+
+        .step-card {
+
+            padding:
+                10px 15px;
+        }
+
+    }
+
+
+    /* ==========================================================
+       MOBILE
+    ========================================================== */
+
+    @media (max-width: 767.98px) {
+
+        .home-hero {
+
+            padding:
+                62px 0 68px;
+        }
+
+
+        .hero-title {
+
+            font-size:
+                clamp(2.15rem, 10vw, 3rem);
+
+            letter-spacing: -.05em;
+        }
+
+
+        .hero-description {
+
+            line-height: 1.7;
+        }
+
+
+        .hero-panel {
+
+            margin-top: 38px;
+
+            padding: 18px;
+
+            border-radius: 18px;
+        }
+
+
+        .home-section {
+
+            padding:
+                65px 0;
+        }
+
+
+        .section-heading {
+
+            margin-bottom: 35px;
+        }
+
+
+        .workflow {
+
+            max-width: 500px;
+
+            margin:
+                0 auto;
+        }
+
+
+        .step-card {
+
+            padding:
+                12px 15px 20px;
+        }
+
+
+        .step-icon {
+
+            margin-bottom: 13px;
+        }
+
+    }
+
+
+    /* ==========================================================
+       SMALL MOBILE
+    ========================================================== */
+
+    @media (max-width: 575.98px) {
+
+        .home-hero {
+
+            padding:
+                52px 0 58px;
+        }
+
+
+        .hero-badge {
+
+            margin-bottom: 17px;
+
+            padding:
+                7px 11px;
+
+            font-size: .67rem;
+        }
+
+
+        .hero-title {
+
+            margin-bottom: 17px;
+
+            font-size:
+                clamp(2rem, 11vw, 2.55rem);
+        }
+
+
+        .hero-description {
+
+            margin-bottom: 24px;
+
+            font-size: .88rem;
+        }
+
+
+        .hero-actions {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr;
+
+            width: 100%;
+
+            gap: 9px;
+
+            margin-bottom: 27px;
+        }
+
+
+        .hero-actions .btn {
+
+            width: 100%;
+        }
+
+
+        .hero-trust {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr;
+
+            gap: 8px;
+
+            text-align: left;
+        }
+
+
+        .hero-trust-item {
+
+            justify-content: center;
+        }
+
+
+        .hero-panel {
+
+            padding: 15px;
+
+            border-radius: 16px;
+        }
+
+
+        .panel-top {
+
+            align-items: flex-start;
+        }
+
+
+        .preview-card {
+
+            padding: 12px;
+
+            gap: 11px;
+        }
+
+
+        .preview-icon {
+
+            width: 37px;
+            height: 37px;
+        }
+
+
+        .preview-name {
+
+            font-size: .73rem;
+        }
+
+
+        .preview-text {
+
+            font-size: .62rem;
+        }
+
+
+        .panel-footer {
+
+            align-items: flex-start;
+
+            flex-direction: column;
+
+            gap: 5px;
+        }
+
+
+        .home-section {
+
+            padding:
+                58px 0;
+        }
+
+
+        .home-section-title {
+
+            font-size: 1.7rem;
+        }
+
+
+        .home-section-description {
+
+            font-size: .82rem;
+        }
+
+
+        .feature-card,
+        .role-card {
+
+            padding: 20px;
+        }
+
+
+        .cta-wrapper {
+
+            padding:
+                40px 18px;
+
+            border-radius: 19px;
+        }
+
+
+        .cta-actions {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr;
+
+            width: 100%;
+        }
+
+
+        .cta-actions .btn {
+
+            width: 100%;
+
+            margin: 0 !important;
+        }
+
+    }
+
+
+    /* ==========================================================
+       VERY SMALL MOBILE
+    ========================================================== */
+
+    @media (max-width: 374.98px) {
+
+        .home-hero {
+
+            padding:
+                45px 0 52px;
+        }
+
+
+        .hero-title {
+
+            font-size: 1.9rem;
+        }
+
+
+        .hero-panel {
+
+            padding: 13px;
+        }
+
+
+        .live-badge {
+
+            padding:
+                5px 7px;
+
+            font-size: .58rem;
+        }
+
+
+        .feature-card,
+        .role-card {
+
+            padding: 18px;
+        }
+
+    }
+
+
+    /* ==========================================================
+       REDUCED MOTION
+    ========================================================== */
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .feature-card,
+        .role-card,
+        .preview-card {
+
+            transition: none;
+        }
+
+
+        .feature-card:hover,
+        .role-card:hover,
+        .preview-card:hover {
+
+            transform: none;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="home-page">
+
+
+<!-- ==========================================================
+     HERO
+========================================================== -->
+
+<section class="home-hero">
+
+    <div class="container hero-content">
+
+        <div class="row align-items-center g-4 g-lg-5">
+
+
+            <!-- HERO COPY -->
+
+            <div class="col-lg-7">
+
+                <div class="hero-copy">
+
+                    <div class="hero-badge">
+
+                        <span class="hero-badge-dot"></span>
+
+                        Smart Campus Event Operations
+
+                    </div>
+
+
+                    <h1 class="hero-title">
+
+                        College Events.
+
+                        <span>
+                            One Smart Platform.
+                        </span>
+
+                    </h1>
+
+
+                    <p class="hero-description">
+
+                        CampusX brings event discovery, registration,
+                        team coordination and secure QR attendance into
+                        one professional college event management platform.
+
+                    </p>
+
+
+                    <div class="hero-actions">
+
+                        {% if user.is_authenticated %}
+
+                            <a
+                                href="{% url 'dashboard_redirect' %}"
+                                class="btn btn-primary"
+                            >
+                                <i class="bi bi-grid me-1"></i>
+                                Open Dashboard
+                            </a>
+
+
+                            {% if user.role == "STUDENT" %}
+
+                                <a
+                                    href="{% url 'student_event_list' %}"
+                                    class="btn btn-outline-light"
+                                >
+                                    <i class="bi bi-calendar-event me-1"></i>
+                                    Explore Events
+                                </a>
+
+                            {% endif %}
+
+
+                        {% else %}
+
+                            <a
+                                href="{% url 'register' %}"
+                                class="btn btn-primary"
+                            >
+                                <i class="bi bi-person-plus me-1"></i>
+                                Get Started
+                            </a>
+
+
+                            <a
+                                href="{% url 'login' %}"
+                                class="btn btn-outline-light"
+                            >
+                                <i class="bi bi-box-arrow-in-right me-1"></i>
+                                Login
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="hero-trust">
+
+                        <div class="hero-trust-item">
+                            <i class="bi bi-shield-check"></i>
+                            Role-based access
+                        </div>
+
+                        <div class="hero-trust-item">
+                            <i class="bi bi-qr-code"></i>
+                            Secure QR attendance
+                        </div>
+
+                        <div class="hero-trust-item">
+                            <i class="bi bi-phone"></i>
+                            Responsive on every device
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- OPERATIONS PANEL -->
+
+            <div class="col-lg-5">
+
+                <div class="hero-panel">
+
+                    <div class="panel-content">
+
+
+                        <div class="panel-top">
+
+                            <div class="panel-heading">
+
+                                <div class="panel-eyebrow">
+                                    Platform Preview
+                                </div>
+
+                                <div class="panel-title">
+                                    CampusX Operations
+                                </div>
+
+                            </div>
+
+
+                            <div class="live-badge">
+
+                                <span class="live-dot"></span>
+
+                                Connected
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="preview-list">
+
+
+                            <div class="preview-card">
+
+                                <div class="preview-icon">
+                                    <i class="bi bi-calendar2-check"></i>
+                                </div>
+
+                                <div class="preview-content">
+
+                                    <div class="preview-name">
+                                        Event Management
+                                    </div>
+
+                                    <div class="preview-text">
+                                        Create, approve and manage campus events.
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="preview-card">
+
+                                <div class="preview-icon">
+                                    <i class="bi bi-person-check"></i>
+                                </div>
+
+                                <div class="preview-content">
+
+                                    <div class="preview-name">
+                                        Student Registration
+                                    </div>
+
+                                    <div class="preview-text">
+                                        Discover and register for approved events.
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="preview-card">
+
+                                <div class="preview-icon">
+                                    <i class="bi bi-qr-code-scan"></i>
+                                </div>
+
+                                <div class="preview-content">
+
+                                    <div class="preview-name">
+                                        Secure QR Attendance
+                                    </div>
+
+                                    <div class="preview-text">
+                                        Event-aware attendance verification.
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="preview-card">
+
+                                <div class="preview-icon">
+                                    <i class="bi bi-people"></i>
+                                </div>
+
+                                <div class="preview-content">
+
+                                    <div class="preview-name">
+                                        Role-Based Operations
+                                    </div>
+
+                                    <div class="preview-text">
+                                        Students, teachers, committees and organizers.
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="panel-footer">
+
+                            <div class="panel-footer-text">
+                                Built for campus event operations
+                            </div>
+
+                            <div class="panel-footer-status">
+                                <i class="bi bi-shield-check"></i>
+                                Permission protected
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================================
+     FEATURES
+========================================================== -->
+
+<section
+    class="home-section features-section"
+    id="features"
+>
+
+    <div class="container">
+
+
+        <div class="section-heading">
+
+            <div class="section-eyebrow">
+                Platform Features
+            </div>
+
+            <h2 class="home-section-title">
+                Everything needed to manage college events
+            </h2>
+
+            <p class="home-section-description">
+
+                CampusX connects the complete event workflow so
+                students and college teams can work from one
+                organized platform.
+
+            </p>
+
+        </div>
+
+
+        <div class="row g-3 g-md-4">
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        <i class="bi bi-calendar2-check"></i>
+                    </div>
+
+                    <div class="feature-title">
+                        Event Management
+                    </div>
+
+                    <p class="feature-description">
+
+                        Organizers can create events, manage details,
+                        track lifecycle status and coordinate event
+                        operations from one place.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+
+                    <div class="feature-title">
+                        Approval Workflow
+                    </div>
+
+                    <p class="feature-description">
+
+                        Events move through draft, review, approval
+                        and publishing before students can discover
+                        and register for them.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+
+                    <div class="feature-title">
+                        Student Registration
+                    </div>
+
+                    <p class="feature-description">
+
+                        Students can explore published events,
+                        register securely and manage their event
+                        participation.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        <i class="bi bi-qr-code-scan"></i>
+                    </div>
+
+                    <div class="feature-title">
+                        QR Attendance
+                    </div>
+
+                    <p class="feature-description">
+
+                        Registered students receive secure
+                        event-specific QR codes that authorized
+                        staff can verify.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
+
+                    <div class="feature-title">
+                        Event Teams
+                    </div>
+
+                    <p class="feature-description">
+
+                        Teachers and core committee members can be
+                        assigned event-specific roles and
+                        responsibilities.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        <i class="bi bi-lock"></i>
+                    </div>
+
+                    <div class="feature-title">
+                        Role-Based Access
+                    </div>
+
+                    <p class="feature-description">
+
+                        CampusX separates student, teacher,
+                        committee, organizer and administrative
+                        permissions.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================================
+     ROLES
+========================================================== -->
+
+<section
+    class="home-section roles-section"
+    id="roles"
+>
+
+    <div class="container">
+
+
+        <div class="section-heading">
+
+            <div class="section-eyebrow">
+                Campus Roles
+            </div>
+
+            <h2 class="home-section-title">
+                Built for the entire event team
+            </h2>
+
+            <p class="home-section-description">
+
+                Every CampusX user receives an experience designed
+                around their responsibilities in the campus event
+                workflow.
+
+            </p>
+
+        </div>
+
+
+        <div class="row g-3 g-md-4">
+
+
+            <!-- STUDENT -->
+
+            <div class="col-sm-6 col-lg-3">
+
+                <div class="role-card">
+
+                    <div class="role-top">
+
+                        <div class="role-icon">
+                            <i class="bi bi-mortarboard"></i>
+                        </div>
+
+                        <div class="role-number">
+                            ROLE 01
+                        </div>
+
+                    </div>
+
+                    <div class="role-title">
+                        Student
+                    </div>
+
+                    <p class="role-text">
+
+                        Explore events, register, manage profile
+                        information and access personal attendance
+                        QR codes.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- TEACHER -->
+
+            <div class="col-sm-6 col-lg-3">
+
+                <div class="role-card">
+
+                    <div class="role-top">
+
+                        <div class="role-icon">
+                            <i class="bi bi-person-workspace"></i>
+                        </div>
+
+                        <div class="role-number">
+                            ROLE 02
+                        </div>
+
+                    </div>
+
+                    <div class="role-title">
+                        Teacher
+                    </div>
+
+                    <p class="role-text">
+
+                        View assigned events, participant
+                        information and faculty coordination
+                        responsibilities.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- COMMITTEE -->
+
+            <div class="col-sm-6 col-lg-3">
+
+                <div class="role-card">
+
+                    <div class="role-top">
+
+                        <div class="role-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+
+                        <div class="role-number">
+                            ROLE 03
+                        </div>
+
+                    </div>
+
+                    <div class="role-title">
+                        Core Committee
+                    </div>
+
+                    <p class="role-text">
+
+                        Handle assigned event operations and
+                        authorized attendance responsibilities
+                        securely.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ORGANIZER -->
+
+            <div class="col-sm-6 col-lg-3">
+
+                <div class="role-card">
+
+                    <div class="role-top">
+
+                        <div class="role-icon">
+                            <i class="bi bi-kanban"></i>
+                        </div>
+
+                        <div class="role-number">
+                            ROLE 04
+                        </div>
+
+                    </div>
+
+                    <div class="role-title">
+                        Organizer
+                    </div>
+
+                    <p class="role-text">
+
+                        Create events, manage teams and
+                        participants, and control the complete
+                        event workflow.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================================
+     HOW IT WORKS
+========================================================== -->
+
+<section
+    class="home-section"
+    id="how-it-works"
+>
+
+    <div class="container">
+
+
+        <div class="section-heading">
+
+            <div class="section-eyebrow">
+                How CampusX Works
+            </div>
+
+            <h2 class="home-section-title">
+                From event creation to attendance
+            </h2>
+
+            <p class="home-section-description">
+
+                A structured workflow keeps event publishing,
+                student registration and attendance organized.
+
+            </p>
+
+        </div>
+
+
+        <div class="row g-3 g-md-4 workflow">
+
+
+            <div class="col-sm-6 col-lg-3">
+
+                <div class="step-card">
+
+                    <div class="step-icon">
+                        <i class="bi bi-pencil-square"></i>
+                    </div>
+
+                    <div class="step-number">
+                        Step 01
+                    </div>
+
+                    <div class="step-title">
+                        Create
+                    </div>
+
+                    <p class="step-text">
+
+                        The organizer creates the event and
+                        prepares the required event information.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-sm-6 col-lg-3">
+
+                <div class="step-card">
+
+                    <div class="step-icon">
+                        <i class="bi bi-patch-check"></i>
+                    </div>
+
+                    <div class="step-number">
+                        Step 02
+                    </div>
+
+                    <div class="step-title">
+                        Approve
+                    </div>
+
+                    <p class="step-text">
+
+                        The event goes through approval before
+                        being published to students.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-sm-6 col-lg-3">
+
+                <div class="step-card">
+
+                    <div class="step-icon">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+
+                    <div class="step-number">
+                        Step 03
+                    </div>
+
+                    <div class="step-title">
+                        Register
+                    </div>
+
+                    <p class="step-text">
+
+                        Students discover the published event
+                        and register to participate.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-sm-6 col-lg-3">
+
+                <div class="step-card">
+
+                    <div class="step-icon">
+                        <i class="bi bi-qr-code-scan"></i>
+                    </div>
+
+                    <div class="step-number">
+                        Step 04
+                    </div>
+
+                    <div class="step-title">
+                        Attend
+                    </div>
+
+                    <p class="step-text">
+
+                        Authorized event staff verify student
+                        attendance through secure QR codes.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================================
+     CTA
+========================================================== -->
+
+<section class="home-cta-section">
+
+    <div class="container">
+
+        <div class="cta-wrapper">
+
+            <div class="cta-content">
+
+                <div class="cta-eyebrow">
+                    CampusX Platform
+                </div>
+
+                <h2 class="cta-title">
+                    Ready to enter CampusX?
+                </h2>
+
+                <p class="cta-text">
+
+                    Join a smarter event management experience
+                    built for modern college campuses.
+
+                </p>
+
+
+                <div class="cta-actions">
+
+                    {% if user.is_authenticated %}
+
+                        <a
+                            href="{% url 'dashboard_redirect' %}"
+                            class="btn btn-light px-4"
+                        >
+                            Open My Dashboard
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+
+
+                        {% if user.role == "STUDENT" %}
+
+                            <a
+                                href="{% url 'student_event_list' %}"
+                                class="btn btn-outline-light px-4"
+                            >
+                                Explore Events
+                            </a>
+
+                        {% endif %}
+
+
+                    {% else %}
+
+                        <a
+                            href="{% url 'register' %}"
+                            class="btn btn-light px-4"
+                        >
+                            <i class="bi bi-person-plus me-1"></i>
+                            Create Student Account
+                        </a>
+
+                        <a
+                            href="{% url 'login' %}"
+                            class="btn btn-outline-light px-4"
+                        >
+                            Login
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</div>
+
+{% endblock %}

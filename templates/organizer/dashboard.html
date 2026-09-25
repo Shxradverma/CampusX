@@ -1,0 +1,2575 @@
+{% extends "base.html" %}
+
+{% block title %}Organizer Dashboard | CampusX{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    /* ==========================================================
+       ORGANIZER DASHBOARD V2
+    ========================================================== */
+
+    .organizer-dashboard {
+        padding: clamp(18px, 4vw, 42px) 0 clamp(45px, 6vw, 70px);
+    }
+
+
+    /* HERO */
+
+    .organizer-hero {
+        position: relative;
+        overflow: hidden;
+
+        margin-bottom: 24px;
+        padding: clamp(25px, 5vw, 42px);
+
+        border-radius: 22px;
+
+        background:
+            radial-gradient(
+                circle at 88% 15%,
+                rgba(255, 255, 255, .14),
+                transparent 27%
+            ),
+            linear-gradient(
+                135deg,
+                #312e81 0%,
+                #4f46e5 52%,
+                #7c3aed 100%
+            );
+
+        color: white;
+
+        box-shadow:
+            0 20px 50px rgba(79, 70, 229, .18);
+    }
+
+
+    .organizer-hero::before {
+        content: "";
+
+        position: absolute;
+
+        width: 260px;
+        height: 260px;
+
+        right: -90px;
+        top: -130px;
+
+        border: 1px solid rgba(255, 255, 255, .10);
+        border-radius: 50%;
+    }
+
+
+    .organizer-hero::after {
+        content: "";
+
+        position: absolute;
+
+        width: 170px;
+        height: 170px;
+
+        right: 130px;
+        bottom: -125px;
+
+        border-radius: 50%;
+
+        background: rgba(255, 255, 255, .06);
+    }
+
+
+    .organizer-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+
+    .organizer-hero-label {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 7px;
+
+        margin-bottom: 14px;
+        padding: 7px 12px;
+
+        border: 1px solid rgba(255, 255, 255, .13);
+        border-radius: 999px;
+
+        background: rgba(255, 255, 255, .12);
+
+        font-size: .72rem;
+        font-weight: 700;
+    }
+
+
+    .organizer-hero-title {
+        margin-bottom: 9px;
+
+        font-size: clamp(1.65rem, 4vw, 2.3rem);
+        font-weight: 800;
+
+        letter-spacing: -.04em;
+        line-height: 1.15;
+    }
+
+
+    .organizer-hero-description {
+        max-width: 650px;
+
+        margin: 0;
+
+        color: rgba(255, 255, 255, .82);
+
+        font-size: .88rem;
+        line-height: 1.7;
+    }
+
+
+    .organizer-hero-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+
+    .organizer-create-btn {
+        min-height: 44px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border: 0;
+
+        background: white;
+        color: #4338ca;
+
+        font-weight: 750;
+    }
+
+
+    .organizer-create-btn:hover {
+        background: #f8fafc;
+        color: #312e81;
+    }
+
+
+    /* ==========================================================
+       STATS
+    ========================================================== */
+
+    .organizer-stats {
+        margin-bottom: 27px;
+    }
+
+
+    .organizer-stat-card {
+        height: 100%;
+
+        padding: 20px;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 16px;
+
+        background: white;
+
+        box-shadow:
+            0 8px 28px rgba(15, 23, 42, .045);
+
+        transition:
+            transform .18s ease,
+            border-color .18s ease,
+            box-shadow .18s ease;
+    }
+
+
+    .organizer-stat-card:hover {
+        transform: translateY(-3px);
+
+        border-color: #c7d2fe;
+
+        box-shadow:
+            0 14px 35px rgba(15, 23, 42, .07);
+    }
+
+
+    .organizer-stat-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        gap: 12px;
+
+        margin-bottom: 15px;
+    }
+
+
+    .organizer-stat-label {
+        color: #64748b;
+
+        font-size: .66rem;
+        font-weight: 750;
+
+        text-transform: uppercase;
+        letter-spacing: .055em;
+    }
+
+
+    .organizer-stat-icon {
+        width: 43px;
+        height: 43px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 12px;
+
+        background: #eef2ff;
+        color: #4f46e5;
+
+        font-size: 1.05rem;
+    }
+
+
+    .organizer-stat-icon.green {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+
+    .organizer-stat-icon.orange {
+        background: #fff7ed;
+        color: #ea580c;
+    }
+
+
+    .organizer-stat-number {
+        margin-bottom: 3px;
+
+        color: #0f172a;
+
+        font-size: clamp(1.3rem, 3vw, 1.65rem);
+        font-weight: 800;
+    }
+
+
+    .organizer-stat-text {
+        color: #64748b;
+
+        font-size: .7rem;
+        line-height: 1.5;
+    }
+
+
+    /* ==========================================================
+       COMMON SECTION
+    ========================================================== */
+
+    .organizer-section {
+        margin-bottom: 27px;
+    }
+
+
+    .organizer-section-header {
+        margin-bottom: 14px;
+    }
+
+
+    .organizer-section-title {
+        margin-bottom: 3px;
+
+        color: var(--cx-dark);
+
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        font-weight: 800;
+
+        letter-spacing: -.025em;
+    }
+
+
+    .organizer-section-description {
+        margin: 0;
+
+        color: var(--cx-muted);
+
+        font-size: .75rem;
+        line-height: 1.55;
+    }
+        <!-- =====================================================
+             ANALYTICS OVERVIEW
+        ====================================================== -->
+
+        <section class="organizer-section">
+
+            <div class="organizer-section-header">
+
+                <h2 class="organizer-section-title">
+                    <i class="bi bi-bar-chart-line me-2"></i>
+                    Analytics Overview
+                </h2>
+
+                <p class="organizer-section-description">
+                    Real-time performance insights across your events.
+                </p>
+
+            </div>
+
+
+            <!-- ANALYTICS SUMMARY CARDS -->
+
+            <div class="row g-3 mb-4">
+
+                <div class="col-6 col-lg-3">
+
+                    <div class="organizer-stat-card h-100">
+
+                        <div class="organizer-stat-top">
+
+                            <div>
+                                <div class="organizer-stat-label">
+                                    Attendance Rate
+                                </div>
+
+                                <div class="organizer-stat-number">
+                                    {{ attendance_rate }}%
+                                </div>
+                            </div>
+
+                            <div class="organizer-stat-icon">
+                                <i class="bi bi-person-check"></i>
+                            </div>
+
+                        </div>
+
+                        <div class="organizer-stat-text">
+                            {{ total_attendance }} of
+                            {{ total_registrations }} registered
+                            students present
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-lg-3">
+
+                    <div class="organizer-stat-card h-100">
+
+                        <div class="organizer-stat-top">
+
+                            <div>
+                                <div class="organizer-stat-label">
+                                    Capacity Used
+                                </div>
+
+                                <div class="organizer-stat-number">
+                                    {{ capacity_utilization }}%
+                                </div>
+                            </div>
+
+                            <div class="organizer-stat-icon">
+                                <i class="bi bi-speedometer2"></i>
+                            </div>
+
+                        </div>
+
+                        <div class="organizer-stat-text">
+                            Overall registration capacity utilization
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-lg-3">
+
+                    <div class="organizer-stat-card h-100">
+
+                        <div class="organizer-stat-top">
+
+                            <div>
+                                <div class="organizer-stat-label">
+                                    Average Rating
+                                </div>
+
+                                <div class="organizer-stat-number">
+                                    {{ average_rating }}/5
+                                </div>
+                            </div>
+
+                            <div class="organizer-stat-icon">
+                                <i class="bi bi-star"></i>
+                            </div>
+
+                        </div>
+
+                        <div class="organizer-stat-text">
+                            Based on {{ total_feedback }}
+                            student feedback{{ total_feedback|pluralize }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-lg-3">
+
+                    <div class="organizer-stat-card h-100">
+
+                        <div class="organizer-stat-top">
+
+                            <div>
+                                <div class="organizer-stat-label">
+                                    Winners
+                                </div>
+
+                                <div class="organizer-stat-number">
+                                    {{ total_winners }}
+                                </div>
+                            </div>
+
+                            <div class="organizer-stat-icon">
+                                <i class="bi bi-trophy"></i>
+                            </div>
+
+                        </div>
+
+                        <div class="organizer-stat-text">
+                            Winners declared across your events
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- EVENT PERFORMANCE -->
+
+            <div class="organizer-event-panel">
+
+                <div class="organizer-event-panel-header">
+
+                    <div>
+                        <h3 class="organizer-section-title">
+                            Event Performance
+                        </h3>
+
+                        <p class="organizer-section-description mb-0">
+                            Event-wise registrations, attendance,
+                            feedback and results.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                {% if event_analytics %}
+
+                    <div class="table-responsive">
+
+                        <table class="table organizer-event-table align-middle">
+
+                            <thead>
+
+                                <tr>
+                                    <th class="ps-4">
+                                        Event
+                                    </th>
+
+                                    <th>
+                                        Registrations
+                                    </th>
+
+                                    <th>
+                                        Attendance
+                                    </th>
+
+                                    <th>
+                                        Capacity
+                                    </th>
+
+                                    <th>
+                                        Rating
+                                    </th>
+
+                                    <th>
+                                        Feedback
+                                    </th>
+
+                                    <th class="pe-4">
+                                        Winners
+                                    </th>
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for analytics in event_analytics %}
+
+                                    <tr>
+
+                                        <td class="ps-4">
+
+                                            <div class="organizer-event-name">
+                                                {{ analytics.event.title }}
+                                            </div>
+
+                                            {% if analytics.event.category %}
+
+                                                <span class="organizer-event-category">
+                                                    {{ analytics.event.category.name }}
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <td>
+                                            <strong>
+                                                {{ analytics.registrations }}
+                                            </strong>
+                                        </td>
+
+
+                                        <td>
+
+                                            <strong>
+                                                {{ analytics.attendance_rate }}%
+                                            </strong>
+
+                                            <div class="organizer-stat-text">
+                                                {{ analytics.attendance }}
+                                                present
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+                                            <strong>
+                                                {{ analytics.capacity_utilization }}%
+                                            </strong>
+                                        </td>
+
+
+                                        <td>
+
+                                            <strong>
+                                                {{ analytics.average_rating }}/5
+                                            </strong>
+
+                                            <div class="organizer-stat-text">
+                                                <i class="bi bi-star-fill"></i>
+                                                Average
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+                                            {{ analytics.feedback_count }}
+                                        </td>
+
+
+                                        <td class="pe-4">
+
+                                            <span class="organizer-status approval-approved">
+                                                <i class="bi bi-trophy"></i>
+                                                {{ analytics.winner_count }}
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="organizer-empty">
+
+                        <div class="organizer-empty-icon">
+                            <i class="bi bi-bar-chart"></i>
+                        </div>
+
+                        <div class="organizer-empty-title">
+                            No Analytics Available
+                        </div>
+
+                        <p class="organizer-empty-text">
+                            Create events to start generating
+                            performance analytics.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+    /* ==========================================================
+       QUICK ACTIONS
+    ========================================================== */
+
+    .organizer-quick-link {
+        display: block;
+
+        height: 100%;
+
+        color: inherit;
+        text-decoration: none;
+    }
+
+
+    .organizer-quick-card {
+        height: 100%;
+
+        padding: 20px;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 16px;
+
+        background: white;
+
+        box-shadow:
+            0 6px 22px rgba(15, 23, 42, .03);
+
+        transition:
+            transform .18s ease,
+            border-color .18s ease,
+            box-shadow .18s ease;
+    }
+
+
+    .organizer-quick-link:hover .organizer-quick-card {
+        transform: translateY(-3px);
+
+        border-color: #c7d2fe;
+
+        box-shadow:
+            0 12px 30px rgba(15, 23, 42, .065);
+    }
+
+
+    .organizer-quick-layout {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 15px;
+    }
+
+
+    .organizer-quick-main {
+        display: flex;
+        align-items: center;
+
+        min-width: 0;
+
+        gap: 13px;
+    }
+
+
+    .organizer-quick-icon {
+        width: 43px;
+        height: 43px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 12px;
+
+        background: #eef2ff;
+        color: #4f46e5;
+
+        font-size: 1.05rem;
+    }
+
+
+    .organizer-quick-title {
+        margin-bottom: 2px;
+
+        color: #0f172a;
+
+        font-size: .83rem;
+        font-weight: 750;
+    }
+
+
+    .organizer-quick-description {
+        color: #64748b;
+
+        font-size: .7rem;
+        line-height: 1.5;
+    }
+
+
+    .organizer-quick-arrow {
+        flex-shrink: 0;
+
+        color: #94a3b8;
+
+        transition:
+            transform .18s ease,
+            color .18s ease;
+    }
+
+
+    .organizer-quick-link:hover .organizer-quick-arrow {
+        transform: translateX(3px);
+        color: #4f46e5;
+    }
+
+
+    /* ==========================================================
+       EVENTS PANEL
+    ========================================================== */
+
+    .organizer-event-panel {
+        overflow: hidden;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 18px;
+
+        background: white;
+
+        box-shadow:
+            0 9px 32px rgba(15, 23, 42, .045);
+    }
+
+
+    .organizer-event-panel-header {
+        padding: 21px 23px;
+
+        border-bottom: 1px solid var(--cx-border);
+    }
+
+
+    .organizer-event-header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 15px;
+    }
+
+
+    /* ==========================================================
+       DESKTOP EVENT TABLE
+    ========================================================== */
+
+    .organizer-event-table {
+        margin-bottom: 0;
+    }
+
+
+    .organizer-event-table thead th {
+        padding-top: 13px;
+        padding-bottom: 13px;
+
+        border-bottom: 1px solid var(--cx-border);
+
+        background: #f8fafc;
+        color: #64748b;
+
+        font-size: .62rem;
+        font-weight: 750;
+
+        text-transform: uppercase;
+        letter-spacing: .04em;
+
+        white-space: nowrap;
+    }
+
+
+    .organizer-event-table tbody td {
+        padding-top: 16px;
+        padding-bottom: 16px;
+
+        border-color: #f1f5f9;
+
+        vertical-align: middle;
+    }
+
+
+    .organizer-event-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+
+    .organizer-event-name {
+        max-width: 220px;
+
+        color: #0f172a;
+
+        font-size: .8rem;
+        font-weight: 750;
+
+        line-height: 1.4;
+    }
+
+
+    .organizer-event-category {
+        display: inline-flex;
+
+        margin-top: 5px;
+        padding: 4px 8px;
+
+        border-radius: 7px;
+
+        background: #eef2ff;
+        color: #4f46e5;
+
+        font-size: .6rem;
+        font-weight: 700;
+    }
+
+
+    .organizer-meta {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 6px;
+
+        color: #64748b;
+
+        font-size: .7rem;
+        line-height: 1.45;
+    }
+
+
+    .organizer-meta i {
+        flex-shrink: 0;
+
+        margin-top: 1px;
+
+        color: #94a3b8;
+    }
+
+
+    /* ==========================================================
+       STATUS BADGES
+    ========================================================== */
+
+    .organizer-status {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        padding: 5px 8px;
+
+        border-radius: 999px;
+
+        font-size: .61rem;
+        font-weight: 750;
+
+        white-space: nowrap;
+    }
+
+
+    .event-published {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+
+    .event-draft {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+
+    .event-cancelled {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+
+    .event-completed {
+        background: #e0f2fe;
+        color: #0369a1;
+    }
+
+
+    .approval-approved {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+
+    .approval-pending {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+
+    .approval-rejected {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+
+    .approval-draft {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+
+    /* ==========================================================
+       EVENT ACTIONS
+    ========================================================== */
+
+    .organizer-event-actions {
+        display: flex;
+        justify-content: flex-end;
+
+        gap: 6px;
+    }
+
+
+    .organizer-action-btn {
+        width: 33px;
+        height: 33px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0;
+
+        border-radius: 8px;
+    }
+
+
+    /* ==========================================================
+       MOBILE EVENT CARDS
+    ========================================================== */
+
+    .organizer-mobile-events {
+        display: none;
+
+        padding: 14px;
+    }
+
+
+    .organizer-mobile-event {
+        padding: 17px;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 15px;
+
+        background: white;
+    }
+
+
+    .organizer-mobile-event + .organizer-mobile-event {
+        margin-top: 12px;
+    }
+
+
+    .organizer-mobile-event-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        gap: 10px;
+
+        margin-bottom: 14px;
+    }
+
+
+    .organizer-mobile-event-title {
+        margin-bottom: 5px;
+
+        color: #0f172a;
+
+        font-size: .9rem;
+        font-weight: 800;
+
+        line-height: 1.4;
+    }
+
+
+    .organizer-mobile-statuses {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 6px;
+
+        margin-bottom: 14px;
+    }
+
+
+    .organizer-mobile-meta {
+        display: grid;
+
+        gap: 8px;
+
+        margin-bottom: 15px;
+        padding: 12px 0;
+
+        border-top: 1px solid #f1f5f9;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+
+    .organizer-mobile-primary {
+        width: 100%;
+
+        margin-bottom: 8px;
+    }
+
+
+    .organizer-mobile-actions {
+        display: grid;
+
+        grid-template-columns: repeat(4, 1fr);
+
+        gap: 7px;
+    }
+
+
+    .organizer-mobile-actions .btn {
+        min-width: 0;
+
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+
+    /* ==========================================================
+       EMPTY STATE
+    ========================================================== */
+
+    .organizer-empty {
+        padding: clamp(45px, 8vw, 70px) 20px;
+
+        text-align: center;
+    }
+
+
+    .organizer-empty-icon {
+        width: 67px;
+        height: 67px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 16px;
+
+        border-radius: 50%;
+
+        background: #eef2ff;
+        color: #4f46e5;
+
+        font-size: 1.55rem;
+    }
+
+
+    .organizer-empty-title {
+        margin-bottom: 7px;
+
+        color: #0f172a;
+
+        font-size: .98rem;
+        font-weight: 800;
+    }
+
+
+    .organizer-empty-text {
+        max-width: 390px;
+
+        margin: 0 auto 20px;
+
+        color: #64748b;
+
+        font-size: .78rem;
+        line-height: 1.65;
+    }
+
+
+    /* ==========================================================
+       ORGANIZER INFO
+    ========================================================== */
+
+    .organizer-info-panel {
+        padding: 23px;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 18px;
+
+        background: white;
+
+        box-shadow:
+            0 8px 28px rgba(15, 23, 42, .04);
+    }
+
+
+    .organizer-info-card {
+        height: 100%;
+
+        padding: 17px;
+
+        border: 1px solid #eef2f7;
+        border-radius: 13px;
+
+        background: #f8fafc;
+    }
+
+
+    .organizer-info-label {
+        margin-bottom: 5px;
+
+        color: #64748b;
+
+        font-size: .62rem;
+        font-weight: 750;
+
+        text-transform: uppercase;
+        letter-spacing: .05em;
+    }
+
+
+    .organizer-info-value {
+        overflow-wrap: anywhere;
+
+        color: #0f172a;
+
+        font-size: .82rem;
+        font-weight: 750;
+    }
+
+
+    /* ==========================================================
+       TABLET
+    ========================================================== */
+
+    @media (max-width: 991.98px) {
+
+        .organizer-hero-actions {
+            justify-content: flex-start;
+        }
+
+
+        .organizer-desktop-events {
+            display: none;
+        }
+
+
+        .organizer-mobile-events {
+            display: block;
+        }
+
+    }
+
+
+    /* ==========================================================
+       MOBILE
+    ========================================================== */
+
+    @media (max-width: 767.98px) {
+
+        .organizer-dashboard {
+            padding-top: 18px;
+        }
+
+
+        .organizer-hero {
+            padding: 24px 20px;
+
+            margin-bottom: 18px;
+
+            border-radius: 18px;
+        }
+
+
+        .organizer-hero-actions {
+            width: 100%;
+        }
+
+
+        .organizer-create-btn {
+            width: 100%;
+        }
+
+
+        .organizer-stats {
+            margin-bottom: 23px;
+        }
+
+
+        .organizer-stat-card {
+            padding: 17px;
+        }
+
+
+        .organizer-section {
+            margin-bottom: 23px;
+        }
+
+
+        .organizer-event-panel-header {
+            padding: 18px;
+        }
+
+
+        .organizer-event-header-inner {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+
+        .organizer-event-header-inner .btn {
+            width: 100%;
+        }
+
+
+        .organizer-info-panel {
+            padding: 18px;
+        }
+
+    }
+
+
+    /* ==========================================================
+       SMALL MOBILE
+    ========================================================== */
+
+    @media (max-width: 575.98px) {
+
+        .organizer-dashboard {
+            padding-top: 14px;
+        }
+
+
+        .organizer-hero {
+            padding: 21px 17px;
+
+            border-radius: 16px;
+        }
+
+
+        .organizer-hero-title {
+            font-size: 1.55rem;
+        }
+
+
+        .organizer-hero-description {
+            font-size: .8rem;
+        }
+
+
+        .organizer-stat-card {
+            padding: 15px;
+
+            border-radius: 14px;
+        }
+
+
+        .organizer-stat-icon {
+            width: 39px;
+            height: 39px;
+        }
+
+
+        .organizer-quick-card {
+            padding: 16px;
+        }
+
+
+        .organizer-event-panel {
+            border-radius: 16px;
+        }
+
+
+        .organizer-event-panel-header {
+            padding: 16px;
+        }
+
+
+        .organizer-mobile-events {
+            padding: 11px;
+        }
+
+
+        .organizer-mobile-event {
+            padding: 15px;
+        }
+
+
+        .organizer-info-panel {
+            padding: 16px;
+
+            border-radius: 16px;
+        }
+
+    }
+
+
+    @media (max-width: 374.98px) {
+
+        .organizer-mobile-actions {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+
+        .organizer-hero-title {
+            font-size: 1.42rem;
+        }
+
+    }
+
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .organizer-stat-card,
+        .organizer-quick-card,
+        .organizer-quick-arrow {
+            transition: none;
+        }
+
+
+        .organizer-stat-card:hover,
+        .organizer-quick-link:hover .organizer-quick-card {
+            transform: none;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="organizer-dashboard">
+
+    <div class="container">
+
+
+        <!-- =====================================================
+             HERO
+        ====================================================== -->
+
+        <section class="organizer-hero">
+
+            <div class="organizer-hero-content">
+
+                <div class="row align-items-center g-4">
+
+                    <div class="col-lg-8">
+
+                        <div class="organizer-hero-label">
+
+                            <i class="bi bi-kanban-fill"></i>
+
+                            Organizer Workspace
+
+                        </div>
+
+
+                        <h1 class="organizer-hero-title">
+
+                            Welcome,
+                            {{ user.organizer_profile.name|default:user.username }}
+
+                        </h1>
+
+
+                        <p class="organizer-hero-description">
+
+                            Create, submit, publish and manage
+                            college events from your CampusX
+                            operations dashboard.
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="col-lg-4">
+
+                        <div class="organizer-hero-actions">
+
+                            <a
+                                href="{% url 'create_event' %}"
+                                class="btn organizer-create-btn px-4"
+                            >
+                                <i class="bi bi-plus-circle me-2"></i>
+
+                                Create Event
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             STATISTICS
+        ====================================================== -->
+
+        <section class="organizer-stats">
+
+            <div class="row g-3">
+
+
+                <div class="col-12 col-sm-4">
+
+                    <div class="organizer-stat-card">
+
+                        <div class="organizer-stat-top">
+
+                            <div class="organizer-stat-label">
+                                Total Events
+                            </div>
+
+                            <div class="organizer-stat-icon">
+                                <i class="bi bi-calendar-event"></i>
+                            </div>
+
+                        </div>
+
+
+                        <div class="organizer-stat-number">
+                            {{ total_events }}
+                        </div>
+
+                        <div class="organizer-stat-text">
+                            Events created by you
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-12 col-sm-4">
+
+                    <div class="organizer-stat-card">
+
+                        <div class="organizer-stat-top">
+
+                            <div class="organizer-stat-label">
+                                Registrations
+                            </div>
+
+                            <div class="organizer-stat-icon green">
+                                <i class="bi bi-people"></i>
+                            </div>
+
+                        </div>
+
+
+                        <div class="organizer-stat-number">
+                            {{ total_registrations }}
+                        </div>
+
+                        <div class="organizer-stat-text">
+                            Active student registrations
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-12 col-sm-4">
+
+                    <div class="organizer-stat-card">
+
+                        <div class="organizer-stat-top">
+
+                            <div class="organizer-stat-label">
+                                Attendance
+                            </div>
+
+                            <div class="organizer-stat-icon orange">
+                                <i class="bi bi-person-check"></i>
+                            </div>
+
+                        </div>
+
+
+                        <div class="organizer-stat-number">
+                            {{ total_attendance }}
+                        </div>
+
+                        <div class="organizer-stat-text">
+                            Students marked present
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+<!-- =====================================================
+     ANALYTICS OVERVIEW
+====================================================== -->
+
+<section class="organizer-section">
+
+    <div class="organizer-section-header">
+        <h2 class="organizer-section-title">
+            <i class="bi bi-bar-chart-line me-2"></i>
+            Analytics Overview
+        </h2>
+
+        <p class="organizer-section-description">
+            Real-time performance insights across your events.
+        </p>
+    </div>
+
+
+    <!-- SUMMARY CARDS -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-6 col-lg-3">
+            <div class="organizer-stat-card h-100">
+
+                <div class="organizer-stat-top">
+                    <div>
+                        <div class="organizer-stat-label">
+                            Attendance Rate
+                        </div>
+
+                        <div class="organizer-stat-number">
+                            {{ attendance_rate }}%
+                        </div>
+                    </div>
+
+                    <div class="organizer-stat-icon">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+                </div>
+
+                <div class="organizer-stat-text">
+                    {{ total_attendance }} of
+                    {{ total_registrations }} students present
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="col-6 col-lg-3">
+            <div class="organizer-stat-card h-100">
+
+                <div class="organizer-stat-top">
+                    <div>
+                        <div class="organizer-stat-label">
+                            Capacity Used
+                        </div>
+
+                        <div class="organizer-stat-number">
+                            {{ capacity_utilization }}%
+                        </div>
+                    </div>
+
+                    <div class="organizer-stat-icon">
+                        <i class="bi bi-speedometer2"></i>
+                    </div>
+                </div>
+
+                <div class="organizer-stat-text">
+                    Overall event capacity utilization
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="col-6 col-lg-3">
+            <div class="organizer-stat-card h-100">
+
+                <div class="organizer-stat-top">
+                    <div>
+                        <div class="organizer-stat-label">
+                            Average Rating
+                        </div>
+
+                        <div class="organizer-stat-number">
+                            {{ average_rating }}/5
+                        </div>
+                    </div>
+
+                    <div class="organizer-stat-icon">
+                        <i class="bi bi-star"></i>
+                    </div>
+                </div>
+
+                <div class="organizer-stat-text">
+                    {{ total_feedback }}
+                    feedback{{ total_feedback|pluralize }}
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="col-6 col-lg-3">
+            <div class="organizer-stat-card h-100">
+
+                <div class="organizer-stat-top">
+                    <div>
+                        <div class="organizer-stat-label">
+                            Winners
+                        </div>
+
+                        <div class="organizer-stat-number">
+                            {{ total_winners }}
+                        </div>
+                    </div>
+
+                    <div class="organizer-stat-icon">
+                        <i class="bi bi-trophy"></i>
+                    </div>
+                </div>
+
+                <div class="organizer-stat-text">
+                    Declared across your events
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- EVENT PERFORMANCE -->
+
+    <div class="organizer-event-panel">
+
+        <div class="organizer-event-panel-header">
+
+            <h3 class="organizer-section-title">
+                Event Performance
+            </h3>
+
+            <p class="organizer-section-description">
+                Event-wise performance analytics.
+            </p>
+
+        </div>
+
+
+        {% if event_analytics %}
+
+        <div class="table-responsive">
+
+            <table class="table organizer-event-table align-middle">
+
+                <thead>
+                    <tr>
+                        <th class="ps-4">Event</th>
+                        <th>Registrations</th>
+                        <th>Attendance</th>
+                        <th>Capacity</th>
+                        <th>Rating</th>
+                        <th>Feedback</th>
+                        <th class="pe-4">Winners</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for analytics in event_analytics %}
+
+                    <tr>
+
+                        <td class="ps-4">
+                            <div class="organizer-event-name">
+                                {{ analytics.event.title }}
+                            </div>
+
+                            {% if analytics.event.category %}
+                            <span class="organizer-event-category">
+                                {{ analytics.event.category.name }}
+                            </span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {{ analytics.registrations }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                {{ analytics.attendance_rate }}%
+                            </strong>
+
+                            <div class="organizer-stat-text">
+                                {{ analytics.attendance }} present
+                            </div>
+                        </td>
+
+                        <td>
+                            {{ analytics.capacity_utilization }}%
+                        </td>
+
+                        <td>
+                            <i class="bi bi-star-fill"></i>
+                            {{ analytics.average_rating }}/5
+                        </td>
+
+                        <td>
+                            {{ analytics.feedback_count }}
+                        </td>
+
+                        <td class="pe-4">
+                            <i class="bi bi-trophy"></i>
+                            {{ analytics.winner_count }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="organizer-empty">
+
+            <div class="organizer-empty-icon">
+                <i class="bi bi-bar-chart"></i>
+            </div>
+
+            <div class="organizer-empty-title">
+                No Analytics Available
+            </div>
+
+            <p class="organizer-empty-text">
+                Create events to start generating analytics.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+
+        <!-- =====================================================
+             QUICK ACTIONS
+        ====================================================== -->
+
+        <section class="organizer-section">
+
+            <div class="organizer-section-header">
+
+                <h2 class="organizer-section-title">
+                    Quick Actions
+                </h2>
+
+                <p class="organizer-section-description">
+                    Common event management operations.
+                </p>
+
+            </div>
+
+
+            <div class="row g-3">
+
+
+                <div class="col-md-6">
+
+                    <a
+                        href="{% url 'create_event' %}"
+                        class="organizer-quick-link"
+                    >
+
+                        <div class="organizer-quick-card">
+
+                            <div class="organizer-quick-layout">
+
+                                <div class="organizer-quick-main">
+
+                                    <div class="organizer-quick-icon">
+                                        <i class="bi bi-plus-lg"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <div class="organizer-quick-title">
+                                            Create New Event
+                                        </div>
+
+                                        <div class="organizer-quick-description">
+                                            Create a new campus event.
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <i class="bi bi-arrow-right organizer-quick-arrow"></i>
+
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="organizer-quick-card">
+
+                        <div class="organizer-quick-layout">
+
+                            <div class="organizer-quick-main">
+
+                                <div class="organizer-quick-icon">
+                                    <i class="bi bi-qr-code-scan"></i>
+                                </div>
+
+                                <div>
+
+                                    <div class="organizer-quick-title">
+                                        QR Attendance
+                                    </div>
+
+                                    <div class="organizer-quick-description">
+                                        Open an event below to access its secure scanner.
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <i class="bi bi-shield-check organizer-quick-arrow"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             MY EVENTS
+        ====================================================== -->
+
+        <section class="organizer-section">
+
+            <div class="organizer-event-panel">
+
+
+                <div class="organizer-event-panel-header">
+
+                    <div class="organizer-event-header-inner">
+
+                        <div>
+
+                            <h2 class="organizer-section-title">
+                                My Events
+                            </h2>
+
+                            <p class="organizer-section-description">
+                                Manage events created by your organizer account.
+                            </p>
+
+                        </div>
+
+
+                        <a
+                            href="{% url 'create_event' %}"
+                            class="btn btn-primary btn-sm px-3"
+                        >
+                            <i class="bi bi-plus-circle me-1"></i>
+
+                            New Event
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                {% if events %}
+
+
+                    <!-- DESKTOP TABLE -->
+
+                    <div class="table-responsive organizer-desktop-events">
+
+                        <table class="table organizer-event-table align-middle">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th class="ps-4">
+                                        Event
+                                    </th>
+
+                                    <th>
+                                        Schedule
+                                    </th>
+
+                                    <th>
+                                        Venue
+                                    </th>
+
+                                    <th>
+                                        Capacity
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Approval
+                                    </th>
+
+                                    <th class="text-end pe-4">
+                                        Actions
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for event in events %}
+
+                                    <tr>
+
+
+                                        <td class="ps-4">
+
+                                            <div class="organizer-event-name">
+                                                {{ event.title }}
+                                            </div>
+
+
+                                            {% if event.category %}
+
+                                                <span class="organizer-event-category">
+                                                    {{ event.category.name }}
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <div class="organizer-meta">
+
+                                                <i class="bi bi-calendar3"></i>
+
+                                                <span>
+                                                    {{ event.start_datetime|date:"d M Y" }}
+                                                </span>
+
+                                            </div>
+
+
+                                            <div class="organizer-meta mt-1">
+
+                                                <i class="bi bi-clock"></i>
+
+                                                <span>
+                                                    {{ event.start_datetime|date:"h:i A" }}
+                                                </span>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <div class="organizer-meta">
+
+                                                <i class="bi bi-geo-alt"></i>
+
+                                                <span>
+                                                    {{ event.venue }}
+                                                </span>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <div class="organizer-meta">
+
+                                                <i class="bi bi-people"></i>
+
+                                                <span>
+                                                    {{ event.capacity }}
+                                                </span>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {% if event.status == "PUBLISHED" %}
+
+                                                <span class="organizer-status event-published">
+                                                    <i class="bi bi-broadcast"></i>
+                                                    Published
+                                                </span>
+
+                                            {% elif event.status == "DRAFT" %}
+
+                                                <span class="organizer-status event-draft">
+                                                    <i class="bi bi-pencil"></i>
+                                                    Draft
+                                                </span>
+
+                                            {% elif event.status == "CANCELLED" %}
+
+                                                <span class="organizer-status event-cancelled">
+                                                    <i class="bi bi-x-circle"></i>
+                                                    Cancelled
+                                                </span>
+
+                                            {% elif event.status == "COMPLETED" %}
+
+                                                <span class="organizer-status event-completed">
+                                                    <i class="bi bi-check2-circle"></i>
+                                                    Completed
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="organizer-status event-draft">
+                                                    {{ event.get_status_display }}
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {% if event.approval_status == "APPROVED" %}
+
+                                                <span class="organizer-status approval-approved">
+                                                    <i class="bi bi-check-circle"></i>
+                                                    Approved
+                                                </span>
+
+                                            {% elif event.approval_status == "PENDING" %}
+
+                                                <span class="organizer-status approval-pending">
+                                                    <i class="bi bi-hourglass-split"></i>
+                                                    Pending
+                                                </span>
+
+                                            {% elif event.approval_status == "REJECTED" %}
+
+                                                <span class="organizer-status approval-rejected">
+                                                    <i class="bi bi-x-circle"></i>
+                                                    Rejected
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="organizer-status approval-draft">
+                                                    <i class="bi bi-file-earmark"></i>
+                                                    Draft
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <td class="pe-4">
+
+                                            <div class="organizer-event-actions">
+
+
+                                                <a
+                                                    href="{% url 'event_detail' event.id %}"
+                                                    class="btn btn-primary btn-sm organizer-action-btn"
+                                                    title="Manage Event"
+                                                >
+                                                    <i class="bi bi-gear"></i>
+                                                </a>
+
+
+                                                <a
+                                                    href="{% url 'event_participants' event.id %}"
+                                                    class="btn btn-outline-success btn-sm organizer-action-btn"
+                                                    title="Participants"
+                                                >
+                                                    <i class="bi bi-people"></i>
+                                                </a>
+
+
+                                                <a
+                                                    href="{% url 'manage_event_team' event.id %}"
+                                                    class="btn btn-outline-primary btn-sm organizer-action-btn"
+                                                    title="Event Team"
+                                                >
+                                                    <i class="bi bi-person-workspace"></i>
+                                                </a>
+
+
+                                                {% if event.approval_status != "PENDING" %}
+
+                                                    <a
+                                                        href="{% url 'edit_event' event.id %}"
+                                                        class="btn btn-outline-secondary btn-sm organizer-action-btn"
+                                                        title="Edit Event"
+                                                    >
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+
+                                                {% endif %}
+
+
+                                                <a
+                                                    href="{% url 'delete_event' event.id %}"
+                                                    class="btn btn-outline-danger btn-sm organizer-action-btn"
+                                                    title="Delete Event"
+                                                >
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- MOBILE / TABLET EVENT CARDS -->
+
+                    <div class="organizer-mobile-events">
+
+                        {% for event in events %}
+
+                            <article class="organizer-mobile-event">
+
+
+                                <div class="organizer-mobile-event-top">
+
+                                    <div>
+
+                                        <div class="organizer-mobile-event-title">
+                                            {{ event.title }}
+                                        </div>
+
+
+                                        {% if event.category %}
+
+                                            <span class="organizer-event-category">
+                                                {{ event.category.name }}
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="organizer-mobile-statuses">
+
+
+                                    {% if event.status == "PUBLISHED" %}
+
+                                        <span class="organizer-status event-published">
+                                            <i class="bi bi-broadcast"></i>
+                                            Published
+                                        </span>
+
+                                    {% elif event.status == "DRAFT" %}
+
+                                        <span class="organizer-status event-draft">
+                                            <i class="bi bi-pencil"></i>
+                                            Draft
+                                        </span>
+
+                                    {% elif event.status == "CANCELLED" %}
+
+                                        <span class="organizer-status event-cancelled">
+                                            <i class="bi bi-x-circle"></i>
+                                            Cancelled
+                                        </span>
+
+                                    {% elif event.status == "COMPLETED" %}
+
+                                        <span class="organizer-status event-completed">
+                                            <i class="bi bi-check2-circle"></i>
+                                            Completed
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="organizer-status event-draft">
+                                            {{ event.get_status_display }}
+                                        </span>
+
+                                    {% endif %}
+
+
+                                    {% if event.approval_status == "APPROVED" %}
+
+                                        <span class="organizer-status approval-approved">
+                                            <i class="bi bi-check-circle"></i>
+                                            Approved
+                                        </span>
+
+                                    {% elif event.approval_status == "PENDING" %}
+
+                                        <span class="organizer-status approval-pending">
+                                            <i class="bi bi-hourglass-split"></i>
+                                            Pending
+                                        </span>
+
+                                    {% elif event.approval_status == "REJECTED" %}
+
+                                        <span class="organizer-status approval-rejected">
+                                            <i class="bi bi-x-circle"></i>
+                                            Rejected
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="organizer-status approval-draft">
+                                            <i class="bi bi-file-earmark"></i>
+                                            Draft
+                                        </span>
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+                                <div class="organizer-mobile-meta">
+
+                                    <div class="organizer-meta">
+
+                                        <i class="bi bi-calendar3"></i>
+
+                                        <span>
+                                            {{ event.start_datetime|date:"d M Y" }}
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="organizer-meta">
+
+                                        <i class="bi bi-clock"></i>
+
+                                        <span>
+                                            {{ event.start_datetime|date:"h:i A" }}
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="organizer-meta">
+
+                                        <i class="bi bi-geo-alt"></i>
+
+                                        <span>
+                                            {{ event.venue }}
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="organizer-meta">
+
+                                        <i class="bi bi-people"></i>
+
+                                        <span>
+                                            Capacity: {{ event.capacity }}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <a
+                                    href="{% url 'event_detail' event.id %}"
+                                    class="btn btn-primary btn-sm organizer-mobile-primary"
+                                >
+                                    <i class="bi bi-gear me-1"></i>
+
+                                    Manage Event
+                                </a>
+
+
+                                <div class="organizer-mobile-actions">
+
+
+                                    <a
+                                        href="{% url 'event_participants' event.id %}"
+                                        class="btn btn-outline-success btn-sm"
+                                        title="Participants"
+                                    >
+                                        <i class="bi bi-people"></i>
+                                    </a>
+
+
+                                    <a
+                                        href="{% url 'manage_event_team' event.id %}"
+                                        class="btn btn-outline-primary btn-sm"
+                                        title="Event Team"
+                                    >
+                                        <i class="bi bi-person-workspace"></i>
+                                    </a>
+
+
+                                    {% if event.approval_status != "PENDING" %}
+
+                                        <a
+                                            href="{% url 'edit_event' event.id %}"
+                                            class="btn btn-outline-secondary btn-sm"
+                                            title="Edit Event"
+                                        >
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+                                    {% else %}
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-outline-secondary btn-sm"
+                                            disabled
+                                            title="Editing disabled while approval is pending"
+                                        >
+                                            <i class="bi bi-lock"></i>
+                                        </button>
+
+                                    {% endif %}
+
+
+                                    <a
+                                        href="{% url 'delete_event' event.id %}"
+                                        class="btn btn-outline-danger btn-sm"
+                                        title="Delete Event"
+                                    >
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+
+
+                                </div>
+
+
+                            </article>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                {% else %}
+
+
+                    <div class="organizer-empty">
+
+                        <div class="organizer-empty-icon">
+                            <i class="bi bi-calendar-plus"></i>
+                        </div>
+
+
+                        <div class="organizer-empty-title">
+                            No Events Created Yet
+                        </div>
+
+
+                        <p class="organizer-empty-text">
+
+                            Create your first CampusX event and
+                            start managing registrations, teams
+                            and attendance.
+
+                        </p>
+
+
+                        <a
+                            href="{% url 'create_event' %}"
+                            class="btn btn-primary px-4"
+                        >
+                            <i class="bi bi-plus-circle me-1"></i>
+
+                            Create First Event
+                        </a>
+
+                    </div>
+
+
+                {% endif %}
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             ORGANIZER INFORMATION
+        ====================================================== -->
+
+        <section>
+
+            <div class="organizer-info-panel">
+
+
+                <div class="organizer-section-header">
+
+                    <h2 class="organizer-section-title">
+                        Organizer Information
+                    </h2>
+
+                    <p class="organizer-section-description">
+                        Your CampusX organizer account details.
+                    </p>
+
+                </div>
+
+
+                <div class="row g-3">
+
+
+                    <div class="col-md-4">
+
+                        <div class="organizer-info-card">
+
+                            <div class="organizer-info-label">
+                                Organizer Name
+                            </div>
+
+                            <div class="organizer-info-value">
+                                {{ user.organizer_profile.name|default:"Not Added" }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="organizer-info-card">
+
+                            <div class="organizer-info-label">
+                                Department
+                            </div>
+
+                            <div class="organizer-info-value">
+                                {{ user.organizer_profile.department|default:"Not Added" }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="organizer-info-card">
+
+                            <div class="organizer-info-label">
+                                Account Role
+                            </div>
+
+                            <div class="organizer-info-value">
+                                {{ user.get_role_display }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

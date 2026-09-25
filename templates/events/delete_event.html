@@ -1,0 +1,632 @@
+{% extends "base.html" %}
+
+{% block title %}Delete {{ event.title }} | CampusX{% endblock %}
+
+
+{% block extra_css %}
+<style>
+
+    .delete-page {
+        min-height: calc(100vh - 180px);
+
+        display: flex;
+        align-items: center;
+
+        padding: clamp(25px, 5vw, 50px) 0 clamp(45px, 7vw, 70px);
+    }
+
+
+    .delete-card {
+        width: 100%;
+        max-width: 650px;
+
+        margin: auto;
+
+        overflow: hidden;
+
+        border: 1px solid #fecaca;
+        border-radius: 20px;
+
+        background: white;
+
+        box-shadow:
+            0 18px 55px rgba(15, 23, 42, .075);
+    }
+
+
+    /* =========================================================
+       WARNING HEADER
+    ========================================================= */
+
+    .danger-header {
+        padding: clamp(27px, 5vw, 36px) clamp(18px, 5vw, 30px) 27px;
+
+        text-align: center;
+
+        background:
+            linear-gradient(
+                180deg,
+                #fff7f7 0%,
+                #ffffff 100%
+            );
+    }
+
+
+    .danger-icon {
+        width: 66px;
+        height: 66px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 16px;
+
+        border: 1px solid #fecaca;
+        border-radius: 50%;
+
+        background: #fef2f2;
+        color: #dc2626;
+
+        font-size: 1.6rem;
+    }
+
+
+    .danger-title {
+        margin: 0 0 7px;
+
+        color: #991b1b;
+
+        font-size: clamp(1.4rem, 4vw, 1.7rem);
+        font-weight: 800;
+
+        letter-spacing: -.035em;
+    }
+
+
+    .danger-subtitle {
+        max-width: 470px;
+
+        margin: auto;
+
+        color: #64748b;
+
+        font-size: .76rem;
+        line-height: 1.65;
+    }
+
+
+    /* =========================================================
+       BODY
+    ========================================================= */
+
+    .delete-body {
+        padding: 0 clamp(18px, 5vw, 30px) clamp(24px, 5vw, 32px);
+    }
+
+
+    /* =========================================================
+       EVENT PREVIEW
+    ========================================================= */
+
+    .event-preview {
+        overflow: hidden;
+
+        margin-bottom: 18px;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 13px;
+
+        background: #f8fafc;
+    }
+
+
+    .event-preview-header {
+        padding: 13px 15px;
+
+        border-bottom: 1px solid #e2e8f0;
+
+        background: white;
+    }
+
+
+    .preview-label {
+        margin-bottom: 3px;
+
+        color: #94a3b8;
+
+        font-size: .58rem;
+        font-weight: 750;
+
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+
+
+    .event-name {
+        margin: 0;
+
+        color: #0f172a;
+
+        font-size: .9rem;
+        font-weight: 800;
+
+        line-height: 1.45;
+
+        overflow-wrap: anywhere;
+    }
+
+
+    .event-preview-body {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        gap: 5px 18px;
+
+        padding: 13px 15px;
+    }
+
+
+    .event-info {
+        display: flex;
+        align-items: flex-start;
+
+        min-width: 0;
+
+        gap: 9px;
+
+        padding: 8px 0;
+    }
+
+
+    .event-info-icon {
+        width: 32px;
+        height: 32px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 8px;
+
+        background: white;
+        color: #64748b;
+
+        font-size: .75rem;
+
+        box-shadow:
+            0 2px 7px rgba(15, 23, 42, .04);
+    }
+
+
+    .event-info-content {
+        min-width: 0;
+    }
+
+
+    .event-info-label {
+        margin-bottom: 2px;
+
+        color: #94a3b8;
+
+        font-size: .53rem;
+        font-weight: 800;
+
+        letter-spacing: .035em;
+        text-transform: uppercase;
+    }
+
+
+    .event-info-value {
+        color: #334155;
+
+        font-size: .68rem;
+        font-weight: 650;
+
+        line-height: 1.45;
+
+        overflow-wrap: anywhere;
+    }
+
+
+    /* =========================================================
+       WARNING
+    ========================================================= */
+
+    .warning-box {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 10px;
+
+        padding: 14px;
+        margin-bottom: 21px;
+
+        border: 1px solid #fecaca;
+        border-radius: 11px;
+
+        background: #fef2f2;
+        color: #991b1b;
+    }
+
+
+    .warning-box > i {
+        flex-shrink: 0;
+
+        margin-top: 2px;
+
+        font-size: .9rem;
+    }
+
+
+    .warning-title {
+        margin-bottom: 3px;
+
+        font-size: .72rem;
+        font-weight: 800;
+    }
+
+
+    .warning-text {
+        margin: 0;
+
+        font-size: .64rem;
+        line-height: 1.6;
+    }
+
+
+    /* =========================================================
+       ACTIONS
+    ========================================================= */
+
+    .delete-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 9px;
+    }
+
+
+    .delete-actions .btn {
+        min-width: 145px;
+        min-height: 43px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: .7rem;
+        font-weight: 750;
+    }
+
+
+    .delete-button {
+        box-shadow:
+            0 7px 18px rgba(220, 38, 38, .14);
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 575.98px) {
+
+        .delete-page {
+            min-height: auto;
+
+            align-items: flex-start;
+
+            padding-top: 22px;
+        }
+
+
+        .delete-card {
+            border-radius: 16px;
+        }
+
+
+        .danger-icon {
+            width: 60px;
+            height: 60px;
+
+            font-size: 1.45rem;
+        }
+
+
+        .event-preview-body {
+            grid-template-columns: 1fr;
+
+            gap: 2px;
+        }
+
+
+        .delete-actions {
+            flex-direction: column-reverse;
+        }
+
+
+        .delete-actions .btn {
+            width: 100%;
+
+            min-width: 0;
+        }
+
+    }
+
+
+    @media (max-width: 374.98px) {
+
+        .danger-header {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+
+        .delete-body {
+            padding-left: 14px;
+            padding-right: 14px;
+        }
+
+
+        .event-preview-header,
+        .event-preview-body {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+    }
+
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .delete-button {
+            box-shadow: none;
+        }
+
+    }
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<section class="delete-page">
+
+    <div class="container">
+
+        <div class="delete-card">
+
+
+            <!-- =================================================
+                 WARNING HEADER
+            ================================================== -->
+
+            <div class="danger-header">
+
+                <div class="danger-icon">
+                    <i class="bi bi-trash3"></i>
+                </div>
+
+
+                <h1 class="danger-title">
+                    Delete Event?
+                </h1>
+
+
+                <p class="danger-subtitle">
+
+                    You are about to permanently delete this event
+                    from CampusX. Review the event information
+                    carefully before continuing.
+
+                </p>
+
+            </div>
+
+
+            <div class="delete-body">
+
+
+                <!-- =================================================
+                     EVENT PREVIEW
+                ================================================== -->
+
+                <div class="event-preview">
+
+                    <div class="event-preview-header">
+
+                        <div class="preview-label">
+                            Event to be deleted
+                        </div>
+
+
+                        <h2 class="event-name">
+                            {{ event.title }}
+                        </h2>
+
+                    </div>
+
+
+                    <div class="event-preview-body">
+
+
+                        <!-- VENUE -->
+
+                        <div class="event-info">
+
+                            <div class="event-info-icon">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+
+
+                            <div class="event-info-content">
+
+                                <div class="event-info-label">
+                                    Venue
+                                </div>
+
+                                <div class="event-info-value">
+                                    {{ event.venue }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DATE -->
+
+                        <div class="event-info">
+
+                            <div class="event-info-icon">
+                                <i class="bi bi-calendar3"></i>
+                            </div>
+
+
+                            <div class="event-info-content">
+
+                                <div class="event-info-label">
+                                    Event Starts
+                                </div>
+
+                                <div class="event-info-value">
+                                    {{ event.start_datetime|date:"d M Y, h:i A" }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- STATUS -->
+
+                        <div class="event-info">
+
+                            <div class="event-info-icon">
+                                <i class="bi bi-activity"></i>
+                            </div>
+
+
+                            <div class="event-info-content">
+
+                                <div class="event-info-label">
+                                    Current Status
+                                </div>
+
+                                <div class="event-info-value">
+                                    {{ event.get_status_display }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- APPROVAL -->
+
+                        <div class="event-info">
+
+                            <div class="event-info-icon">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+
+
+                            <div class="event-info-content">
+
+                                <div class="event-info-label">
+                                    Approval Status
+                                </div>
+
+                                <div class="event-info-value">
+                                    {{ event.get_approval_status_display }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     PERMANENT WARNING
+                ================================================== -->
+
+                <div class="warning-box">
+
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+
+
+                    <div>
+
+                        <div class="warning-title">
+                            This action cannot be undone
+                        </div>
+
+
+                        <p class="warning-text">
+
+                            Deleting this event may also remove
+                            information associated with the event.
+                            Only continue if you are certain that
+                            this event should be permanently deleted.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     ACTIONS
+                ================================================== -->
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+
+                    <div class="delete-actions">
+
+                        <a
+                            href="{% url 'event_detail' event.id %}"
+                            class="btn btn-outline-secondary"
+                        >
+                            <i class="bi bi-arrow-left me-1"></i>
+
+                            Keep Event
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            class="btn btn-danger delete-button"
+                        >
+                            <i class="bi bi-trash3 me-1"></i>
+
+                            Delete Event
+                        </button>
+
+                    </div>
+
+                </form>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

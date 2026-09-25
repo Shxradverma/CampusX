@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add Event FAQ | CampusX
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8 col-xl-7">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="mb-4">
+
+                        <span class="badge bg-primary-subtle text-primary mb-2">
+                            Event FAQ
+                        </span>
+
+                        <h2 class="fw-bold mb-2">
+                            Add Frequently Asked Question
+                        </h2>
+
+                        <p class="text-muted mb-0">
+                            Add a common question for
+                            <strong>{{ event.title }}</strong>.
+                        </p>
+
+                    </div>
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+
+                        <div class="mb-3">
+
+                            <label
+                                for="{{ form.question.id_for_label }}"
+                                class="form-label fw-semibold"
+                            >
+                                Question
+                            </label>
+
+                            {{ form.question }}
+
+                            {% for error in form.question.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label
+                                for="{{ form.answer.id_for_label }}"
+                                class="form-label fw-semibold"
+                            >
+                                Answer
+                            </label>
+
+                            {{ form.answer }}
+
+                            {% for error in form.answer.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div class="mb-4">
+
+                            <label
+                                for="{{ form.order.id_for_label }}"
+                                class="form-label fw-semibold"
+                            >
+                                Display Order
+                            </label>
+
+                            {{ form.order }}
+
+                            <div class="form-text">
+                                Use 0 for the first FAQ, 1 for the second,
+                                2 for the third, and so on.
+                            </div>
+
+                            {% for error in form.order.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div class="d-flex flex-column flex-sm-row gap-2">
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                <i class="bi bi-question-circle me-1"></i>
+                                Add FAQ
+                            </button>
+
+                            <a
+                                href="{% url 'event_detail' event.id %}"
+                                class="btn btn-outline-secondary"
+                            >
+                                Cancel
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

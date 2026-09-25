@@ -1,0 +1,1043 @@
+{% extends "base.html" %}
+
+{% block title %}Attendance Scanner | CampusX{% endblock %}
+
+
+{% block extra_css %}
+<style>
+
+    .scanner-page {
+        padding: 32px 0 60px;
+    }
+
+    .scanner-wrapper {
+        max-width: 920px;
+        margin: auto;
+    }
+
+    .page-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 7px;
+        color: #4f46e5;
+        font-size: .72rem;
+        font-weight: 800;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+    }
+
+    .page-title {
+        margin-bottom: 5px;
+        color: #0f172a;
+        font-size: 1.9rem;
+        font-weight: 800;
+        letter-spacing: -.5px;
+    }
+
+    .page-subtitle {
+        margin: 0;
+        color: #64748b;
+        font-size: .84rem;
+        line-height: 1.6;
+    }
+
+    .event-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 10px;
+        padding: 6px 10px;
+        border-radius: 30px;
+        background: #eef2ff;
+        color: #4338ca;
+        font-size: .68rem;
+        font-weight: 800;
+    }
+
+    .content-card {
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        background: white;
+        box-shadow: 0 12px 38px rgba(15, 23, 42, .05);
+    }
+
+    .content-card-header {
+        padding: 20px 23px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #f8fafc;
+    }
+
+    .section-title {
+        margin-bottom: 3px;
+        color: #0f172a;
+        font-size: .95rem;
+        font-weight: 800;
+    }
+
+    .section-description {
+        margin: 0;
+        color: #94a3b8;
+        font-size: .72rem;
+    }
+
+    .content-card-body {
+        padding: 23px;
+    }
+
+    .scanner-status {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 18px;
+        padding: 13px 15px;
+        border: 1px solid #bfdbfe;
+        border-radius: 11px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        font-size: .74rem;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+
+    .scanner-status i {
+        margin-top: 2px;
+        flex-shrink: 0;
+    }
+
+    .scanner-status.status-success {
+        border-color: #bbf7d0;
+        background: #f0fdf4;
+        color: #15803d;
+    }
+
+    .scanner-status.status-danger {
+        border-color: #fecaca;
+        background: #fef2f2;
+        color: #b91c1c;
+    }
+
+    .scanner-status.status-primary {
+        border-color: #c7d2fe;
+        background: #eef2ff;
+        color: #4338ca;
+    }
+
+    .scanner-status.status-secondary {
+        border-color: #e2e8f0;
+        background: #f8fafc;
+        color: #64748b;
+    }
+
+    .scanner-frame {
+        position: relative;
+        overflow: hidden;
+        min-height: 320px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px dashed #cbd5e1;
+        border-radius: 15px;
+        background:
+            linear-gradient(
+                135deg,
+                #f8fafc,
+                #f1f5f9
+            );
+    }
+
+    #reader {
+        width: 100%;
+        min-height: 320px;
+        background: white;
+    }
+
+    #reader video {
+        border-radius: 12px;
+    }
+
+    .scanner-placeholder {
+        position: absolute;
+        z-index: 0;
+        text-align: center;
+        pointer-events: none;
+    }
+
+    .scanner-placeholder-icon {
+        width: 62px;
+        height: 62px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 12px;
+        border-radius: 16px;
+        background: #eef2ff;
+        color: #4f46e5;
+        font-size: 1.5rem;
+    }
+
+    .scanner-placeholder-title {
+        margin-bottom: 4px;
+        color: #334155;
+        font-size: .82rem;
+        font-weight: 800;
+    }
+
+    .scanner-placeholder-text {
+        margin: 0;
+        color: #94a3b8;
+        font-size: .68rem;
+    }
+
+    .scanner-actions {
+        display: flex;
+        gap: 9px;
+        margin-top: 16px;
+    }
+
+    .verification-card {
+        margin-top: 22px;
+    }
+
+    .token-label {
+        color: #334155;
+        font-size: .74rem;
+        font-weight: 800;
+    }
+
+    #token {
+        min-height: 105px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        font-family: monospace;
+        font-size: .72rem;
+        resize: vertical;
+    }
+
+    #token:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 .2rem rgba(99, 102, 241, .12);
+    }
+
+    .token-help {
+        margin-top: 6px;
+        color: #94a3b8;
+        font-size: .67rem;
+        line-height: 1.5;
+    }
+
+    .verify-button {
+        min-height: 44px;
+        font-weight: 700;
+    }
+
+    .security-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-top: 17px;
+        padding: 13px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        background: #f8fafc;
+    }
+
+    .security-note > i {
+        margin-top: 1px;
+        color: #64748b;
+    }
+
+    .security-note p {
+        margin: 0;
+        color: #64748b;
+        font-size: .68rem;
+        line-height: 1.55;
+    }
+
+    .success-card {
+        margin-top: 22px;
+        overflow: hidden;
+        border: 1px solid #bbf7d0;
+        border-radius: 17px;
+        background: white;
+        box-shadow: 0 10px 30px rgba(22, 163, 74, .06);
+    }
+
+    .success-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 20px;
+        border-bottom: 1px solid #dcfce7;
+        background: #f0fdf4;
+    }
+
+    .success-icon {
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: #16a34a;
+        color: white;
+        font-size: 1rem;
+    }
+
+    .success-title {
+        margin-bottom: 2px;
+        color: #166534;
+        font-size: .9rem;
+        font-weight: 800;
+    }
+
+    .success-subtitle {
+        margin: 0;
+        color: #4ade80;
+        font-size: .68rem;
+    }
+
+    .success-body {
+        padding: 20px;
+    }
+
+    .result-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .result-item {
+        padding: 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        background: #f8fafc;
+    }
+
+    .result-label {
+        margin-bottom: 4px;
+        color: #94a3b8;
+        font-size: .62rem;
+        font-weight: 800;
+        letter-spacing: .03em;
+        text-transform: uppercase;
+    }
+
+    .result-value {
+        color: #334155;
+        font-size: .75rem;
+        font-weight: 700;
+    }
+
+    .page-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 18px;
+    }
+
+    @media (max-width: 767.98px) {
+
+        .scanner-page {
+            padding-top: 24px;
+        }
+
+        .page-title {
+            font-size: 1.55rem;
+        }
+
+        .scanner-frame,
+        #reader {
+            min-height: 280px;
+        }
+
+        .content-card-body {
+            padding: 18px;
+        }
+
+        .scanner-actions {
+            flex-direction: column;
+        }
+
+        .scanner-actions .btn {
+            width: 100%;
+        }
+
+        .result-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .page-actions .btn {
+            width: 100%;
+        }
+
+    }
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container scanner-page">
+
+    <div class="scanner-wrapper">
+
+        <!-- PAGE HEADER -->
+
+        <div class="d-md-flex
+                    justify-content-between
+                    align-items-end
+                    gap-3
+                    mb-4">
+
+            <div>
+
+                <div class="page-eyebrow">
+                    <i class="bi bi-qr-code-scan"></i>
+                    Event Operations
+                </div>
+
+                <h1 class="page-title">
+                    Attendance Scanner
+                </h1>
+
+                <p class="page-subtitle">
+                    Scan a student's CampusX QR code to securely
+                    verify their registration and mark attendance.
+                </p>
+
+                {% if event %}
+
+                    <div class="event-chip">
+                        <i class="bi bi-calendar-event"></i>
+                        {{ event.title }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            {% if event %}
+
+                <div class="page-actions">
+
+                    <a
+                        href="{% url 'event_participants' event.id %}"
+                        class="btn btn-outline-secondary"
+                    >
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Participants
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- CAMERA SCANNER -->
+
+        <section class="content-card">
+
+            <div class="content-card-header">
+
+                <h2 class="section-title">
+                    Live Camera Scanner
+                </h2>
+
+                <p class="section-description">
+                    Start the camera and place the student's QR code
+                    inside the scanning area.
+                </p>
+
+            </div>
+
+
+            <div class="content-card-body">
+
+                <div
+                    id="scanner-message"
+                    class="scanner-status"
+                >
+                    <i class="bi bi-info-circle-fill"></i>
+
+                    <span>
+                        Click Start Camera to scan a QR code.
+                    </span>
+                </div>
+
+
+                <div class="scanner-frame">
+
+                    <div
+                        id="scanner-placeholder"
+                        class="scanner-placeholder"
+                    >
+
+                        <div class="scanner-placeholder-icon">
+                            <i class="bi bi-camera"></i>
+                        </div>
+
+                        <div class="scanner-placeholder-title">
+                            Camera Ready
+                        </div>
+
+                        <p class="scanner-placeholder-text">
+                            Start the camera to begin scanning.
+                        </p>
+
+                    </div>
+
+
+                    <div id="reader"></div>
+
+                </div>
+
+
+                <div class="scanner-actions">
+
+                    <button
+                        type="button"
+                        id="start-camera"
+                        class="btn btn-primary"
+                    >
+                        <i class="bi bi-camera-video me-1"></i>
+                        Start Camera
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="stop-camera"
+                        class="btn btn-outline-danger"
+                        disabled
+                    >
+                        <i class="bi bi-stop-circle me-1"></i>
+                        Stop Camera
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- VERIFICATION -->
+
+        <section class="content-card verification-card">
+
+            <div class="content-card-header">
+
+                <h2 class="section-title">
+                    Verify Attendance
+                </h2>
+
+                <p class="section-description">
+                    The scanned secure token will appear below.
+                </p>
+
+            </div>
+
+
+            <div class="content-card-body">
+
+                <form
+                    method="POST"
+                    id="attendance-form"
+                >
+
+                    {% csrf_token %}
+
+
+                    <div class="mb-3">
+
+                        <label
+                            for="token"
+                            class="form-label token-label"
+                        >
+                            QR Token
+                        </label>
+
+                        <textarea
+                            name="token"
+                            id="token"
+                            class="form-control"
+                            rows="4"
+                            placeholder="Scanned QR token will appear here..."
+                            required
+                        ></textarea>
+
+                        <div class="token-help">
+                            Scan the student's QR code above.
+                            Manual token entry remains available
+                            when required.
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-success verify-button w-100"
+                    >
+                        <i class="bi bi-shield-check me-1"></i>
+                        Verify &amp; Mark Attendance
+                    </button>
+
+                </form>
+
+
+                <div class="security-note">
+
+                    <i class="bi bi-shield-lock"></i>
+
+                    <p>
+                        CampusX validates the QR token against this
+                        event, the student's active registration,
+                        attendance permissions and the allowed
+                        event check-in window.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SUCCESS RESULT -->
+
+        {% if registration %}
+
+            <section class="success-card">
+
+                <div class="success-header">
+
+                    <div class="success-icon">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="success-title">
+                            Attendance Verified
+                        </div>
+
+                        <p class="success-subtitle">
+                            Student attendance has been processed successfully.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="success-body">
+
+                    <div class="result-grid">
+
+                        <div class="result-item">
+
+                            <div class="result-label">
+                                Student
+                            </div>
+
+                            <div class="result-value">
+
+                                {% if registration.student.student_profile.full_name %}
+                                    {{ registration.student.student_profile.full_name }}
+                                {% else %}
+                                    {{ registration.student.username }}
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="result-item">
+
+                            <div class="result-label">
+                                Username
+                            </div>
+
+                            <div class="result-value">
+                                @{{ registration.student.username }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="result-item">
+
+                            <div class="result-label">
+                                Event
+                            </div>
+
+                            <div class="result-value">
+                                {{ registration.event.title }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="result-item">
+
+                            <div class="result-label">
+                                Attendance Status
+                            </div>
+
+                            <div class="result-value text-success">
+                                <i class="bi bi-check-circle-fill me-1"></i>
+                                {{ attendance.get_status_display }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="result-item">
+
+                            <div class="result-label">
+                                Check-in Time
+                            </div>
+
+                            <div class="result-value">
+                                {{ attendance.checked_in_at|date:"d M Y, h:i A" }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="result-item">
+
+                            <div class="result-label">
+                                Verification
+                            </div>
+
+                            <div class="result-value text-success">
+                                CampusX Verified
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<!-- QR SCANNER LIBRARY -->
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+
+<script>
+
+    const startButton =
+        document.getElementById("start-camera");
+
+    const stopButton =
+        document.getElementById("stop-camera");
+
+    const tokenInput =
+        document.getElementById("token");
+
+    const scannerMessage =
+        document.getElementById("scanner-message");
+
+    const scannerPlaceholder =
+        document.getElementById("scanner-placeholder");
+
+
+    let html5QrCode = null;
+    let scannerRunning = false;
+
+
+    function showMessage(message, type) {
+
+        const icons = {
+            info: "bi-info-circle-fill",
+            success: "bi-check-circle-fill",
+            danger: "bi-exclamation-triangle-fill",
+            primary: "bi-camera-video-fill",
+            secondary: "bi-stop-circle-fill"
+        };
+
+        scannerMessage.className =
+            "scanner-status status-" + type;
+
+        scannerMessage.innerHTML = "";
+
+        const icon =
+            document.createElement("i");
+
+        icon.className =
+            "bi " +
+            (icons[type] || "bi-info-circle-fill");
+
+
+        const text =
+            document.createElement("span");
+
+        text.textContent = message;
+
+
+        scannerMessage.appendChild(icon);
+        scannerMessage.appendChild(text);
+    }
+
+
+    async function stopScanner() {
+
+        if (
+            html5QrCode &&
+            scannerRunning
+        ) {
+
+            try {
+
+                await html5QrCode.stop();
+
+                html5QrCode.clear();
+
+            } catch (error) {
+
+                console.error(
+                    "Scanner stop error:",
+                    error
+                );
+            }
+        }
+
+
+        scannerRunning = false;
+
+        startButton.disabled = false;
+        stopButton.disabled = true;
+
+
+        if (scannerPlaceholder) {
+            scannerPlaceholder.style.display = "block";
+        }
+
+    }
+
+
+    async function qrCodeSuccessCallback(
+        decodedText,
+        decodedResult
+    ) {
+
+        if (!scannerRunning) {
+            return;
+        }
+
+
+        tokenInput.value = decodedText;
+
+
+        showMessage(
+            "QR scanned successfully. Review the token and click Verify & Mark Attendance.",
+            "success"
+        );
+
+
+        await stopScanner();
+
+
+        tokenInput.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+    }
+
+
+    startButton.addEventListener(
+        "click",
+        async function () {
+
+            if (typeof Html5Qrcode === "undefined") {
+
+                showMessage(
+                    "QR scanner library could not load. Check your internet connection.",
+                    "danger"
+                );
+
+                return;
+            }
+
+
+            try {
+
+                showMessage(
+                    "Requesting camera access...",
+                    "primary"
+                );
+
+
+                html5QrCode =
+                    new Html5Qrcode("reader");
+
+
+                const cameras =
+                    await Html5Qrcode.getCameras();
+
+
+                if (
+                    !cameras ||
+                    cameras.length === 0
+                ) {
+
+                    showMessage(
+                        "No camera was found on this device.",
+                        "danger"
+                    );
+
+                    return;
+                }
+
+
+                let cameraId =
+                    cameras[0].id;
+
+
+                if (cameras.length > 1) {
+
+                    const backCamera =
+                        cameras.find(
+                            camera =>
+                                camera.label
+                                    .toLowerCase()
+                                    .includes("back") ||
+                                camera.label
+                                    .toLowerCase()
+                                    .includes("rear")
+                        );
+
+
+                    if (backCamera) {
+                        cameraId = backCamera.id;
+                    }
+
+                }
+
+
+                if (scannerPlaceholder) {
+                    scannerPlaceholder.style.display = "none";
+                }
+
+
+                await html5QrCode.start(
+
+                    cameraId,
+
+                    {
+                        fps: 10,
+
+                        qrbox: {
+                            width: 250,
+                            height: 250
+                        }
+                    },
+
+                    qrCodeSuccessCallback,
+
+                    function () {
+                        // Ignore normal scan failures.
+                    }
+
+                );
+
+
+                scannerRunning = true;
+
+                startButton.disabled = true;
+                stopButton.disabled = false;
+
+
+                showMessage(
+                    "Camera active. Hold the student's QR code inside the scanner box.",
+                    "primary"
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Camera scanner error:",
+                    error
+                );
+
+
+                scannerRunning = false;
+
+                startButton.disabled = false;
+                stopButton.disabled = true;
+
+
+                if (scannerPlaceholder) {
+                    scannerPlaceholder.style.display = "block";
+                }
+
+
+                showMessage(
+                    "Camera could not start. Allow camera permission and try again.",
+                    "danger"
+                );
+
+            }
+
+        }
+    );
+
+
+    stopButton.addEventListener(
+        "click",
+        async function () {
+
+            await stopScanner();
+
+
+            showMessage(
+                "Camera stopped. You can start it again when ready.",
+                "secondary"
+            );
+
+        }
+    );
+
+
+    window.addEventListener(
+        "beforeunload",
+        function () {
+
+            if (
+                html5QrCode &&
+                scannerRunning
+            ) {
+
+                html5QrCode.stop()
+                    .catch(function () {
+                        // Ignore page closing error.
+                    });
+
+            }
+
+        }
+    );
+
+</script>
+
+{% endblock %}

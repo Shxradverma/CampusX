@@ -1,0 +1,1129 @@
+{% extends "base.html" %}
+
+{% block title %}Explore Events | CampusX{% endblock %}
+
+
+{% block extra_css %}
+<style>
+
+    .explore-page {
+        padding: clamp(18px, 4vw, 42px) 0 clamp(48px, 7vw, 75px);
+    }
+
+
+    /* ==============================
+       HERO
+    ============================== */
+
+    .explore-hero {
+        position: relative;
+        overflow: hidden;
+
+        margin-bottom: clamp(27px, 5vw, 40px);
+        padding: clamp(25px, 5vw, 42px);
+
+        border-radius: 22px;
+
+        background:
+            radial-gradient(
+                circle at 88% 15%,
+                rgba(255, 255, 255, .14),
+                transparent 28%
+            ),
+            linear-gradient(
+                135deg,
+                #312e81 0%,
+                #4f46e5 55%,
+                #7c3aed 100%
+            );
+
+        color: white;
+
+        box-shadow:
+            0 20px 50px rgba(79, 70, 229, .18);
+    }
+
+
+    .explore-hero::before {
+        content: "";
+
+        position: absolute;
+
+        width: 270px;
+        height: 270px;
+
+        right: -100px;
+        top: -140px;
+
+        border: 1px solid rgba(255, 255, 255, .11);
+        border-radius: 50%;
+    }
+
+
+    .explore-hero::after {
+        content: "";
+
+        position: absolute;
+
+        width: 180px;
+        height: 180px;
+
+        right: 140px;
+        bottom: -130px;
+
+        border-radius: 50%;
+
+        background: rgba(255, 255, 255, .06);
+    }
+
+
+    .explore-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+
+    .explore-label {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 7px;
+
+        margin-bottom: 14px;
+        padding: 7px 12px;
+
+        border: 1px solid rgba(255, 255, 255, .14);
+        border-radius: 999px;
+
+        background: rgba(255, 255, 255, .12);
+
+        font-size: .72rem;
+        font-weight: 700;
+    }
+
+
+    .explore-title {
+        margin-bottom: 9px;
+
+        font-size: clamp(1.7rem, 4vw, 2.35rem);
+        font-weight: 800;
+
+        line-height: 1.15;
+        letter-spacing: -.04em;
+    }
+
+
+    .explore-description {
+        max-width: 650px;
+
+        margin: 0;
+
+        color: rgba(255, 255, 255, .82);
+
+        font-size: .88rem;
+        line-height: 1.7;
+    }
+
+
+    .explore-dashboard-btn {
+        min-height: 43px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border-color: rgba(255, 255, 255, .38);
+
+        color: white;
+
+        font-weight: 700;
+    }
+
+
+    .explore-dashboard-btn:hover {
+        border-color: white;
+
+        background: white;
+        color: #4338ca;
+    }
+
+
+    /* ==============================
+       SECTION HEADER
+    ============================== */
+
+    .events-section-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        gap: 15px;
+
+        margin-bottom: 20px;
+    }
+
+
+    .events-section-title {
+        margin-bottom: 3px;
+
+        color: var(--cx-dark);
+
+        font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+        font-weight: 800;
+
+        letter-spacing: -.025em;
+    }
+
+
+    .events-section-description {
+        margin: 0;
+
+        color: var(--cx-muted);
+
+        font-size: .76rem;
+        line-height: 1.55;
+    }
+
+
+    .events-count {
+        display: inline-flex;
+        align-items: center;
+
+        flex-shrink: 0;
+
+        gap: 6px;
+
+        padding: 7px 11px;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 999px;
+
+        background: white;
+        color: #64748b;
+
+        font-size: .68rem;
+        font-weight: 700;
+    }
+
+
+    /* ==============================
+       EVENT CARD
+    ============================== */
+
+    .event-card {
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+
+        overflow: hidden;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 18px;
+
+        background: white;
+
+        box-shadow:
+            0 8px 30px rgba(15, 23, 42, .05);
+
+        transition:
+            transform .22s ease,
+            border-color .22s ease,
+            box-shadow .22s ease;
+    }
+
+
+    .event-card:hover {
+        transform: translateY(-4px);
+
+        border-color: #c7d2fe;
+
+        box-shadow:
+            0 18px 42px rgba(15, 23, 42, .09);
+    }
+
+
+    /* BANNER */
+
+    .event-banner {
+        position: relative;
+
+        height: 210px;
+
+        flex-shrink: 0;
+
+        overflow: hidden;
+
+        background:
+            linear-gradient(
+                135deg,
+                #eef2ff,
+                #e0e7ff
+            );
+    }
+
+
+    .event-banner img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+
+        transition: transform .35s ease;
+    }
+
+
+    .event-card:hover .event-banner img {
+        transform: scale(1.035);
+    }
+
+
+    .event-banner::after {
+        content: "";
+
+        position: absolute;
+        inset: 0;
+
+        pointer-events: none;
+
+        background:
+            linear-gradient(
+                to bottom,
+                transparent 55%,
+                rgba(15, 23, 42, .12)
+            );
+    }
+
+
+    .banner-placeholder {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        color: #6366f1;
+    }
+
+
+    .banner-placeholder i {
+        font-size: 2.2rem;
+    }
+
+
+    .banner-placeholder span {
+        font-size: .75rem;
+        font-weight: 700;
+    }
+
+
+    /* REGISTRATION BADGE */
+
+    .registration-status {
+        position: absolute;
+        z-index: 3;
+
+        top: 13px;
+        right: 13px;
+
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        padding: 7px 10px;
+
+        border-radius: 999px;
+
+        backdrop-filter: blur(8px);
+
+        font-size: .64rem;
+        font-weight: 750;
+
+        box-shadow:
+            0 5px 15px rgba(15, 23, 42, .12);
+    }
+
+
+    .registration-open {
+        background: rgba(220, 252, 231, .95);
+        color: #15803d;
+    }
+
+
+    .registration-closed {
+        background: rgba(241, 245, 249, .95);
+        color: #475569;
+    }
+
+
+    .registration-dot {
+        font-size: 5px;
+    }
+
+
+    /* BODY */
+
+    .event-body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+
+        padding: 20px;
+    }
+
+
+    .category-badge {
+        display: inline-flex;
+
+        padding: 5px 9px;
+
+        border-radius: 7px;
+
+        background: #eef2ff;
+        color: #4f46e5;
+
+        font-size: .63rem;
+        font-weight: 750;
+    }
+
+
+    .event-title {
+        margin-top: 11px;
+        margin-bottom: 7px;
+
+        color: #0f172a;
+
+        font-size: 1rem;
+        font-weight: 800;
+
+        line-height: 1.4;
+        letter-spacing: -.015em;
+    }
+
+
+    .event-description {
+        margin-bottom: 17px;
+
+        color: #64748b;
+
+        font-size: .76rem;
+        line-height: 1.65;
+    }
+
+
+    /* INFORMATION */
+
+    .event-information {
+        display: grid;
+
+        gap: 10px;
+    }
+
+
+    .event-info {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 10px;
+    }
+
+
+    .event-info-icon {
+        width: 31px;
+        height: 31px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 8px;
+
+        background: #f8fafc;
+        color: #6366f1;
+
+        font-size: .78rem;
+    }
+
+
+    .event-info-content {
+        min-width: 0;
+    }
+
+
+    .event-info-label {
+        margin-bottom: 1px;
+
+        color: #94a3b8;
+
+        font-size: .57rem;
+        font-weight: 700;
+
+        text-transform: uppercase;
+        letter-spacing: .045em;
+    }
+
+
+    .event-info-value {
+        overflow-wrap: anywhere;
+
+        color: #334155;
+
+        font-size: .72rem;
+        font-weight: 650;
+
+        line-height: 1.45;
+    }
+
+
+    /* DEADLINE */
+
+    .deadline-box {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 7px;
+
+        margin-top: 14px;
+        padding: 10px 11px;
+
+        border: 1px solid #f1f5f9;
+        border-radius: 9px;
+
+        background: #f8fafc;
+        color: #64748b;
+
+        font-size: .67rem;
+        line-height: 1.5;
+    }
+
+
+    .deadline-box i {
+        flex-shrink: 0;
+
+        margin-top: 1px;
+
+        color: #6366f1;
+    }
+
+
+    .deadline-box strong {
+        color: #334155;
+    }
+
+
+    /* CTA */
+
+    .event-card-footer {
+        margin-top: auto;
+        padding-top: 18px;
+    }
+
+
+    .view-event-btn {
+        min-height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: .75rem;
+        font-weight: 750;
+    }
+
+
+    /* ==============================
+       EMPTY STATE
+    ============================== */
+
+    .explore-empty {
+        padding: clamp(48px, 8vw, 75px) 20px;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 18px;
+
+        background: white;
+
+        text-align: center;
+
+        box-shadow:
+            0 10px 35px rgba(15, 23, 42, .05);
+    }
+
+
+    .explore-empty-icon {
+        width: 72px;
+        height: 72px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 17px;
+
+        border-radius: 50%;
+
+        background: #eef2ff;
+        color: #4f46e5;
+
+        font-size: 1.7rem;
+    }
+
+
+    .explore-empty-title {
+        margin-bottom: 7px;
+
+        color: #0f172a;
+
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+
+    .explore-empty-text {
+        max-width: 450px;
+
+        margin: 0 auto 20px;
+
+        color: #64748b;
+
+        font-size: .78rem;
+        line-height: 1.65;
+    }
+
+
+    /* ==============================
+       TABLET
+    ============================== */
+
+    @media (max-width: 991.98px) {
+
+        .explore-dashboard-wrap {
+            text-align: left !important;
+        }
+
+    }
+
+
+    /* ==============================
+       MOBILE
+    ============================== */
+
+    @media (max-width: 767.98px) {
+
+        .explore-page {
+            padding-top: 18px;
+        }
+
+
+        .explore-hero {
+            padding: 24px 20px;
+
+            margin-bottom: 27px;
+
+            border-radius: 18px;
+        }
+
+
+        .explore-dashboard-btn {
+            width: 100%;
+        }
+
+
+        .events-section-header {
+            align-items: flex-start;
+            flex-direction: column;
+
+            margin-bottom: 17px;
+        }
+
+
+        .event-banner {
+            height: 210px;
+        }
+
+
+        .event-body {
+            padding: 18px;
+        }
+
+    }
+
+
+    /* ==============================
+       SMALL MOBILE
+    ============================== */
+
+    @media (max-width: 575.98px) {
+
+        .explore-page {
+            padding-top: 14px;
+        }
+
+
+        .explore-hero {
+            padding: 21px 17px;
+
+            border-radius: 16px;
+        }
+
+
+        .explore-title {
+            font-size: 1.55rem;
+        }
+
+
+        .explore-description {
+            font-size: .8rem;
+        }
+
+
+        .event-card {
+            border-radius: 16px;
+        }
+
+
+        .event-banner {
+            height: 190px;
+        }
+
+
+        .event-body {
+            padding: 16px;
+        }
+
+
+        .event-title {
+            font-size: .96rem;
+        }
+
+
+        .registration-status {
+            top: 10px;
+            right: 10px;
+
+            padding: 6px 9px;
+        }
+
+
+        .explore-empty {
+            border-radius: 16px;
+        }
+
+    }
+
+
+    @media (max-width: 374.98px) {
+
+        .explore-title {
+            font-size: 1.42rem;
+        }
+
+
+        .event-banner {
+            height: 175px;
+        }
+
+
+        .registration-status {
+            font-size: .59rem;
+        }
+
+    }
+
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .event-card,
+        .event-banner img {
+            transition: none;
+        }
+
+
+        .event-card:hover {
+            transform: none;
+        }
+
+
+        .event-card:hover .event-banner img {
+            transform: none;
+        }
+
+    }
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="explore-page">
+
+    <div class="container">
+
+
+        <!-- =========================
+             HERO
+        ========================== -->
+
+        <section class="explore-hero">
+
+            <div class="explore-hero-content">
+
+                <div class="row align-items-center g-4">
+
+                    <div class="col-lg-8">
+
+                        <div class="explore-label">
+
+                            <i class="bi bi-compass"></i>
+
+                            Event Discovery
+
+                        </div>
+
+
+                        <h1 class="explore-title">
+                            Explore Campus Events
+                        </h1>
+
+
+                        <p class="explore-description">
+
+                            Discover approved CampusX events,
+                            check schedules and register for
+                            opportunities across your campus.
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="col-lg-4 text-lg-end explore-dashboard-wrap">
+
+                        <a
+                            href="{% url 'student_dashboard' %}"
+                            class="btn explore-dashboard-btn px-4"
+                        >
+                            <i class="bi bi-grid me-1"></i>
+
+                            Dashboard
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             SECTION HEADER
+        ========================== -->
+
+        <div class="events-section-header">
+
+            <div>
+
+                <h2 class="events-section-title">
+                    Available Events
+                </h2>
+
+                <p class="events-section-description">
+
+                    Browse currently published and
+                    approved CampusX events.
+
+                </p>
+
+            </div>
+
+
+            {% if events %}
+
+                <div class="events-count">
+
+                    <i class="bi bi-calendar3"></i>
+
+                    {{ events|length }}
+                    Event{{ events|length|pluralize }}
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =========================
+             EVENTS
+        ========================== -->
+
+        {% if events %}
+
+            <div class="row g-3 g-lg-4">
+
+                {% for event in events %}
+
+                    <div class="col-12 col-md-6 col-xl-4">
+
+                        <article class="event-card">
+
+
+                            <!-- BANNER -->
+
+                            <div class="event-banner">
+
+                                {% if event.banner %}
+
+                                    <img
+                                        src="{{ event.banner.url }}"
+                                        alt="{{ event.title }}"
+                                        loading="lazy"
+                                    >
+
+                                {% else %}
+
+                                    <div class="banner-placeholder">
+
+                                        <i class="bi bi-calendar-event"></i>
+
+                                        <span>
+                                            CampusX Event
+                                        </span>
+
+                                    </div>
+
+                                {% endif %}
+
+
+                                {% if event.registration_open %}
+
+                                    <span class="registration-status registration-open">
+
+                                        <i class="bi bi-circle-fill registration-dot"></i>
+
+                                        Registration Open
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="registration-status registration-closed">
+
+                                        <i class="bi bi-lock"></i>
+
+                                        Closed
+
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- BODY -->
+
+                            <div class="event-body">
+
+
+                                {% if event.category %}
+
+                                    <div>
+
+                                        <span class="category-badge">
+                                            {{ event.category.name }}
+                                        </span>
+
+                                    </div>
+
+                                {% endif %}
+
+
+                                <h2 class="event-title">
+                                    {{ event.title }}
+                                </h2>
+
+
+                                <p class="event-description">
+
+                                    {{ event.description|truncatechars:115 }}
+
+                                </p>
+
+
+                                <div class="event-information">
+
+
+                                    <!-- DATE -->
+
+                                    <div class="event-info">
+
+                                        <div class="event-info-icon">
+                                            <i class="bi bi-calendar3"></i>
+                                        </div>
+
+
+                                        <div class="event-info-content">
+
+                                            <div class="event-info-label">
+                                                Date
+                                            </div>
+
+                                            <div class="event-info-value">
+                                                {{ event.start_datetime|date:"d M Y" }}
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- TIME -->
+
+                                    <div class="event-info">
+
+                                        <div class="event-info-icon">
+                                            <i class="bi bi-clock"></i>
+                                        </div>
+
+
+                                        <div class="event-info-content">
+
+                                            <div class="event-info-label">
+                                                Time
+                                            </div>
+
+                                            <div class="event-info-value">
+                                                {{ event.start_datetime|date:"h:i A" }}
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- VENUE -->
+
+                                    <div class="event-info">
+
+                                        <div class="event-info-icon">
+                                            <i class="bi bi-geo-alt"></i>
+                                        </div>
+
+
+                                        <div class="event-info-content">
+
+                                            <div class="event-info-label">
+                                                Venue
+                                            </div>
+
+                                            <div class="event-info-value">
+                                                {{ event.venue }}
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <!-- DEADLINE -->
+
+                                <div class="deadline-box">
+
+                                    <i class="bi bi-hourglass-split"></i>
+
+                                    <div>
+
+                                        Registration deadline:
+
+                                        <strong>
+                                            {{ event.registration_deadline|date:"d M Y, h:i A" }}
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- CTA -->
+
+                                <div class="event-card-footer">
+
+                                    <a
+                                        href="{% url 'student_event_detail' event.id %}"
+                                        class="btn btn-primary view-event-btn w-100"
+                                    >
+                                        View Event
+
+                                        <i class="bi bi-arrow-right ms-2"></i>
+                                    </a>
+
+                                </div>
+
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+        {% else %}
+
+
+            <div class="explore-empty">
+
+                <div class="explore-empty-icon">
+                    <i class="bi bi-calendar2-x"></i>
+                </div>
+
+
+                <div class="explore-empty-title">
+                    No Events Available
+                </div>
+
+
+                <p class="explore-empty-text">
+
+                    There are currently no published
+                    CampusX events available for registration.
+
+                </p>
+
+
+                <a
+                    href="{% url 'student_dashboard' %}"
+                    class="btn btn-outline-primary"
+                >
+                    <i class="bi bi-arrow-left me-1"></i>
+
+                    Return to Dashboard
+                </a>
+
+            </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+</div>
+
+{% endblock %}

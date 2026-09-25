@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block title %}
+Feedback & Ratings | {{ event.title }} | CampusX
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex flex-column flex-lg-row
+                justify-content-between align-items-lg-center
+                gap-3 mb-4">
+
+        <div>
+            <a
+                href="{% url 'event_detail' event.id %}"
+                class="text-decoration-none small"
+            >
+                <i class="bi bi-arrow-left me-1"></i>
+                Back to Event Management
+            </a>
+
+            <h2 class="fw-bold mt-2 mb-1">
+                Feedback & Ratings
+            </h2>
+
+            <p class="text-muted mb-0">
+                {{ event.title }}
+            </p>
+        </div>
+
+        <div>
+            <span class="badge text-bg-light border px-3 py-2">
+                <i class="bi bi-chat-square-text me-1"></i>
+                {{ total_reviews }} Review{{ total_reviews|pluralize }}
+            </span>
+        </div>
+    </div>
+
+
+    <!-- Summary -->
+    <div class="row g-4 mb-4">
+
+        <!-- Average Rating -->
+        <div class="col-12 col-md-5">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4 text-center">
+
+                    <p class="text-muted mb-2">
+                        Average Rating
+                    </p>
+
+                    <div class="display-4 fw-bold">
+                        {{ average_rating }}
+                    </div>
+
+                    <div class="text-warning fs-4 my-2">
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+
+                    <p class="text-muted mb-0">
+                        Based on
+                        {{ total_reviews }}
+                        review{{ total_reviews|pluralize }}
+                    </p>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Rating Distribution -->
+        <div class="col-12 col-md-7">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+
+                    <h5 class="fw-bold mb-4">
+                        Rating Distribution
+                    </h5>
+
+                    {% for item in rating_distribution %}
+                        <div class="d-flex align-items-center gap-3 mb-3">
+
+                            <div
+                                class="text-nowrap"
+                                style="width: 55px;"
+                            >
+                                {{ item.rating }}
+                                <i class="bi bi-star-fill text-warning"></i>
+                            </div>
+
+                            <div class="progress flex-grow-1"
+                                 style="height: 10px;">
+
+                                <div
+                                    class="progress-bar bg-warning"
+                                    role="progressbar"
+                                    style="width: {{ item.percentage }}%;"
+                                    aria-valuenow="{{ item.percentage }}"
+                                    aria-valuemin="0"
+                                    aria-valuemax="100"
+                                ></div>
+
+                            </div>
+
+                            <div
+                                class="text-muted text-end"
+                                style="width: 85px;"
+                            >
+                                {{ item.count }}
+                                ({{ item.percentage }}%)
+                            </div>
+
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Reviews -->
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white border-0 p-4 pb-2">
+            <h5 class="fw-bold mb-1">
+                Student Reviews
+            </h5>
+
+            <p class="text-muted small mb-0">
+                Feedback submitted by registered students
+                after the event.
+            </p>
+        </div>
+
+        <div class="card-body p-4">
+
+            {% if feedbacks %}
+
+                <div class="d-flex flex-column gap-3">
+
+                    {% for feedback in feedbacks %}
+
+                        <div class="border rounded-3 p-3 p-md-4">
+
+                            <div class="d-flex flex-column flex-md-row
+                                        justify-content-between gap-3">
+
+                                <div>
+                                    <h6 class="fw-bold mb-1">
+
+                                        {% if feedback.student.student_profile.full_name %}
+                                            {{ feedback.student.student_profile.full_name }}
+                                        {% else %}
+                                            {{ feedback.student.username }}
+                                        {% endif %}
+
+                                    </h6>
+
+                                    <div class="text-muted small">
+                                        {{ feedback.student.email }}
+                                    </div>
+                                </div>
+
+
+                                <div class="text-md-end">
+
+                                    <div class="text-warning mb-1">
+                                        {% for number in "12345" %}
+                                            {% if forloop.counter <= feedback.rating %}
+                                                <i class="bi bi-star-fill"></i>
+                                            {% else %}
+                                                <i class="bi bi-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="small text-muted">
+                                        {{ feedback.created_at|date:"d M Y, h:i A" }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            {% if feedback.comment %}
+                                <hr>
+
+                                <p class="mb-0">
+                                    {{ feedback.comment|linebreaksbr }}
+                                </p>
+                            {% else %}
+                                <hr>
+
+                                <p class="text-muted fst-italic mb-0">
+                                    No written feedback provided.
+                                </p>
+                            {% endif %}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="text-center py-5">
+
+                    <i class="bi bi-chat-square-text
+                              display-5 text-muted"></i>
+
+                    <h5 class="fw-bold mt-3">
+                        No Feedback Yet
+                    </h5>
+
+                    <p class="text-muted mb-0">
+                        Student ratings and comments will appear
+                        here after feedback is submitted.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

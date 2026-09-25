@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}
+Event Feedback | CampusX
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4 py-md-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8 col-xl-7">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="text-center mb-4">
+
+                        <div class="fs-1 mb-2">
+                            ⭐
+                        </div>
+
+                        <h2 class="fw-bold mb-2">
+                            Event Feedback
+                        </h2>
+
+                        <p class="text-muted mb-0">
+                            Share your experience for
+                            <strong>{{ event.title }}</strong>
+                        </p>
+
+                    </div>
+
+
+                    <div class="alert alert-light border mb-4">
+
+                        <div class="fw-semibold mb-1">
+                            <i class="bi bi-calendar-event me-1"></i>
+                            {{ event.title }}
+                        </div>
+
+                        <div class="small text-muted">
+
+                            <i class="bi bi-geo-alt me-1"></i>
+                            {{ event.venue }}
+
+                            <span class="mx-2">•</span>
+
+                            <i class="bi bi-calendar3 me-1"></i>
+                            {{ event.start_datetime|date:"d M Y" }}
+
+                        </div>
+
+                    </div>
+
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+
+                            <div class="alert alert-danger">
+
+                                {% for error in form.non_field_errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <div class="mb-4">
+
+                            <label
+                                for="{{ form.rating.id_for_label }}"
+                                class="form-label fw-semibold"
+                            >
+                                <i class="bi bi-star-fill text-warning me-1"></i>
+                                Your Rating
+                            </label>
+
+                            {{ form.rating }}
+
+                            <div class="form-text">
+                                Rate your overall event experience from
+                                1 to 5.
+                            </div>
+
+                            {% for error in form.rating.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div class="mb-4">
+
+                            <label
+                                for="{{ form.comment.id_for_label }}"
+                                class="form-label fw-semibold"
+                            >
+                                <i class="bi bi-chat-left-text me-1"></i>
+                                Your Feedback
+                            </label>
+
+                            {{ form.comment }}
+
+                            <div class="form-text">
+                                Optional — maximum 1000 characters.
+                            </div>
+
+                            {% for error in form.comment.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div class="d-flex flex-column flex-sm-row gap-2">
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                <i class="bi bi-send me-1"></i>
+                                Submit Feedback
+                            </button>
+
+                            <a
+                                href="{% url 'student_event_detail' event.id %}"
+                                class="btn btn-outline-secondary"
+                            >
+                                Cancel
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

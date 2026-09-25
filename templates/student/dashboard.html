@@ -1,0 +1,1716 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard | CampusX{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    /* ==========================================================
+       STUDENT DASHBOARD V2
+    ========================================================== */
+
+    .student-dashboard {
+        padding:
+            clamp(20px, 4vw, 42px)
+            0
+            clamp(45px, 6vw, 70px);
+    }
+
+
+    /* ==========================================================
+       HERO
+    ========================================================== */
+
+    .student-hero {
+        position: relative;
+        overflow: hidden;
+
+        padding:
+            clamp(25px, 5vw, 42px);
+
+        margin-bottom: 24px;
+
+        border-radius: 22px;
+
+        background:
+            radial-gradient(
+                circle at 85% 20%,
+                rgba(255, 255, 255, .13),
+                transparent 26%
+            ),
+            linear-gradient(
+                135deg,
+                #4338ca 0%,
+                #6366f1 55%,
+                #8b5cf6 100%
+            );
+
+        color: white;
+
+        box-shadow:
+            0 20px 50px
+            rgba(79, 70, 229, .18);
+    }
+
+
+    .student-hero::before {
+        content: "";
+
+        position: absolute;
+
+        width: 260px;
+        height: 260px;
+
+        right: -90px;
+        top: -130px;
+
+        border-radius: 50%;
+
+        border:
+            1px solid
+            rgba(255, 255, 255, .10);
+    }
+
+
+    .student-hero::after {
+        content: "";
+
+        position: absolute;
+
+        width: 180px;
+        height: 180px;
+
+        right: 120px;
+        bottom: -125px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(255, 255, 255, .055);
+    }
+
+
+    .student-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+
+    .student-hero-label {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 7px;
+
+        margin-bottom: 14px;
+
+        padding:
+            7px 12px;
+
+        border:
+            1px solid
+            rgba(255, 255, 255, .13);
+
+        border-radius: 999px;
+
+        background:
+            rgba(255, 255, 255, .12);
+
+        font-size: .72rem;
+        font-weight: 700;
+    }
+
+
+    .student-hero-title {
+        margin-bottom: 9px;
+
+        font-size:
+            clamp(1.65rem, 4vw, 2.3rem);
+
+        font-weight: 800;
+
+        letter-spacing: -.04em;
+
+        line-height: 1.15;
+    }
+
+
+    .student-hero-subtitle {
+        max-width: 650px;
+
+        margin: 0;
+
+        color:
+            rgba(255, 255, 255, .82);
+
+        font-size: .88rem;
+
+        line-height: 1.7;
+    }
+
+
+    .student-hero-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        flex-wrap: wrap;
+
+        gap: 9px;
+    }
+
+
+    .student-hero-actions .btn {
+        min-height: 43px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .student-primary-action {
+        border: 0;
+
+        background: white;
+
+        color: #4338ca;
+
+        font-weight: 700;
+    }
+
+
+    .student-primary-action:hover {
+        background: #f8fafc;
+        color: #3730a3;
+    }
+
+
+    /* ==========================================================
+       STATS
+    ========================================================== */
+
+    .student-stats {
+        margin-bottom: 27px;
+    }
+
+
+    .student-stat-card {
+        position: relative;
+
+        height: 100%;
+
+        overflow: hidden;
+
+        padding: 20px;
+
+        border:
+            1px solid var(--cx-border);
+
+        border-radius: 16px;
+
+        background: white;
+
+        box-shadow:
+            0 8px 28px
+            rgba(15, 23, 42, .045);
+
+        transition:
+            transform .18s ease,
+            border-color .18s ease,
+            box-shadow .18s ease;
+    }
+
+
+    .student-stat-card:hover {
+        transform:
+            translateY(-3px);
+
+        border-color: #c7d2fe;
+
+        box-shadow:
+            0 14px 35px
+            rgba(15, 23, 42, .07);
+    }
+
+
+    .student-stat-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        gap: 10px;
+
+        margin-bottom: 17px;
+    }
+
+
+    .student-stat-icon {
+        width: 43px;
+        height: 43px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 12px;
+
+        background: #eef2ff;
+
+        color: #4f46e5;
+
+        font-size: 1.05rem;
+    }
+
+
+    .student-stat-decoration {
+        width: 7px;
+        height: 7px;
+
+        margin-top: 5px;
+
+        border-radius: 50%;
+
+        background: #c7d2fe;
+    }
+
+
+    .student-stat-label {
+        margin-bottom: 4px;
+
+        color: #64748b;
+
+        font-size: .66rem;
+        font-weight: 750;
+
+        text-transform: uppercase;
+
+        letter-spacing: .055em;
+    }
+
+
+    .student-stat-value {
+        overflow-wrap: anywhere;
+
+        color: #0f172a;
+
+        font-size:
+            clamp(.98rem, 2vw, 1.18rem);
+
+        font-weight: 800;
+
+        line-height: 1.3;
+    }
+
+
+    /* ==========================================================
+       SECTION HEADER
+    ========================================================== */
+
+    .student-section {
+        margin-bottom: 27px;
+    }
+
+
+    .student-section-heading {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        gap: 14px;
+
+        margin-bottom: 14px;
+    }
+
+
+    .student-section-title {
+        margin-bottom: 3px;
+
+        color: var(--cx-dark);
+
+        font-size:
+            clamp(1rem, 2vw, 1.2rem);
+
+        font-weight: 800;
+
+        letter-spacing: -.025em;
+    }
+
+
+    .student-section-description {
+        margin: 0;
+
+        color: var(--cx-muted);
+
+        font-size: .75rem;
+    }
+
+
+    /* ==========================================================
+       QUICK ACTIONS
+    ========================================================== */
+
+    .student-quick-link {
+        display: block;
+
+        height: 100%;
+
+        color: inherit;
+
+        text-decoration: none;
+    }
+
+
+    .student-quick-card {
+        height: 100%;
+
+        padding: 20px;
+
+        border:
+            1px solid var(--cx-border);
+
+        border-radius: 16px;
+
+        background: white;
+
+        box-shadow:
+            0 6px 22px
+            rgba(15, 23, 42, .03);
+
+        transition:
+            transform .18s ease,
+            border-color .18s ease,
+            box-shadow .18s ease;
+    }
+
+
+    .student-quick-link:hover .student-quick-card {
+        transform:
+            translateY(-3px);
+
+        border-color: #c7d2fe;
+
+        box-shadow:
+            0 12px 30px
+            rgba(15, 23, 42, .065);
+    }
+
+
+    .student-quick-layout {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 15px;
+    }
+
+
+    .student-quick-main {
+        display: flex;
+        align-items: center;
+
+        min-width: 0;
+
+        gap: 13px;
+    }
+
+
+    .student-quick-icon {
+        width: 43px;
+        height: 43px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 12px;
+
+        background: #eef2ff;
+
+        color: #4f46e5;
+
+        font-size: 1.05rem;
+    }
+
+
+    .student-quick-content {
+        min-width: 0;
+    }
+
+
+    .student-quick-title {
+        margin-bottom: 2px;
+
+        color: #0f172a;
+
+        font-size: .83rem;
+        font-weight: 750;
+    }
+
+
+    .student-quick-description {
+        color: #64748b;
+
+        font-size: .7rem;
+
+        line-height: 1.5;
+    }
+
+
+    .student-quick-arrow {
+        flex-shrink: 0;
+
+        color: #94a3b8;
+
+        transition:
+            transform .18s ease,
+            color .18s ease;
+    }
+
+
+    .student-quick-link:hover .student-quick-arrow {
+        transform:
+            translateX(3px);
+
+        color: #4f46e5;
+    }
+
+
+    /* ==========================================================
+       REGISTERED EVENTS PANEL
+    ========================================================== */
+
+    .student-events-card {
+        overflow: hidden;
+
+        border:
+            1px solid var(--cx-border);
+
+        border-radius: 18px;
+
+        background: white;
+
+        box-shadow:
+            0 9px 32px
+            rgba(15, 23, 42, .045);
+    }
+
+
+    .student-events-header {
+        padding: 21px 23px;
+
+        border-bottom:
+            1px solid var(--cx-border);
+    }
+
+
+    .student-events-header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 15px;
+    }
+
+
+    /* ==========================================================
+       DESKTOP TABLE
+    ========================================================== */
+
+    .student-events-table {
+        margin-bottom: 0;
+    }
+
+
+    .student-events-table thead th {
+        padding-top: 13px;
+        padding-bottom: 13px;
+
+        border-bottom:
+            1px solid var(--cx-border);
+
+        background: #f8fafc;
+
+        color: #64748b;
+
+        font-size: .66rem;
+        font-weight: 750;
+
+        text-transform: uppercase;
+
+        letter-spacing: .045em;
+
+        white-space: nowrap;
+    }
+
+
+    .student-events-table tbody td {
+        padding-top: 17px;
+        padding-bottom: 17px;
+
+        border-color: #f1f5f9;
+
+        vertical-align: middle;
+    }
+
+
+    .student-events-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+
+    .student-event-title {
+        max-width: 250px;
+
+        color: #0f172a;
+
+        font-size: .82rem;
+        font-weight: 750;
+
+        line-height: 1.4;
+    }
+
+
+    .student-event-category {
+        display: inline-flex;
+
+        margin-top: 5px;
+
+        padding:
+            4px 8px;
+
+        border-radius: 7px;
+
+        background: #eef2ff;
+
+        color: #4f46e5;
+
+        font-size: .61rem;
+        font-weight: 700;
+    }
+
+
+    .student-event-meta {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 6px;
+
+        color: #64748b;
+
+        font-size: .72rem;
+
+        line-height: 1.45;
+    }
+
+
+    .student-event-meta i {
+        margin-top: 1px;
+
+        flex-shrink: 0;
+
+        color: #94a3b8;
+    }
+
+
+    .student-registered-badge {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        padding:
+            6px 9px;
+
+        border-radius: 999px;
+
+        background: #dcfce7;
+
+        color: #15803d;
+
+        font-size: .65rem;
+        font-weight: 750;
+
+        white-space: nowrap;
+    }
+
+
+    /* ==========================================================
+       MOBILE EVENT CARDS
+    ========================================================== */
+
+    .student-mobile-events {
+        display: none;
+
+        padding: 14px;
+    }
+
+
+    .student-mobile-event {
+        padding: 17px;
+
+        border:
+            1px solid var(--cx-border);
+
+        border-radius: 15px;
+
+        background: #fff;
+    }
+
+
+    .student-mobile-event + .student-mobile-event {
+        margin-top: 12px;
+    }
+
+
+    .student-mobile-event-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        gap: 10px;
+
+        margin-bottom: 14px;
+    }
+
+
+    .student-mobile-event-title {
+        margin-bottom: 5px;
+
+        color: #0f172a;
+
+        font-size: .88rem;
+        font-weight: 800;
+
+        line-height: 1.4;
+    }
+
+
+    .student-mobile-meta-grid {
+        display: grid;
+
+        gap: 8px;
+
+        margin-bottom: 15px;
+
+        padding:
+            12px 0;
+
+        border-top:
+            1px solid #f1f5f9;
+
+        border-bottom:
+            1px solid #f1f5f9;
+    }
+
+
+    .student-mobile-event .btn {
+        width: 100%;
+    }
+
+
+    /* ==========================================================
+       EMPTY STATE
+    ========================================================== */
+
+    .student-empty-state {
+        padding:
+            clamp(45px, 8vw, 70px)
+            20px;
+
+        text-align: center;
+    }
+
+
+    .student-empty-icon {
+        width: 67px;
+        height: 67px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin:
+            0 auto 16px;
+
+        border-radius: 50%;
+
+        background: #eef2ff;
+
+        color: #4f46e5;
+
+        font-size: 1.55rem;
+    }
+
+
+    .student-empty-title {
+        margin-bottom: 7px;
+
+        color: #0f172a;
+
+        font-size: .98rem;
+        font-weight: 800;
+    }
+
+
+    .student-empty-text {
+        max-width: 390px;
+
+        margin:
+            0 auto 20px;
+
+        color: #64748b;
+
+        font-size: .78rem;
+
+        line-height: 1.65;
+    }
+
+
+    /* ==========================================================
+       TABLET
+    ========================================================== */
+
+    @media (max-width: 991.98px) {
+
+        .student-hero-actions {
+            justify-content: flex-start;
+
+            margin-top: 4px;
+        }
+
+
+        .student-stat-card {
+            padding: 18px;
+        }
+
+    }
+
+
+    /* ==========================================================
+       MOBILE
+    ========================================================== */
+
+    @media (max-width: 767.98px) {
+
+        .student-dashboard {
+            padding-top: 18px;
+        }
+
+
+        .student-hero {
+            padding: 24px 20px;
+
+            margin-bottom: 18px;
+
+            border-radius: 18px;
+        }
+
+
+        .student-hero-actions {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            width: 100%;
+
+            gap: 8px;
+        }
+
+
+        .student-hero-actions .btn {
+            width: 100%;
+
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+
+        .student-stats {
+            margin-bottom: 23px;
+        }
+
+
+        .student-stat-card {
+            padding: 16px;
+        }
+
+
+        .student-stat-top {
+            margin-bottom: 13px;
+        }
+
+
+        .student-stat-icon {
+            width: 39px;
+            height: 39px;
+
+            border-radius: 10px;
+        }
+
+
+        .student-stat-value {
+            font-size: .95rem;
+        }
+
+
+        .student-section {
+            margin-bottom: 23px;
+        }
+
+
+        .student-events-header {
+            padding: 18px;
+        }
+
+
+        .student-events-header-inner {
+            align-items: flex-start;
+
+            flex-direction: column;
+        }
+
+
+        .student-events-header-inner .btn {
+            width: 100%;
+        }
+
+
+        .student-desktop-events {
+            display: none;
+        }
+
+
+        .student-mobile-events {
+            display: block;
+        }
+
+    }
+
+
+    /* ==========================================================
+       SMALL MOBILE
+    ========================================================== */
+
+    @media (max-width: 575.98px) {
+
+        .student-dashboard {
+            padding-top: 14px;
+        }
+
+
+        .student-hero {
+            padding: 21px 17px;
+
+            border-radius: 16px;
+        }
+
+
+        .student-hero-label {
+            margin-bottom: 12px;
+
+            font-size: .66rem;
+        }
+
+
+        .student-hero-title {
+            font-size: 1.55rem;
+        }
+
+
+        .student-hero-subtitle {
+            font-size: .8rem;
+        }
+
+
+        .student-hero-actions {
+            grid-template-columns: 1fr;
+        }
+
+
+        .student-stat-card {
+            padding: 14px;
+
+            border-radius: 14px;
+        }
+
+
+        .student-stat-icon {
+            width: 37px;
+            height: 37px;
+
+            font-size: .95rem;
+        }
+
+
+        .student-stat-label {
+            font-size: .59rem;
+        }
+
+
+        .student-stat-value {
+            font-size: .86rem;
+        }
+
+
+        .student-section-heading {
+            align-items: flex-start;
+
+            flex-direction: column;
+        }
+
+
+        .student-quick-card {
+            padding: 16px;
+        }
+
+
+        .student-quick-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+
+        .student-events-card {
+            border-radius: 16px;
+        }
+
+
+        .student-events-header {
+            padding: 16px;
+        }
+
+
+        .student-mobile-events {
+            padding: 11px;
+        }
+
+
+        .student-mobile-event {
+            padding: 15px;
+        }
+
+    }
+
+
+    /* ==========================================================
+       VERY SMALL MOBILE
+    ========================================================== */
+
+    @media (max-width: 374.98px) {
+
+        .student-hero {
+            padding: 19px 15px;
+        }
+
+
+        .student-hero-title {
+            font-size: 1.42rem;
+        }
+
+
+        .student-stat-card {
+            padding: 12px;
+        }
+
+
+        .student-stat-value {
+            font-size: .8rem;
+        }
+
+
+        .student-quick-description {
+            font-size: .66rem;
+        }
+
+    }
+
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .student-stat-card,
+        .student-quick-card,
+        .student-quick-arrow {
+            transition: none;
+        }
+
+
+        .student-stat-card:hover,
+        .student-quick-link:hover .student-quick-card {
+            transform: none;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="student-dashboard">
+
+    <div class="container">
+
+
+        <!-- =====================================================
+             HERO
+        ====================================================== -->
+
+        <section class="student-hero">
+
+            <div class="student-hero-content">
+
+                <div class="row align-items-center g-4">
+
+                    <div class="col-lg-8">
+
+                        <div class="student-hero-label">
+
+                            <i class="bi bi-mortarboard-fill"></i>
+
+                            Student Portal
+
+                        </div>
+
+
+                        <h1 class="student-hero-title">
+
+                            Welcome back,
+
+                            {% if user.student_profile.full_name %}
+                                {{ user.student_profile.full_name }}
+                            {% else %}
+                                {{ user.username }}
+                            {% endif %}
+
+                        </h1>
+
+
+                        <p class="student-hero-subtitle">
+
+                            Discover campus events, manage your
+                            registrations and access your event
+                            attendance QR codes from one place.
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="col-lg-4">
+
+                        <div class="student-hero-actions">
+
+                            <a
+                                href="{% url 'student_event_list' %}"
+                                class="btn student-primary-action"
+                            >
+                                <i class="bi bi-compass me-1"></i>
+
+                                Explore Events
+                            </a>
+
+
+                            <a
+                                href="{% url 'student_profile' %}"
+                                class="btn btn-outline-light"
+                            >
+                                <i class="bi bi-person me-1"></i>
+
+                                Profile
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             STATS
+        ====================================================== -->
+
+        <section class="student-stats">
+
+            <div class="row g-3">
+
+
+                <div class="col-6 col-lg-3">
+
+                    <div class="student-stat-card">
+
+                        <div class="student-stat-top">
+
+                            <div class="student-stat-icon">
+                                <i class="bi bi-person-badge"></i>
+                            </div>
+
+                            <span class="student-stat-decoration"></span>
+
+                        </div>
+
+                        <div class="student-stat-label">
+                            Account Role
+                        </div>
+
+                        <div class="student-stat-value">
+                            {{ user.get_role_display }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-lg-3">
+
+                    <div class="student-stat-card">
+
+                        <div class="student-stat-top">
+
+                            <div class="student-stat-icon">
+                                <i class="bi bi-book"></i>
+                            </div>
+
+                            <span class="student-stat-decoration"></span>
+
+                        </div>
+
+                        <div class="student-stat-label">
+                            Course
+                        </div>
+
+                        <div class="student-stat-value">
+
+                            {% if user.student_profile.course %}
+
+                                {{ user.student_profile.course }}
+
+                            {% else %}
+
+                                Not Added
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-lg-3">
+
+                    <div class="student-stat-card">
+
+                        <div class="student-stat-top">
+
+                            <div class="student-stat-icon">
+                                <i class="bi bi-credit-card-2-front"></i>
+                            </div>
+
+                            <span class="student-stat-decoration"></span>
+
+                        </div>
+
+                        <div class="student-stat-label">
+                            Roll Number
+                        </div>
+
+                        <div class="student-stat-value">
+                            {{ user.student_profile.roll_number }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-lg-3">
+
+                    <div class="student-stat-card">
+
+                        <div class="student-stat-top">
+
+                            <div class="student-stat-icon">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+
+                            <span class="student-stat-decoration"></span>
+
+                        </div>
+
+                        <div class="student-stat-label">
+                            Registered Events
+                        </div>
+
+                        <div class="student-stat-value">
+                            {{ total_registrations }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             QUICK ACTIONS
+        ====================================================== -->
+
+        <section class="student-section">
+
+            <div class="student-section-heading">
+
+                <div>
+
+                    <h2 class="student-section-title">
+                        Quick Actions
+                    </h2>
+
+                    <p class="student-section-description">
+                        Access your most-used CampusX features.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="row g-3">
+
+
+                <div class="col-md-6">
+
+                    <a
+                        href="{% url 'student_event_list' %}"
+                        class="student-quick-link"
+                    >
+
+                        <div class="student-quick-card">
+
+                            <div class="student-quick-layout">
+
+                                <div class="student-quick-main">
+
+                                    <div class="student-quick-icon">
+                                        <i class="bi bi-calendar-event"></i>
+                                    </div>
+
+                                    <div class="student-quick-content">
+
+                                        <div class="student-quick-title">
+                                            Explore Events
+                                        </div>
+
+                                        <div class="student-quick-description">
+                                            Discover upcoming campus events.
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <i class="bi bi-arrow-right student-quick-arrow"></i>
+
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <a
+                        href="{% url 'student_profile' %}"
+                        class="student-quick-link"
+                    >
+
+                        <div class="student-quick-card">
+
+                            <div class="student-quick-layout">
+
+                                <div class="student-quick-main">
+
+                                    <div class="student-quick-icon">
+                                        <i class="bi bi-person-circle"></i>
+                                    </div>
+
+                                    <div class="student-quick-content">
+
+                                        <div class="student-quick-title">
+                                            Manage Profile
+                                        </div>
+
+                                        <div class="student-quick-description">
+                                            Update your student information.
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <i class="bi bi-arrow-right student-quick-arrow"></i>
+
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             REGISTERED EVENTS
+        ====================================================== -->
+
+        <section>
+
+            <div class="student-events-card">
+
+
+                <div class="student-events-header">
+
+                    <div class="student-events-header-inner">
+
+                        <div>
+
+                            <h2 class="student-section-title">
+                                My Registered Events
+                            </h2>
+
+                            <p class="student-section-description">
+                                Events you are currently registered for.
+                            </p>
+
+                        </div>
+
+
+                        <a
+                            href="{% url 'student_event_list' %}"
+                            class="btn btn-outline-primary btn-sm px-3"
+                        >
+                            <i class="bi bi-plus-circle me-1"></i>
+
+                            Explore More
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                {% if registrations %}
+
+
+                    <!-- DESKTOP / TABLET TABLE -->
+
+                    <div class="table-responsive student-desktop-events">
+
+                        <table class="table student-events-table align-middle">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th class="ps-4">
+                                        Event
+                                    </th>
+
+                                    <th>
+                                        Schedule
+                                    </th>
+
+                                    <th>
+                                        Venue
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th class="text-end pe-4">
+                                        Action
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for registration in registrations %}
+
+                                    <tr>
+
+                                        <td class="ps-4">
+
+                                            <div class="student-event-title">
+                                                {{ registration.event.title }}
+                                            </div>
+
+
+                                            {% if registration.event.category %}
+
+                                                <span class="student-event-category">
+
+                                                    {{ registration.event.category.name }}
+
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <div class="student-event-meta">
+
+                                                <i class="bi bi-calendar3"></i>
+
+                                                <span>
+                                                    {{ registration.event.start_datetime|date:"d M Y" }}
+                                                </span>
+
+                                            </div>
+
+
+                                            <div class="student-event-meta mt-1">
+
+                                                <i class="bi bi-clock"></i>
+
+                                                <span>
+                                                    {{ registration.event.start_datetime|date:"h:i A" }}
+                                                </span>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <div class="student-event-meta">
+
+                                                <i class="bi bi-geo-alt"></i>
+
+                                                <span>
+                                                    {{ registration.event.venue }}
+                                                </span>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="student-registered-badge">
+
+                                                <i class="bi bi-check-circle-fill"></i>
+
+                                                Registered
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <td class="text-end pe-4">
+
+                                            <a
+                                                href="{% url 'student_event_detail' registration.event.id %}"
+                                                class="btn btn-primary btn-sm px-3"
+                                            >
+                                                View Event
+
+                                                <i class="bi bi-arrow-right ms-1"></i>
+                                            </a>
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- MOBILE CARDS -->
+
+                    <div class="student-mobile-events">
+
+                        {% for registration in registrations %}
+
+                            <article class="student-mobile-event">
+
+
+                                <div class="student-mobile-event-top">
+
+                                    <div>
+
+                                        <div class="student-mobile-event-title">
+                                            {{ registration.event.title }}
+                                        </div>
+
+
+                                        {% if registration.event.category %}
+
+                                            <span class="student-event-category">
+                                                {{ registration.event.category.name }}
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <span class="student-registered-badge">
+
+                                        <i class="bi bi-check-circle-fill"></i>
+
+                                        Registered
+
+                                    </span>
+
+                                </div>
+
+
+                                <div class="student-mobile-meta-grid">
+
+                                    <div class="student-event-meta">
+
+                                        <i class="bi bi-calendar3"></i>
+
+                                        <span>
+                                            {{ registration.event.start_datetime|date:"d M Y" }}
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="student-event-meta">
+
+                                        <i class="bi bi-clock"></i>
+
+                                        <span>
+                                            {{ registration.event.start_datetime|date:"h:i A" }}
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="student-event-meta">
+
+                                        <i class="bi bi-geo-alt"></i>
+
+                                        <span>
+                                            {{ registration.event.venue }}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <a
+                                    href="{% url 'student_event_detail' registration.event.id %}"
+                                    class="btn btn-primary btn-sm"
+                                >
+                                    View Event
+
+                                    <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+
+
+                            </article>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                {% else %}
+
+
+                    <div class="student-empty-state">
+
+                        <div class="student-empty-icon">
+                            <i class="bi bi-calendar2-x"></i>
+                        </div>
+
+
+                        <div class="student-empty-title">
+                            No Registered Events
+                        </div>
+
+
+                        <p class="student-empty-text">
+
+                            You haven't registered for any campus
+                            events yet. Explore upcoming events and
+                            find something interesting.
+
+                        </p>
+
+
+                        <a
+                            href="{% url 'student_event_list' %}"
+                            class="btn btn-primary px-4"
+                        >
+                            <i class="bi bi-compass me-1"></i>
+
+                            Explore Events
+                        </a>
+
+                    </div>
+
+
+                {% endif %}
+
+
+            </div>
+
+        </section>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

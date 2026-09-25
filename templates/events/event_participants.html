@@ -1,0 +1,1537 @@
+{% extends "base.html" %}
+
+{% block title %}Participants | {{ event.title }} | CampusX{% endblock %}
+
+
+{% block extra_css %}
+<style>
+
+    .participants-page {
+        padding: clamp(18px, 4vw, 38px) 0 clamp(50px, 7vw, 75px);
+    }
+
+
+    /* =========================================================
+       HEADER
+    ========================================================= */
+
+    .participants-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 18px;
+
+        margin-bottom: 22px;
+    }
+
+
+    .page-eyebrow {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 6px;
+
+        margin-bottom: 6px;
+
+        color: #4f46e5;
+
+        font-size: .65rem;
+        font-weight: 800;
+
+        letter-spacing: .06em;
+        text-transform: uppercase;
+    }
+
+
+    .page-title {
+        margin: 0 0 4px;
+
+        color: #0f172a;
+
+        font-size: clamp(1.5rem, 4vw, 1.95rem);
+        font-weight: 800;
+
+        letter-spacing: -.035em;
+    }
+
+
+    .page-subtitle {
+        max-width: 650px;
+
+        margin: 0;
+
+        color: #64748b;
+
+        font-size: .78rem;
+        line-height: 1.55;
+
+        overflow-wrap: anywhere;
+    }
+
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+
+        flex-shrink: 0;
+
+        gap: 8px;
+    }
+
+
+    .header-actions .btn {
+        min-height: 41px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: .71rem;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       STATS
+    ========================================================= */
+
+    .participant-stat {
+        height: 100%;
+
+        padding: 18px;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 14px;
+
+        background: white;
+
+        box-shadow:
+            0 7px 25px rgba(15, 23, 42, .04);
+    }
+
+
+    .participant-stat-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        gap: 12px;
+    }
+
+
+    .participant-stat-label {
+        margin-bottom: 6px;
+
+        color: #64748b;
+
+        font-size: .65rem;
+        font-weight: 700;
+    }
+
+
+    .participant-stat-number {
+        margin: 0;
+
+        color: #0f172a;
+
+        font-size: 1.65rem;
+        font-weight: 800;
+
+        line-height: 1;
+    }
+
+
+    .participant-stat-number.green {
+        color: #15803d;
+    }
+
+
+    .participant-stat-icon {
+        width: 41px;
+        height: 41px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 10px;
+
+        background: #eef2ff;
+        color: #4f46e5;
+
+        font-size: .95rem;
+    }
+
+
+    .participant-stat-icon.green {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+
+    .participant-stat-icon.gray {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+
+    /* =========================================================
+       CONTENT CARD
+    ========================================================= */
+
+    .participant-content-card {
+        overflow: hidden;
+
+        margin-bottom: 20px;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 17px;
+
+        background: white;
+
+        box-shadow:
+            0 9px 32px rgba(15, 23, 42, .04);
+    }
+
+
+    .participant-card-header {
+        padding: 18px 20px;
+
+        border-bottom: 1px solid var(--cx-border);
+
+        background: #f8fafc;
+    }
+
+
+    .participant-card-title {
+        margin-bottom: 3px;
+
+        color: #0f172a;
+
+        font-size: .87rem;
+        font-weight: 800;
+    }
+
+
+    .participant-card-description {
+        margin: 0;
+
+        color: #94a3b8;
+
+        font-size: .67rem;
+        line-height: 1.5;
+    }
+
+
+    .participant-card-body {
+        padding: 20px;
+    }
+
+
+    /* =========================================================
+       SEARCH
+    ========================================================= */
+
+    .participant-search-box {
+        position: relative;
+    }
+
+
+    .participant-search-box > i {
+        position: absolute;
+
+        top: 50%;
+        left: 14px;
+
+        transform: translateY(-50%);
+
+        color: #94a3b8;
+
+        pointer-events: none;
+    }
+
+
+    .participant-search-box input {
+        min-height: 43px;
+
+        padding-left: 40px;
+
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+
+        font-size: .75rem;
+    }
+
+
+    .participant-search-box input:focus {
+        border-color: #6366f1;
+
+        box-shadow:
+            0 0 0 .2rem rgba(99, 102, 241, .11);
+    }
+
+
+    .participant-search-actions {
+        display: flex;
+
+        gap: 7px;
+    }
+
+
+    .participant-search-actions .btn {
+        min-height: 43px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: .71rem;
+        font-weight: 700;
+    }
+
+
+    .search-result-info {
+        display: inline-flex;
+        align-items: center;
+        flex-wrap: wrap;
+
+        gap: 5px;
+
+        margin-top: 11px;
+        padding: 6px 9px;
+
+        border-radius: 8px;
+
+        background: #f1f5f9;
+        color: #64748b;
+
+        font-size: .65rem;
+    }
+
+
+    /* =========================================================
+       DESKTOP TABLE
+    ========================================================= */
+
+    .participants-table-wrapper {
+        overflow-x: auto;
+    }
+
+
+    .participant-table {
+        min-width: 950px;
+
+        margin: 0;
+
+        white-space: nowrap;
+    }
+
+
+    .participant-table thead th {
+        padding: 12px 14px;
+
+        border-bottom: 1px solid #e2e8f0;
+
+        background: #f8fafc;
+        color: #64748b;
+
+        font-size: .59rem;
+        font-weight: 800;
+
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+
+
+    .participant-table tbody td {
+        padding: 14px;
+
+        border-color: #f1f5f9;
+
+        color: #475569;
+
+        font-size: .7rem;
+
+        vertical-align: middle;
+    }
+
+
+    .participant-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+
+    .participant-table tbody tr {
+        transition: background .15s ease;
+    }
+
+
+    .participant-table tbody tr:hover {
+        background: #fafbff;
+    }
+
+
+    /* =========================================================
+       STUDENT
+    ========================================================= */
+
+    .student-cell {
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+    }
+
+
+    .student-avatar {
+        width: 37px;
+        height: 37px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 50%;
+
+        background: #eef2ff;
+        color: #4f46e5;
+
+        font-size: .75rem;
+        font-weight: 800;
+
+        text-transform: uppercase;
+    }
+
+
+    .student-name {
+        color: #0f172a;
+
+        font-size: .74rem;
+        font-weight: 800;
+    }
+
+
+    .student-username {
+        margin-top: 1px;
+
+        color: #94a3b8;
+
+        font-size: .62rem;
+    }
+
+
+    /* =========================================================
+       ATTENDANCE
+    ========================================================= */
+
+    .attendance-badge {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        padding: 5px 8px;
+
+        border-radius: 999px;
+
+        font-size: .61rem;
+        font-weight: 800;
+
+        white-space: nowrap;
+    }
+
+
+    .attendance-present {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+
+    .attendance-pending {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+
+    /* =========================================================
+       MOBILE PARTICIPANT CARDS
+    ========================================================= */
+
+    .participant-mobile-list {
+        display: none;
+
+        padding: 14px;
+    }
+
+
+    .participant-mobile-card {
+        padding: 15px;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 13px;
+
+        background: white;
+    }
+
+
+    .participant-mobile-card + .participant-mobile-card {
+        margin-top: 11px;
+    }
+
+
+    .mobile-student-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        gap: 10px;
+
+        margin-bottom: 14px;
+    }
+
+
+    .mobile-student-main {
+        display: flex;
+        align-items: center;
+
+        min-width: 0;
+
+        gap: 10px;
+    }
+
+
+    .mobile-student-text {
+        min-width: 0;
+    }
+
+
+    .mobile-student-name {
+        overflow-wrap: anywhere;
+
+        color: #0f172a;
+
+        font-size: .78rem;
+        font-weight: 800;
+    }
+
+
+    .mobile-student-username {
+        overflow-wrap: anywhere;
+
+        color: #94a3b8;
+
+        font-size: .62rem;
+    }
+
+
+    .mobile-details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        gap: 10px;
+
+        padding-top: 13px;
+
+        border-top: 1px solid #f1f5f9;
+    }
+
+
+    .mobile-detail {
+        min-width: 0;
+    }
+
+
+    .mobile-detail.full {
+        grid-column: 1 / -1;
+    }
+
+
+    .mobile-detail-label {
+        margin-bottom: 2px;
+
+        color: #94a3b8;
+
+        font-size: .54rem;
+        font-weight: 750;
+
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+
+
+    .mobile-detail-value {
+        overflow-wrap: anywhere;
+
+        color: #475569;
+
+        font-size: .68rem;
+        font-weight: 650;
+
+        line-height: 1.45;
+    }
+
+
+    /* =========================================================
+       EMPTY
+    ========================================================= */
+
+    .participants-empty {
+        padding: clamp(45px, 7vw, 65px) 20px;
+
+        text-align: center;
+    }
+
+
+    .participants-empty-icon {
+        width: 64px;
+        height: 64px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 15px;
+
+        border-radius: 50%;
+
+        background: #f1f5f9;
+        color: #64748b;
+
+        font-size: 1.35rem;
+    }
+
+
+    .participants-empty-title {
+        margin-bottom: 6px;
+
+        color: #0f172a;
+
+        font-size: .92rem;
+        font-weight: 800;
+    }
+
+
+    .participants-empty-text {
+        max-width: 430px;
+
+        margin: auto;
+
+        color: #94a3b8;
+
+        font-size: .72rem;
+        line-height: 1.6;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 991.98px) {
+
+        .participants-table-wrapper {
+            display: none;
+        }
+
+
+        .participant-mobile-list {
+            display: block;
+        }
+
+    }
+
+
+    @media (max-width: 767.98px) {
+
+        .participants-page {
+            padding-top: 18px;
+        }
+
+
+        .participants-header {
+            align-items: flex-start;
+            flex-direction: column;
+
+            margin-bottom: 18px;
+        }
+
+
+        .header-actions {
+            width: 100%;
+        }
+
+
+        .header-actions .btn {
+            flex: 1;
+        }
+
+
+        .participant-card-body {
+            padding: 16px;
+        }
+
+
+        .participant-search-actions {
+            width: 100%;
+
+            margin-top: 7px;
+        }
+
+
+        .participant-search-actions .btn {
+            flex: 1;
+        }
+
+    }
+
+
+    @media (max-width: 575.98px) {
+
+        .participants-page {
+            padding-top: 14px;
+        }
+
+
+        .header-actions {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+
+        .participant-stat {
+            padding: 16px;
+        }
+
+
+        .participant-content-card {
+            border-radius: 15px;
+        }
+
+
+        .participant-card-header {
+            padding: 16px;
+        }
+
+
+        .participant-card-body {
+            padding: 14px;
+        }
+
+
+        .participant-mobile-list {
+            padding: 11px;
+        }
+
+
+        .participant-mobile-card {
+            padding: 13px;
+        }
+
+
+        .mobile-student-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+
+        .mobile-details-grid {
+            grid-template-columns: 1fr;
+        }
+
+
+        .mobile-detail.full {
+            grid-column: auto;
+        }
+
+    }
+
+
+    @media (max-width: 374.98px) {
+
+        .page-title {
+            font-size: 1.4rem;
+        }
+
+
+        .participant-stat-number {
+            font-size: 1.5rem;
+        }
+
+    }
+
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .participant-table tbody tr {
+            transition: none;
+        }
+
+    }
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="participants-page">
+
+    <div class="container">
+
+
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
+
+        <div class="participants-header">
+
+            <div>
+
+                <div class="page-eyebrow">
+
+                    <i class="bi bi-people"></i>
+
+                    Event Operations
+
+                </div>
+
+
+                <h1 class="page-title">
+                    Participants
+                </h1>
+
+
+                <p class="page-subtitle">
+                    {{ event.title }}
+                </p>
+
+            </div>
+
+
+            <div class="header-actions">
+
+
+                {% if can_scan %}
+
+                    <a
+                        href="{% url 'verify_attendance_qr' event.id %}"
+                        class="btn btn-success"
+                    >
+                        <i class="bi bi-qr-code-scan me-1"></i>
+
+                        Scan Attendance
+                    </a>
+
+                {% endif %}
+<a
+    href="{% url 'export_event_participants_csv' event.id %}"
+    class="btn btn-primary"
+>
+    <i class="bi bi-file-earmark-spreadsheet me-1"></i>
+    Download CSV
+</a>
+
+
+                <a
+                    href="{% url 'event_detail' event.id %}"
+                    class="btn btn-outline-secondary"
+                >
+                    <i class="bi bi-arrow-left me-1"></i>
+
+                    Back to Event
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             STATISTICS
+        ====================================================== -->
+
+        <div class="row g-3 mb-4">
+
+
+            <!-- REGISTERED -->
+
+            <div class="col-12 col-sm-4">
+
+                <div class="participant-stat">
+
+                    <div class="participant-stat-top">
+
+                        <div>
+
+                            <div class="participant-stat-label">
+                                Registered Students
+                            </div>
+
+                            <h2 class="participant-stat-number">
+                                {{ total_registered }}
+                            </h2>
+
+                        </div>
+
+
+                        <div class="participant-stat-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PRESENT -->
+
+            <div class="col-12 col-sm-4">
+
+                <div class="participant-stat">
+
+                    <div class="participant-stat-top">
+
+                        <div>
+
+                            <div class="participant-stat-label">
+                                Present
+                            </div>
+
+                            <h2 class="participant-stat-number green">
+                                {{ total_present }}
+                            </h2>
+
+                        </div>
+
+
+                        <div class="participant-stat-icon green">
+                            <i class="bi bi-person-check"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- NOT CHECKED IN -->
+
+            <div class="col-12 col-sm-4">
+
+                <div class="participant-stat">
+
+                    <div class="participant-stat-top">
+
+                        <div>
+
+                            <div class="participant-stat-label">
+                                Not Checked In
+                            </div>
+
+                            <h2 class="participant-stat-number">
+                                {{ total_absent }}
+                            </h2>
+
+                        </div>
+
+
+                        <div class="participant-stat-icon gray">
+                            <i class="bi bi-person-dash"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =====================================================
+             SEARCH
+        ====================================================== -->
+
+        <section class="participant-content-card">
+
+            <div class="participant-card-header">
+
+                <div class="participant-card-title">
+                    Find Participant
+                </div>
+
+                <p class="participant-card-description">
+
+                    Search registered students by name, username,
+                    roll number or email.
+
+                </p>
+
+            </div>
+
+
+            <div class="participant-card-body">
+
+                <form method="GET">
+
+                    <div class="row g-2 align-items-center">
+
+
+                        <div class="col-md">
+
+                            <div class="participant-search-box">
+
+                                <i class="bi bi-search"></i>
+
+                                <input
+                                    type="text"
+                                    name="q"
+                                    id="search"
+                                    class="form-control"
+                                    value="{{ search_query }}"
+                                    placeholder="Search participant..."
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-auto">
+
+                            <div class="participant-search-actions">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary"
+                                >
+                                    <i class="bi bi-search me-1"></i>
+
+                                    Search
+                                </button>
+
+
+                                {% if search_query %}
+
+                                    <a
+                                        href="{% url 'event_participants' event.id %}"
+                                        class="btn btn-outline-secondary"
+                                    >
+                                        <i class="bi bi-x-lg me-1"></i>
+
+                                        Clear
+                                    </a>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </form>
+
+
+                {% if search_query %}
+
+                    <div class="search-result-info">
+
+                        <i class="bi bi-funnel"></i>
+
+                        Showing results for
+
+                        <strong>
+                            "{{ search_query }}"
+                        </strong>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             PARTICIPANTS
+        ====================================================== -->
+
+        <section class="participant-content-card">
+
+            <div class="participant-card-header">
+
+                <div class="participant-card-title">
+                    Registered Students
+                </div>
+
+                <p class="participant-card-description">
+
+                    Participant registration and attendance records.
+
+                </p>
+
+            </div>
+
+
+            {% if registrations %}
+
+
+                <!-- =============================================
+                     DESKTOP TABLE
+                ============================================== -->
+
+                <div class="participants-table-wrapper">
+
+                    <table class="table participant-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Student</th>
+                                <th>Roll Number</th>
+                                <th>Course</th>
+                                <th>Email</th>
+                                <th>Registered</th>
+                                <th>Attendance</th>
+                                <th>Check-in</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for registration in registrations %}
+
+                                <tr>
+
+
+                                    <!-- STUDENT -->
+
+                                    <td>
+
+                                        <div class="student-cell">
+
+                                            <div class="student-avatar">
+
+                                                {% if registration.student.student_profile.full_name %}
+
+                                                    {{ registration.student.student_profile.full_name|first }}
+
+                                                {% else %}
+
+                                                    {{ registration.student.username|first }}
+
+                                                {% endif %}
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <div class="student-name">
+
+                                                    {% if registration.student.student_profile.full_name %}
+
+                                                        {{ registration.student.student_profile.full_name }}
+
+                                                    {% else %}
+
+                                                        {{ registration.student.username }}
+
+                                                    {% endif %}
+
+                                                </div>
+
+
+                                                <div class="student-username">
+                                                    @{{ registration.student.username }}
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <!-- ROLL -->
+
+                                    <td>
+                                        {{ registration.student.student_profile.roll_number|default:"-" }}
+                                    </td>
+
+
+                                    <!-- COURSE -->
+
+                                    <td>
+                                        {{ registration.student.student_profile.course|default:"-" }}
+                                    </td>
+
+
+                                    <!-- EMAIL -->
+
+                                    <td>
+                                        {{ registration.student.email|default:"-" }}
+                                    </td>
+
+
+                                    <!-- REGISTERED -->
+
+                                    <td>
+
+                                        {{ registration.registered_at|date:"d M Y" }}
+
+                                        <div class="small text-muted">
+                                            {{ registration.registered_at|date:"h:i A" }}
+                                        </div>
+
+                                    </td>
+
+
+                                    <!-- ATTENDANCE -->
+
+                                    <td>
+
+                                        {% if registration.attendance.status == "PRESENT" %}
+
+                                            <span class="attendance-badge attendance-present">
+
+                                                <i class="bi bi-check-circle-fill"></i>
+
+                                                Present
+
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="attendance-badge attendance-pending">
+
+                                                <i class="bi bi-clock"></i>
+
+                                                Not Checked In
+
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- CHECK IN -->
+
+                                    <td>
+
+                                        {% if registration.attendance.checked_in_at %}
+
+                                            {{ registration.attendance.checked_in_at|date:"d M Y" }}
+
+                                            <div class="small text-muted">
+                                                {{ registration.attendance.checked_in_at|date:"h:i A" }}
+                                            </div>
+
+                                        {% else %}
+
+                                            <span class="text-muted">
+                                                &mdash;
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- =============================================
+                     MOBILE / TABLET CARDS
+                ============================================== -->
+
+                <div class="participant-mobile-list">
+
+                    {% for registration in registrations %}
+
+                        <article class="participant-mobile-card">
+
+
+                            <div class="mobile-student-header">
+
+
+                                <div class="mobile-student-main">
+
+                                    <div class="student-avatar">
+
+                                        {% if registration.student.student_profile.full_name %}
+
+                                            {{ registration.student.student_profile.full_name|first }}
+
+                                        {% else %}
+
+                                            {{ registration.student.username|first }}
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <div class="mobile-student-text">
+
+                                        <div class="mobile-student-name">
+
+                                            {% if registration.student.student_profile.full_name %}
+
+                                                {{ registration.student.student_profile.full_name }}
+
+                                            {% else %}
+
+                                                {{ registration.student.username }}
+
+                                            {% endif %}
+
+                                        </div>
+
+
+                                        <div class="mobile-student-username">
+                                            @{{ registration.student.username }}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                {% if registration.attendance.status == "PRESENT" %}
+
+                                    <span class="attendance-badge attendance-present">
+
+                                        <i class="bi bi-check-circle-fill"></i>
+
+                                        Present
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="attendance-badge attendance-pending">
+
+                                        <i class="bi bi-clock"></i>
+
+                                        Not Checked In
+
+                                    </span>
+
+                                {% endif %}
+
+
+                            </div>
+
+
+                            <div class="mobile-details-grid">
+
+
+                                <div class="mobile-detail">
+
+                                    <div class="mobile-detail-label">
+                                        Roll Number
+                                    </div>
+
+                                    <div class="mobile-detail-value">
+
+                                        {{ registration.student.student_profile.roll_number|default:"-" }}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="mobile-detail">
+
+                                    <div class="mobile-detail-label">
+                                        Course
+                                    </div>
+
+                                    <div class="mobile-detail-value">
+
+                                        {{ registration.student.student_profile.course|default:"-" }}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="mobile-detail full">
+
+                                    <div class="mobile-detail-label">
+                                        Email
+                                    </div>
+
+                                    <div class="mobile-detail-value">
+
+                                        {{ registration.student.email|default:"-" }}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="mobile-detail">
+
+                                    <div class="mobile-detail-label">
+                                        Registered
+                                    </div>
+
+                                    <div class="mobile-detail-value">
+
+                                        {{ registration.registered_at|date:"d M Y" }}
+
+                                        <br>
+
+                                        {{ registration.registered_at|date:"h:i A" }}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="mobile-detail">
+
+                                    <div class="mobile-detail-label">
+                                        Check-in
+                                    </div>
+
+                                    <div class="mobile-detail-value">
+
+                                        {% if registration.attendance.checked_in_at %}
+
+                                            {{ registration.attendance.checked_in_at|date:"d M Y" }}
+
+                                            <br>
+
+                                            {{ registration.attendance.checked_in_at|date:"h:i A" }}
+
+                                        {% else %}
+
+                                            &mdash;
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+
+            {% else %}
+
+
+                <!-- =============================================
+                     EMPTY STATE
+                ============================================== -->
+
+                <div class="participants-empty">
+
+                    <div class="participants-empty-icon">
+
+                        {% if search_query %}
+
+                            <i class="bi bi-search"></i>
+
+                        {% else %}
+
+                            <i class="bi bi-people"></i>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if search_query %}
+
+                        <div class="participants-empty-title">
+                            No Participants Found
+                        </div>
+
+
+                        <p class="participants-empty-text">
+
+                            No registered student matched
+                            "{{ search_query }}".
+                            Try another name, username,
+                            roll number or email.
+
+                        </p>
+
+
+                        <a
+                            href="{% url 'event_participants' event.id %}"
+                            class="btn btn-outline-primary btn-sm mt-3"
+                        >
+                            <i class="bi bi-x-lg me-1"></i>
+
+                            Clear Search
+                        </a>
+
+
+                    {% else %}
+
+
+                        <div class="participants-empty-title">
+                            No Registrations Yet
+                        </div>
+
+
+                        <p class="participants-empty-text">
+
+                            Students who register for this event
+                            will appear here.
+
+                        </p>
+
+
+                    {% endif %}
+
+                </div>
+
+
+            {% endif %}
+
+        </section>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

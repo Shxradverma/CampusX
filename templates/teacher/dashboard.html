@@ -1,0 +1,1856 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Dashboard | CampusX{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    /* ==========================================================
+       TEACHER DASHBOARD V2
+    ========================================================== */
+
+    .teacher-dashboard {
+        padding: clamp(18px, 4vw, 42px) 0 clamp(45px, 6vw, 70px);
+    }
+
+
+    /* HERO */
+
+    .teacher-hero {
+        position: relative;
+        overflow: hidden;
+
+        margin-bottom: 24px;
+        padding: clamp(25px, 5vw, 42px);
+
+        border-radius: 22px;
+
+        background:
+            radial-gradient(
+                circle at 86% 18%,
+                rgba(255, 255, 255, .14),
+                transparent 28%
+            ),
+            linear-gradient(
+                135deg,
+                #0f766e 0%,
+                #0d9488 55%,
+                #14b8a6 100%
+            );
+
+        color: white;
+
+        box-shadow:
+            0 20px 50px rgba(13, 148, 136, .17);
+    }
+
+
+    .teacher-hero::before {
+        content: "";
+
+        position: absolute;
+
+        width: 270px;
+        height: 270px;
+
+        right: -100px;
+        top: -140px;
+
+        border: 1px solid rgba(255, 255, 255, .11);
+        border-radius: 50%;
+    }
+
+
+    .teacher-hero::after {
+        content: "";
+
+        position: absolute;
+
+        width: 170px;
+        height: 170px;
+
+        right: 130px;
+        bottom: -125px;
+
+        border-radius: 50%;
+
+        background: rgba(255, 255, 255, .055);
+    }
+
+
+    .teacher-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+
+    .teacher-hero-label {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 7px;
+
+        margin-bottom: 14px;
+        padding: 7px 12px;
+
+        border: 1px solid rgba(255, 255, 255, .14);
+        border-radius: 999px;
+
+        background: rgba(255, 255, 255, .12);
+
+        font-size: .72rem;
+        font-weight: 700;
+    }
+
+
+    .teacher-hero-title {
+        margin-bottom: 9px;
+
+        font-size: clamp(1.65rem, 4vw, 2.3rem);
+        font-weight: 800;
+
+        letter-spacing: -.04em;
+        line-height: 1.15;
+    }
+
+
+    .teacher-hero-description {
+        max-width: 650px;
+
+        margin: 0;
+
+        color: rgba(255, 255, 255, .83);
+
+        font-size: .88rem;
+        line-height: 1.7;
+    }
+
+
+    .teacher-role-badge {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 7px;
+
+        padding: 9px 13px;
+
+        border: 1px solid rgba(255, 255, 255, .17);
+        border-radius: 999px;
+
+        background: rgba(255, 255, 255, .12);
+
+        color: white;
+
+        font-size: .72rem;
+        font-weight: 700;
+
+        backdrop-filter: blur(8px);
+    }
+
+
+    /* ==========================================================
+       STATS
+    ========================================================== */
+
+    .teacher-stats {
+        margin-bottom: 27px;
+    }
+
+
+    .teacher-stat-card {
+        height: 100%;
+
+        padding: 20px;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 16px;
+
+        background: white;
+
+        box-shadow:
+            0 8px 28px rgba(15, 23, 42, .045);
+
+        transition:
+            transform .18s ease,
+            border-color .18s ease,
+            box-shadow .18s ease;
+    }
+
+
+    .teacher-stat-card:hover {
+        transform: translateY(-3px);
+
+        border-color: #99f6e4;
+
+        box-shadow:
+            0 14px 35px rgba(15, 23, 42, .07);
+    }
+
+
+    .teacher-stat-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        gap: 12px;
+
+        margin-bottom: 15px;
+    }
+
+
+    .teacher-stat-label {
+        color: #64748b;
+
+        font-size: .66rem;
+        font-weight: 750;
+
+        text-transform: uppercase;
+        letter-spacing: .055em;
+    }
+
+
+    .teacher-stat-icon {
+        width: 43px;
+        height: 43px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 12px;
+
+        background: #f0fdfa;
+        color: #0f766e;
+
+        font-size: 1.05rem;
+    }
+
+
+    .teacher-stat-icon.blue {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+
+    .teacher-stat-icon.green {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+
+    .teacher-stat-number {
+        margin-bottom: 3px;
+
+        color: #0f172a;
+
+        font-size: clamp(1.3rem, 3vw, 1.65rem);
+        font-weight: 800;
+    }
+
+
+    .teacher-stat-description {
+        color: #64748b;
+
+        font-size: .7rem;
+        line-height: 1.5;
+    }
+
+
+    /* ==========================================================
+       PANEL
+    ========================================================== */
+
+    .teacher-panel {
+        overflow: hidden;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 18px;
+
+        background: white;
+
+        box-shadow:
+            0 9px 32px rgba(15, 23, 42, .045);
+    }
+
+
+    .teacher-panel-header {
+        padding: 21px 23px;
+
+        border-bottom: 1px solid var(--cx-border);
+    }
+
+
+    .teacher-panel-header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 15px;
+    }
+
+
+    .teacher-section-title {
+        margin-bottom: 3px;
+
+        color: var(--cx-dark);
+
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        font-weight: 800;
+
+        letter-spacing: -.025em;
+    }
+
+
+    .teacher-section-description {
+        margin: 0;
+
+        color: var(--cx-muted);
+
+        font-size: .75rem;
+        line-height: 1.55;
+    }
+
+
+    .teacher-count-badge {
+        display: inline-flex;
+        align-items: center;
+
+        flex-shrink: 0;
+
+        gap: 5px;
+
+        padding: 6px 10px;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 999px;
+
+        background: #f8fafc;
+        color: #475569;
+
+        font-size: .65rem;
+        font-weight: 700;
+    }
+
+
+    /* ==========================================================
+       DESKTOP TABLE
+    ========================================================== */
+
+    .teacher-event-table {
+        margin-bottom: 0;
+    }
+
+
+    .teacher-event-table thead th {
+        padding-top: 13px;
+        padding-bottom: 13px;
+
+        border-bottom: 1px solid var(--cx-border);
+
+        background: #f8fafc;
+        color: #64748b;
+
+        font-size: .62rem;
+        font-weight: 750;
+
+        text-transform: uppercase;
+        letter-spacing: .04em;
+
+        white-space: nowrap;
+    }
+
+
+    .teacher-event-table tbody td {
+        padding-top: 17px;
+        padding-bottom: 17px;
+
+        border-color: #f1f5f9;
+
+        vertical-align: middle;
+    }
+
+
+    .teacher-event-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+
+    .teacher-event-title {
+        max-width: 220px;
+
+        color: #0f172a;
+
+        font-size: .8rem;
+        font-weight: 750;
+
+        line-height: 1.4;
+    }
+
+
+    .teacher-event-location,
+    .teacher-event-meta {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 6px;
+
+        margin-top: 5px;
+
+        color: #64748b;
+
+        font-size: .69rem;
+        line-height: 1.45;
+    }
+
+
+    .teacher-event-location i,
+    .teacher-event-meta i {
+        flex-shrink: 0;
+
+        margin-top: 1px;
+
+        color: #94a3b8;
+    }
+
+
+    .teacher-category {
+        display: inline-flex;
+
+        margin-top: 7px;
+        padding: 4px 8px;
+
+        border-radius: 7px;
+
+        background: #f0fdfa;
+        color: #0f766e;
+
+        font-size: .6rem;
+        font-weight: 700;
+    }
+
+
+    .teacher-team-role {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        padding: 5px 8px;
+
+        border-radius: 999px;
+
+        background: #ccfbf1;
+        color: #0f766e;
+
+        font-size: .62rem;
+        font-weight: 750;
+
+        white-space: nowrap;
+    }
+
+
+    .teacher-responsibility {
+        max-width: 220px;
+
+        margin-top: 7px;
+
+        color: #64748b;
+
+        font-size: .67rem;
+        line-height: 1.5;
+    }
+
+
+    /* STATUS */
+
+    .teacher-status {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        padding: 5px 8px;
+
+        border-radius: 999px;
+
+        font-size: .61rem;
+        font-weight: 750;
+
+        white-space: nowrap;
+    }
+
+
+    .teacher-published {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+
+    .teacher-draft {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+
+    .teacher-cancelled {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+
+    .teacher-completed {
+        background: #e0f2fe;
+        color: #0369a1;
+    }
+
+
+    /* ==========================================================
+       MOBILE EVENT CARDS
+    ========================================================== */
+
+    .teacher-mobile-events {
+        display: none;
+
+        padding: 14px;
+    }
+
+
+    .teacher-mobile-event {
+        padding: 17px;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 15px;
+
+        background: white;
+    }
+
+
+    .teacher-mobile-event + .teacher-mobile-event {
+        margin-top: 12px;
+    }
+
+
+    .teacher-mobile-event-title {
+        margin-bottom: 6px;
+
+        color: #0f172a;
+
+        font-size: .9rem;
+        font-weight: 800;
+
+        line-height: 1.4;
+    }
+
+
+    .teacher-mobile-badges {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 6px;
+
+        margin: 12px 0;
+    }
+
+
+    .teacher-mobile-meta {
+        display: grid;
+
+        gap: 8px;
+
+        margin-bottom: 13px;
+        padding: 12px 0;
+
+        border-top: 1px solid #f1f5f9;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+
+    .teacher-mobile-responsibility {
+        margin-bottom: 14px;
+        padding: 11px 12px;
+
+        border-radius: 10px;
+
+        background: #f8fafc;
+        color: #64748b;
+
+        font-size: .7rem;
+        line-height: 1.55;
+    }
+
+
+    .teacher-mobile-responsibility strong {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: #334155;
+
+        font-size: .63rem;
+
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+
+
+    .teacher-mobile-event .btn {
+        width: 100%;
+    }
+
+
+    /* ==========================================================
+       EMPTY STATE
+    ========================================================== */
+
+    .teacher-empty {
+        padding: clamp(45px, 8vw, 70px) 20px;
+
+        text-align: center;
+    }
+
+
+    .teacher-empty-icon {
+        width: 68px;
+        height: 68px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 16px;
+
+        border-radius: 50%;
+
+        background: #ccfbf1;
+        color: #0f766e;
+
+        font-size: 1.55rem;
+    }
+
+
+    .teacher-empty-title {
+        margin-bottom: 7px;
+
+        color: #0f172a;
+
+        font-size: .98rem;
+        font-weight: 800;
+    }
+
+
+    .teacher-empty-text {
+        max-width: 390px;
+
+        margin: 0 auto;
+
+        color: #64748b;
+
+        font-size: .78rem;
+        line-height: 1.65;
+    }
+
+
+    /* ==========================================================
+       ACCESS CARD
+    ========================================================== */
+
+    .teacher-access-card {
+        margin-top: 20px;
+        padding: 18px;
+
+        border: 1px solid #bae6fd;
+        border-radius: 15px;
+
+        background: #f0f9ff;
+    }
+
+
+    .teacher-access-layout {
+        display: flex;
+
+        gap: 13px;
+    }
+
+
+    .teacher-access-icon {
+        width: 42px;
+        height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 11px;
+
+        background: #e0f2fe;
+        color: #0369a1;
+    }
+
+
+    .teacher-access-title {
+        margin-bottom: 3px;
+
+        color: #0f172a;
+
+        font-size: .8rem;
+        font-weight: 750;
+    }
+
+
+    .teacher-access-text {
+        color: #64748b;
+
+        font-size: .7rem;
+        line-height: 1.6;
+    }
+
+
+    /* ==========================================================
+       PROFILE
+    ========================================================== */
+
+    .teacher-profile-card {
+        overflow: hidden;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 18px;
+
+        background: white;
+
+        box-shadow:
+            0 9px 32px rgba(15, 23, 42, .045);
+    }
+
+
+    .teacher-profile-cover {
+        height: 90px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #0f766e,
+                #14b8a6
+            );
+    }
+
+
+    .teacher-profile-content {
+        padding: 0 22px 22px;
+    }
+
+
+    .teacher-profile-avatar {
+        width: 76px;
+        height: 76px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        overflow: hidden;
+
+        margin-top: -38px;
+        margin-bottom: 13px;
+
+        border: 5px solid white;
+        border-radius: 50%;
+
+        background: #ccfbf1;
+        color: #0f766e;
+
+        box-shadow:
+            0 6px 18px rgba(15, 23, 42, .10);
+
+        font-size: 1.35rem;
+        font-weight: 800;
+    }
+
+
+    .teacher-profile-avatar img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+    }
+
+
+    .teacher-profile-name {
+        color: #0f172a;
+
+        font-size: 1.08rem;
+        font-weight: 800;
+    }
+
+
+    .teacher-profile-role {
+        margin-top: 2px;
+
+        color: #64748b;
+
+        font-size: .75rem;
+    }
+
+
+    .teacher-profile-divider {
+        margin: 18px 0;
+
+        border-top: 1px solid #e2e8f0;
+    }
+
+
+    .teacher-profile-info {
+        display: flex;
+
+        gap: 11px;
+
+        padding: 9px 0;
+    }
+
+
+    .teacher-profile-info-icon {
+        width: 36px;
+        height: 36px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 9px;
+
+        background: #f0fdfa;
+        color: #0f766e;
+    }
+
+
+    .teacher-profile-info-content {
+        min-width: 0;
+    }
+
+
+    .teacher-profile-info-label {
+        margin-bottom: 2px;
+
+        color: #64748b;
+
+        font-size: .59rem;
+        font-weight: 700;
+
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+
+
+    .teacher-profile-info-value {
+        overflow-wrap: anywhere;
+
+        color: #0f172a;
+
+        font-size: .78rem;
+        font-weight: 650;
+    }
+
+
+    /* ==========================================================
+       TABLET
+    ========================================================== */
+
+    @media (max-width: 991.98px) {
+
+        .teacher-desktop-events {
+            display: none;
+        }
+
+
+        .teacher-mobile-events {
+            display: block;
+        }
+
+
+        .teacher-profile-card {
+            margin-top: 0;
+        }
+
+    }
+
+
+    /* ==========================================================
+       MOBILE
+    ========================================================== */
+
+    @media (max-width: 767.98px) {
+
+        .teacher-dashboard {
+            padding-top: 18px;
+        }
+
+
+        .teacher-hero {
+            padding: 24px 20px;
+
+            margin-bottom: 18px;
+
+            border-radius: 18px;
+        }
+
+
+        .teacher-role-wrap {
+            text-align: left !important;
+        }
+
+
+        .teacher-role-badge {
+            margin-top: 2px;
+        }
+
+
+        .teacher-stats {
+            margin-bottom: 23px;
+        }
+
+
+        .teacher-stat-card {
+            padding: 17px;
+        }
+
+
+        .teacher-panel-header {
+            padding: 18px;
+        }
+
+
+        .teacher-panel-header-inner {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+
+        .teacher-profile-content {
+            padding: 0 18px 18px;
+        }
+
+    }
+
+
+    /* ==========================================================
+       SMALL MOBILE
+    ========================================================== */
+
+    @media (max-width: 575.98px) {
+
+        .teacher-dashboard {
+            padding-top: 14px;
+        }
+
+
+        .teacher-hero {
+            padding: 21px 17px;
+
+            border-radius: 16px;
+        }
+
+
+        .teacher-hero-title {
+            font-size: 1.55rem;
+        }
+
+
+        .teacher-hero-description {
+            font-size: .8rem;
+        }
+
+
+        .teacher-stat-card {
+            padding: 15px;
+
+            border-radius: 14px;
+        }
+
+
+        .teacher-stat-icon {
+            width: 39px;
+            height: 39px;
+        }
+
+
+        .teacher-panel {
+            border-radius: 16px;
+        }
+
+
+        .teacher-panel-header {
+            padding: 16px;
+        }
+
+
+        .teacher-mobile-events {
+            padding: 11px;
+        }
+
+
+        .teacher-mobile-event {
+            padding: 15px;
+        }
+
+
+        .teacher-access-card {
+            padding: 15px;
+        }
+
+
+        .teacher-profile-card {
+            border-radius: 16px;
+        }
+
+    }
+
+
+    @media (max-width: 374.98px) {
+
+        .teacher-hero-title {
+            font-size: 1.42rem;
+        }
+
+
+        .teacher-access-layout {
+            flex-direction: column;
+        }
+
+    }
+
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .teacher-stat-card {
+            transition: none;
+        }
+
+
+        .teacher-stat-card:hover {
+            transform: none;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="teacher-dashboard">
+
+    <div class="container">
+
+
+        <!-- HERO -->
+
+        <section class="teacher-hero">
+
+            <div class="teacher-hero-content">
+
+                <div class="row align-items-center g-4">
+
+                    <div class="col-lg-8">
+
+                        <div class="teacher-hero-label">
+
+                            <i class="bi bi-person-workspace"></i>
+
+                            Faculty Portal
+
+                        </div>
+
+
+                        <h1 class="teacher-hero-title">
+
+                            Welcome,
+
+                            {% if request.user.teacher_profile %}
+                                {{ request.user.teacher_profile.full_name }}
+                            {% else %}
+                                {{ request.user.username }}
+                            {% endif %}
+
+                        </h1>
+
+
+                        <p class="teacher-hero-description">
+
+                            View your assigned events, monitor
+                            participants and coordinate event
+                            responsibilities from your faculty dashboard.
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="col-lg-4 text-lg-end teacher-role-wrap">
+
+                        <span class="teacher-role-badge">
+
+                            <i class="bi bi-mortarboard-fill"></i>
+
+                            {{ request.user.get_role_display }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- STATISTICS -->
+
+        <section class="teacher-stats">
+
+            <div class="row g-3">
+
+
+                <div class="col-12 col-sm-4">
+
+                    <div class="teacher-stat-card">
+
+                        <div class="teacher-stat-top">
+
+                            <div class="teacher-stat-label">
+                                Assigned Events
+                            </div>
+
+                            <div class="teacher-stat-icon">
+                                <i class="bi bi-calendar-event"></i>
+                            </div>
+
+                        </div>
+
+                        <div class="teacher-stat-number">
+                            {{ total_events }}
+                        </div>
+
+                        <div class="teacher-stat-description">
+                            Events assigned to you
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-12 col-sm-4">
+
+                    <div class="teacher-stat-card">
+
+                        <div class="teacher-stat-top">
+
+                            <div class="teacher-stat-label">
+                                Participants
+                            </div>
+
+                            <div class="teacher-stat-icon blue">
+                                <i class="bi bi-people"></i>
+                            </div>
+
+                        </div>
+
+                        <div class="teacher-stat-number">
+                            {{ total_participants }}
+                        </div>
+
+                        <div class="teacher-stat-description">
+                            Registered students
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-12 col-sm-4">
+
+                    <div class="teacher-stat-card">
+
+                        <div class="teacher-stat-top">
+
+                            <div class="teacher-stat-label">
+                                Present Students
+                            </div>
+
+                            <div class="teacher-stat-icon green">
+                                <i class="bi bi-person-check"></i>
+                            </div>
+
+                        </div>
+
+                        <div class="teacher-stat-number">
+                            {{ total_attendance }}
+                        </div>
+
+                        <div class="teacher-stat-description">
+                            Attendance recorded
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- MAIN -->
+
+        <div class="row g-4">
+
+
+            <!-- ASSIGNED EVENTS -->
+
+            <div class="col-xl-8">
+
+                <div class="teacher-panel">
+
+
+                    <div class="teacher-panel-header">
+
+                        <div class="teacher-panel-header-inner">
+
+                            <div>
+
+                                <h2 class="teacher-section-title">
+                                    Assigned Events
+                                </h2>
+
+                                <p class="teacher-section-description">
+
+                                    Events where you have been assigned
+                                    a faculty responsibility.
+
+                                </p>
+
+                            </div>
+
+
+                            <span class="teacher-count-badge">
+
+                                <i class="bi bi-calendar3"></i>
+
+                                {{ total_events }}
+                                Event{{ total_events|pluralize }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    {% if assignments %}
+
+
+                        <!-- DESKTOP TABLE -->
+
+                        <div class="table-responsive teacher-desktop-events">
+
+                            <table class="table teacher-event-table align-middle">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th class="ps-4">
+                                            Event
+                                        </th>
+
+                                        <th>
+                                            Responsibility
+                                        </th>
+
+                                        <th>
+                                            Schedule
+                                        </th>
+
+                                        <th>
+                                            Status
+                                        </th>
+
+                                        <th class="text-end pe-4">
+                                            Action
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    {% for assignment in assignments %}
+
+                                        <tr>
+
+
+                                            <td class="ps-4">
+
+                                                <div class="teacher-event-title">
+                                                    {{ assignment.event.title }}
+                                                </div>
+
+
+                                                <div class="teacher-event-location">
+
+                                                    <i class="bi bi-geo-alt"></i>
+
+                                                    <span>
+                                                        {{ assignment.event.venue }}
+                                                    </span>
+
+                                                </div>
+
+
+                                                {% if assignment.event.category %}
+
+                                                    <span class="teacher-category">
+                                                        {{ assignment.event.category.name }}
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </td>
+
+
+                                            <td>
+
+                                                <span class="teacher-team-role">
+
+                                                    <i class="bi bi-person-badge"></i>
+
+                                                    {{ assignment.get_team_role_display }}
+
+                                                </span>
+
+
+                                                {% if assignment.responsibility %}
+
+                                                    <div class="teacher-responsibility">
+
+                                                        {{ assignment.responsibility|truncatechars:85 }}
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                            </td>
+
+
+                                            <td>
+
+                                                <div class="teacher-event-meta">
+
+                                                    <i class="bi bi-calendar3"></i>
+
+                                                    <span>
+                                                        {{ assignment.event.start_datetime|date:"d M Y" }}
+                                                    </span>
+
+                                                </div>
+
+
+                                                <div class="teacher-event-meta">
+
+                                                    <i class="bi bi-clock"></i>
+
+                                                    <span>
+                                                        {{ assignment.event.start_datetime|date:"h:i A" }}
+                                                    </span>
+
+                                                </div>
+
+                                            </td>
+
+
+                                            <td>
+
+                                                {% if assignment.event.status == "PUBLISHED" %}
+
+                                                    <span class="teacher-status teacher-published">
+
+                                                        <i class="bi bi-broadcast"></i>
+
+                                                        Published
+
+                                                    </span>
+
+                                                {% elif assignment.event.status == "DRAFT" %}
+
+                                                    <span class="teacher-status teacher-draft">
+
+                                                        <i class="bi bi-pencil"></i>
+
+                                                        Draft
+
+                                                    </span>
+
+                                                {% elif assignment.event.status == "CANCELLED" %}
+
+                                                    <span class="teacher-status teacher-cancelled">
+
+                                                        <i class="bi bi-x-circle"></i>
+
+                                                        Cancelled
+
+                                                    </span>
+
+                                                {% elif assignment.event.status == "COMPLETED" %}
+
+                                                    <span class="teacher-status teacher-completed">
+
+                                                        <i class="bi bi-check2-circle"></i>
+
+                                                        Completed
+
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span class="teacher-status teacher-draft">
+
+                                                        {{ assignment.event.get_status_display }}
+
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </td>
+
+
+                                            <td class="text-end pe-4">
+
+                                                <a
+                                                    href="{% url 'event_detail' assignment.event.id %}"
+                                                    class="btn btn-outline-primary btn-sm px-3"
+                                                >
+                                                    View
+
+                                                    <i class="bi bi-arrow-right ms-1"></i>
+                                                </a>
+
+                                            </td>
+
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <!-- MOBILE CARDS -->
+
+                        <div class="teacher-mobile-events">
+
+                            {% for assignment in assignments %}
+
+                                <article class="teacher-mobile-event">
+
+
+                                    <div class="teacher-mobile-event-title">
+                                        {{ assignment.event.title }}
+                                    </div>
+
+
+                                    {% if assignment.event.category %}
+
+                                        <span class="teacher-category">
+                                            {{ assignment.event.category.name }}
+                                        </span>
+
+                                    {% endif %}
+
+
+                                    <div class="teacher-mobile-badges">
+
+                                        <span class="teacher-team-role">
+
+                                            <i class="bi bi-person-badge"></i>
+
+                                            {{ assignment.get_team_role_display }}
+
+                                        </span>
+
+
+                                        {% if assignment.event.status == "PUBLISHED" %}
+
+                                            <span class="teacher-status teacher-published">
+                                                <i class="bi bi-broadcast"></i>
+                                                Published
+                                            </span>
+
+                                        {% elif assignment.event.status == "DRAFT" %}
+
+                                            <span class="teacher-status teacher-draft">
+                                                <i class="bi bi-pencil"></i>
+                                                Draft
+                                            </span>
+
+                                        {% elif assignment.event.status == "CANCELLED" %}
+
+                                            <span class="teacher-status teacher-cancelled">
+                                                <i class="bi bi-x-circle"></i>
+                                                Cancelled
+                                            </span>
+
+                                        {% elif assignment.event.status == "COMPLETED" %}
+
+                                            <span class="teacher-status teacher-completed">
+                                                <i class="bi bi-check2-circle"></i>
+                                                Completed
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="teacher-status teacher-draft">
+                                                {{ assignment.event.get_status_display }}
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <div class="teacher-mobile-meta">
+
+                                        <div class="teacher-event-meta">
+
+                                            <i class="bi bi-calendar3"></i>
+
+                                            <span>
+                                                {{ assignment.event.start_datetime|date:"d M Y" }}
+                                            </span>
+
+                                        </div>
+
+
+                                        <div class="teacher-event-meta">
+
+                                            <i class="bi bi-clock"></i>
+
+                                            <span>
+                                                {{ assignment.event.start_datetime|date:"h:i A" }}
+                                            </span>
+
+                                        </div>
+
+
+                                        <div class="teacher-event-meta">
+
+                                            <i class="bi bi-geo-alt"></i>
+
+                                            <span>
+                                                {{ assignment.event.venue }}
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {% if assignment.responsibility %}
+
+                                        <div class="teacher-mobile-responsibility">
+
+                                            <strong>
+                                                Responsibility
+                                            </strong>
+
+                                            {{ assignment.responsibility }}
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    <a
+                                        href="{% url 'event_detail' assignment.event.id %}"
+                                        class="btn btn-outline-primary btn-sm"
+                                    >
+                                        View Event
+
+                                        <i class="bi bi-arrow-right ms-1"></i>
+                                    </a>
+
+
+                                </article>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                    {% else %}
+
+
+                        <div class="teacher-empty">
+
+                            <div class="teacher-empty-icon">
+                                <i class="bi bi-calendar2-x"></i>
+                            </div>
+
+
+                            <div class="teacher-empty-title">
+                                No Events Assigned
+                            </div>
+
+
+                            <p class="teacher-empty-text">
+
+                                Events assigned to you by an organizer
+                                will appear here.
+
+                            </p>
+
+                        </div>
+
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <!-- ACCESS -->
+
+                <div class="teacher-access-card">
+
+                    <div class="teacher-access-layout">
+
+                        <div class="teacher-access-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+
+
+                        <div>
+
+                            <div class="teacher-access-title">
+                                Faculty Access
+                            </div>
+
+                            <div class="teacher-access-text">
+
+                                You can view assigned event information
+                                and participant details. Event editing,
+                                deletion and team management remain
+                                restricted to the event organizer.
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 FACULTY PROFILE
+            ================================================== -->
+
+            <div class="col-xl-4">
+
+                <div class="teacher-profile-card">
+
+
+                    <div class="teacher-profile-cover"></div>
+
+
+                    <div class="teacher-profile-content">
+
+
+                        {% if request.user.teacher_profile %}
+
+
+                            <div class="teacher-profile-avatar">
+
+                                {% if request.user.teacher_profile.profile_photo %}
+
+                                    <img
+                                        src="{{ request.user.teacher_profile.profile_photo.url }}"
+                                        alt="{{ request.user.teacher_profile.full_name }}"
+                                    >
+
+                                {% else %}
+
+                                    {{ request.user.teacher_profile.full_name|first|upper }}
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="teacher-profile-name">
+
+                                {{ request.user.teacher_profile.full_name }}
+
+                            </div>
+
+
+                            <div class="teacher-profile-role">
+
+                                {{ request.user.teacher_profile.designation|default:"Faculty Member" }}
+
+                            </div>
+
+
+                            <div class="teacher-profile-divider"></div>
+
+
+                            <!-- EMPLOYEE ID -->
+
+                            <div class="teacher-profile-info">
+
+                                <div class="teacher-profile-info-icon">
+                                    <i class="bi bi-person-vcard"></i>
+                                </div>
+
+
+                                <div class="teacher-profile-info-content">
+
+                                    <div class="teacher-profile-info-label">
+                                        Employee ID
+                                    </div>
+
+                                    <div class="teacher-profile-info-value">
+                                        {{ request.user.teacher_profile.employee_id }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- DEPARTMENT -->
+
+                            <div class="teacher-profile-info">
+
+                                <div class="teacher-profile-info-icon">
+                                    <i class="bi bi-building"></i>
+                                </div>
+
+
+                                <div class="teacher-profile-info-content">
+
+                                    <div class="teacher-profile-info-label">
+                                        Department
+                                    </div>
+
+                                    <div class="teacher-profile-info-value">
+                                        {{ request.user.teacher_profile.department }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- EMAIL -->
+
+                            <div class="teacher-profile-info">
+
+                                <div class="teacher-profile-info-icon">
+                                    <i class="bi bi-envelope"></i>
+                                </div>
+
+
+                                <div class="teacher-profile-info-content">
+
+                                    <div class="teacher-profile-info-label">
+                                        Email
+                                    </div>
+
+                                    <div class="teacher-profile-info-value">
+                                        {{ request.user.email }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- PHONE -->
+
+                            <div class="teacher-profile-info">
+
+                                <div class="teacher-profile-info-icon">
+                                    <i class="bi bi-telephone"></i>
+                                </div>
+
+
+                                <div class="teacher-profile-info-content">
+
+                                    <div class="teacher-profile-info-label">
+                                        Phone
+                                    </div>
+
+                                    <div class="teacher-profile-info-value">
+
+                                        {{ request.user.teacher_profile.phone_number|default:"Not provided" }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        {% else %}
+
+
+                            <div class="pt-4">
+
+                                <div class="alert alert-warning mb-0">
+
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+
+                                    Teacher profile has not been created.
+
+                                </div>
+
+                            </div>
+
+
+                        {% endif %}
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

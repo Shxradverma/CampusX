@@ -1,0 +1,1886 @@
+{% extends "base.html" %}
+
+{% block title %}Core Committee Dashboard | CampusX{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    /* ==========================================================
+       CORE COMMITTEE DASHBOARD V2
+    ========================================================== */
+
+    .committee-dashboard {
+        padding: clamp(18px, 4vw, 42px) 0 clamp(45px, 6vw, 70px);
+    }
+
+
+    /* ==========================================================
+       HERO
+    ========================================================== */
+
+    .committee-hero {
+        position: relative;
+        overflow: hidden;
+
+        margin-bottom: 24px;
+        padding: clamp(25px, 5vw, 42px);
+
+        border-radius: 22px;
+
+        background:
+            radial-gradient(
+                circle at 86% 18%,
+                rgba(255, 255, 255, .14),
+                transparent 28%
+            ),
+            linear-gradient(
+                135deg,
+                #9a3412 0%,
+                #ea580c 55%,
+                #f97316 100%
+            );
+
+        color: white;
+
+        box-shadow:
+            0 20px 50px rgba(234, 88, 12, .17);
+    }
+
+
+    .committee-hero::before {
+        content: "";
+
+        position: absolute;
+
+        width: 270px;
+        height: 270px;
+
+        right: -100px;
+        top: -140px;
+
+        border: 1px solid rgba(255, 255, 255, .11);
+        border-radius: 50%;
+    }
+
+
+    .committee-hero::after {
+        content: "";
+
+        position: absolute;
+
+        width: 170px;
+        height: 170px;
+
+        right: 130px;
+        bottom: -125px;
+
+        border-radius: 50%;
+
+        background: rgba(255, 255, 255, .055);
+    }
+
+
+    .committee-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+
+    .committee-hero-label {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 7px;
+
+        margin-bottom: 14px;
+        padding: 7px 12px;
+
+        border: 1px solid rgba(255, 255, 255, .14);
+        border-radius: 999px;
+
+        background: rgba(255, 255, 255, .12);
+
+        font-size: .72rem;
+        font-weight: 700;
+    }
+
+
+    .committee-hero-title {
+        margin-bottom: 9px;
+
+        font-size: clamp(1.65rem, 4vw, 2.3rem);
+        font-weight: 800;
+
+        letter-spacing: -.04em;
+        line-height: 1.15;
+    }
+
+
+    .committee-hero-description {
+        max-width: 650px;
+
+        margin: 0;
+
+        color: rgba(255, 255, 255, .83);
+
+        font-size: .88rem;
+        line-height: 1.7;
+    }
+
+
+    .committee-role-badge {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 7px;
+
+        padding: 9px 13px;
+
+        border: 1px solid rgba(255, 255, 255, .17);
+        border-radius: 999px;
+
+        background: rgba(255, 255, 255, .12);
+
+        color: white;
+
+        font-size: .72rem;
+        font-weight: 700;
+
+        backdrop-filter: blur(8px);
+    }
+
+
+    /* ==========================================================
+       STATS
+    ========================================================== */
+
+    .committee-stats {
+        margin-bottom: 27px;
+    }
+
+
+    .committee-stat-card {
+        height: 100%;
+
+        padding: 20px;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 16px;
+
+        background: white;
+
+        box-shadow:
+            0 8px 28px rgba(15, 23, 42, .045);
+
+        transition:
+            transform .18s ease,
+            border-color .18s ease,
+            box-shadow .18s ease;
+    }
+
+
+    .committee-stat-card:hover {
+        transform: translateY(-3px);
+
+        border-color: #fed7aa;
+
+        box-shadow:
+            0 14px 35px rgba(15, 23, 42, .07);
+    }
+
+
+    .committee-stat-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        gap: 12px;
+
+        margin-bottom: 15px;
+    }
+
+
+    .committee-stat-label {
+        color: #64748b;
+
+        font-size: .66rem;
+        font-weight: 750;
+
+        text-transform: uppercase;
+        letter-spacing: .055em;
+    }
+
+
+    .committee-stat-icon {
+        width: 43px;
+        height: 43px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 12px;
+
+        background: #fff7ed;
+        color: #c2410c;
+
+        font-size: 1.05rem;
+    }
+
+
+    .committee-stat-icon.purple {
+        background: #f5f3ff;
+        color: #7c3aed;
+    }
+
+
+    .committee-stat-icon.green {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+
+    .committee-stat-number {
+        margin-bottom: 3px;
+
+        color: #0f172a;
+
+        font-size: clamp(1.3rem, 3vw, 1.65rem);
+        font-weight: 800;
+    }
+
+
+    .committee-stat-description {
+        color: #64748b;
+
+        font-size: .7rem;
+        line-height: 1.5;
+    }
+
+
+    /* ==========================================================
+       PANEL
+    ========================================================== */
+
+    .committee-panel {
+        overflow: hidden;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 18px;
+
+        background: white;
+
+        box-shadow:
+            0 9px 32px rgba(15, 23, 42, .045);
+    }
+
+
+    .committee-panel-header {
+        padding: 21px 23px;
+
+        border-bottom: 1px solid var(--cx-border);
+    }
+
+
+    .committee-panel-header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 15px;
+    }
+
+
+    .committee-section-title {
+        margin-bottom: 3px;
+
+        color: var(--cx-dark);
+
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        font-weight: 800;
+
+        letter-spacing: -.025em;
+    }
+
+
+    .committee-section-description {
+        margin: 0;
+
+        color: var(--cx-muted);
+
+        font-size: .75rem;
+        line-height: 1.55;
+    }
+
+
+    .committee-count-badge {
+        display: inline-flex;
+        align-items: center;
+
+        flex-shrink: 0;
+
+        gap: 5px;
+
+        padding: 6px 10px;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 999px;
+
+        background: #f8fafc;
+        color: #475569;
+
+        font-size: .65rem;
+        font-weight: 700;
+    }
+
+
+    /* ==========================================================
+       DESKTOP TABLE
+    ========================================================== */
+
+    .committee-event-table {
+        margin-bottom: 0;
+    }
+
+
+    .committee-event-table thead th {
+        padding-top: 13px;
+        padding-bottom: 13px;
+
+        border-bottom: 1px solid var(--cx-border);
+
+        background: #f8fafc;
+        color: #64748b;
+
+        font-size: .62rem;
+        font-weight: 750;
+
+        text-transform: uppercase;
+        letter-spacing: .04em;
+
+        white-space: nowrap;
+    }
+
+
+    .committee-event-table tbody td {
+        padding-top: 17px;
+        padding-bottom: 17px;
+
+        border-color: #f1f5f9;
+
+        vertical-align: middle;
+    }
+
+
+    .committee-event-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+
+    .committee-event-title {
+        max-width: 220px;
+
+        color: #0f172a;
+
+        font-size: .8rem;
+        font-weight: 750;
+
+        line-height: 1.4;
+    }
+
+
+    .committee-event-location,
+    .committee-event-meta {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 6px;
+
+        margin-top: 5px;
+
+        color: #64748b;
+
+        font-size: .69rem;
+        line-height: 1.45;
+    }
+
+
+    .committee-event-location i,
+    .committee-event-meta i {
+        flex-shrink: 0;
+
+        margin-top: 1px;
+
+        color: #94a3b8;
+    }
+
+
+    .committee-category {
+        display: inline-flex;
+
+        margin-top: 7px;
+        padding: 4px 8px;
+
+        border-radius: 7px;
+
+        background: #fff7ed;
+        color: #c2410c;
+
+        font-size: .6rem;
+        font-weight: 700;
+    }
+
+
+    .committee-duty-badge {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        padding: 5px 8px;
+
+        border-radius: 999px;
+
+        background: #ffedd5;
+        color: #c2410c;
+
+        font-size: .62rem;
+        font-weight: 750;
+
+        white-space: nowrap;
+    }
+
+
+    .committee-responsibility {
+        max-width: 220px;
+
+        margin-top: 7px;
+
+        color: #64748b;
+
+        font-size: .67rem;
+        line-height: 1.5;
+    }
+
+
+    /* ==========================================================
+       STATUS
+    ========================================================== */
+
+    .committee-status {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        padding: 5px 8px;
+
+        border-radius: 999px;
+
+        font-size: .61rem;
+        font-weight: 750;
+
+        white-space: nowrap;
+    }
+
+
+    .committee-published {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+
+    .committee-draft {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+
+    .committee-cancelled {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+
+    .committee-completed {
+        background: #e0f2fe;
+        color: #0369a1;
+    }
+
+
+    /* ==========================================================
+       MOBILE EVENT CARDS
+    ========================================================== */
+
+    .committee-mobile-events {
+        display: none;
+
+        padding: 14px;
+    }
+
+
+    .committee-mobile-event {
+        padding: 17px;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 15px;
+
+        background: white;
+    }
+
+
+    .committee-mobile-event + .committee-mobile-event {
+        margin-top: 12px;
+    }
+
+
+    .committee-mobile-event-title {
+        margin-bottom: 6px;
+
+        color: #0f172a;
+
+        font-size: .9rem;
+        font-weight: 800;
+
+        line-height: 1.4;
+    }
+
+
+    .committee-mobile-badges {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 6px;
+
+        margin: 12px 0;
+    }
+
+
+    .committee-mobile-meta {
+        display: grid;
+
+        gap: 8px;
+
+        margin-bottom: 13px;
+        padding: 12px 0;
+
+        border-top: 1px solid #f1f5f9;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+
+    .committee-mobile-responsibility {
+        margin-bottom: 14px;
+        padding: 11px 12px;
+
+        border-radius: 10px;
+
+        background: #f8fafc;
+        color: #64748b;
+
+        font-size: .7rem;
+        line-height: 1.55;
+    }
+
+
+    .committee-mobile-responsibility strong {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: #334155;
+
+        font-size: .63rem;
+
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+
+
+    .committee-mobile-event .btn {
+        width: 100%;
+    }
+
+
+    /* ==========================================================
+       EMPTY STATE
+    ========================================================== */
+
+    .committee-empty {
+        padding: clamp(45px, 8vw, 70px) 20px;
+
+        text-align: center;
+    }
+
+
+    .committee-empty-icon {
+        width: 68px;
+        height: 68px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 16px;
+
+        border-radius: 50%;
+
+        background: #ffedd5;
+        color: #c2410c;
+
+        font-size: 1.55rem;
+    }
+
+
+    .committee-empty-title {
+        margin-bottom: 7px;
+
+        color: #0f172a;
+
+        font-size: .98rem;
+        font-weight: 800;
+    }
+
+
+    .committee-empty-text {
+        max-width: 390px;
+
+        margin: 0 auto;
+
+        color: #64748b;
+
+        font-size: .78rem;
+        line-height: 1.65;
+    }
+
+
+    /* ==========================================================
+       ACCESS
+    ========================================================== */
+
+    .committee-access-card {
+        margin-top: 20px;
+        padding: 18px;
+
+        border: 1px solid #fed7aa;
+        border-radius: 15px;
+
+        background: #fff7ed;
+    }
+
+
+    .committee-access-layout {
+        display: flex;
+
+        gap: 13px;
+    }
+
+
+    .committee-access-icon {
+        width: 42px;
+        height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 11px;
+
+        background: #ffedd5;
+        color: #c2410c;
+    }
+
+
+    .committee-access-title {
+        margin-bottom: 3px;
+
+        color: #0f172a;
+
+        font-size: .8rem;
+        font-weight: 750;
+    }
+
+
+    .committee-access-text {
+        color: #64748b;
+
+        font-size: .7rem;
+        line-height: 1.6;
+    }
+
+
+    /* ==========================================================
+       PROFILE
+    ========================================================== */
+
+    .committee-profile-card {
+        overflow: hidden;
+
+        border: 1px solid var(--cx-border);
+        border-radius: 18px;
+
+        background: white;
+
+        box-shadow:
+            0 9px 32px rgba(15, 23, 42, .045);
+    }
+
+
+    .committee-profile-cover {
+        height: 90px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #c2410c,
+                #f97316
+            );
+    }
+
+
+    .committee-profile-content {
+        padding: 0 22px 22px;
+    }
+
+
+    .committee-profile-avatar {
+        width: 76px;
+        height: 76px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        overflow: hidden;
+
+        margin-top: -38px;
+        margin-bottom: 13px;
+
+        border: 5px solid white;
+        border-radius: 50%;
+
+        background: #ffedd5;
+        color: #c2410c;
+
+        box-shadow:
+            0 6px 18px rgba(15, 23, 42, .10);
+
+        font-size: 1.35rem;
+        font-weight: 800;
+    }
+
+
+    .committee-profile-avatar img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+    }
+
+
+    .committee-profile-name {
+        color: #0f172a;
+
+        font-size: 1.08rem;
+        font-weight: 800;
+    }
+
+
+    .committee-profile-role {
+        margin-top: 2px;
+
+        color: #64748b;
+
+        font-size: .75rem;
+    }
+
+
+    .committee-profile-divider {
+        margin: 18px 0;
+
+        border-top: 1px solid #e2e8f0;
+    }
+
+
+    .committee-profile-info {
+        display: flex;
+
+        gap: 11px;
+
+        padding: 9px 0;
+    }
+
+
+    .committee-profile-info-icon {
+        width: 36px;
+        height: 36px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 9px;
+
+        background: #fff7ed;
+        color: #c2410c;
+    }
+
+
+    .committee-profile-info-content {
+        min-width: 0;
+    }
+
+
+    .committee-profile-info-label {
+        margin-bottom: 2px;
+
+        color: #64748b;
+
+        font-size: .59rem;
+        font-weight: 700;
+
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+
+
+    .committee-profile-info-value {
+        overflow-wrap: anywhere;
+
+        color: #0f172a;
+
+        font-size: .78rem;
+        font-weight: 650;
+    }
+
+
+    /* ==========================================================
+       TABLET
+    ========================================================== */
+
+    @media (max-width: 991.98px) {
+
+        .committee-desktop-events {
+            display: none;
+        }
+
+
+        .committee-mobile-events {
+            display: block;
+        }
+
+    }
+
+
+    /* ==========================================================
+       MOBILE
+    ========================================================== */
+
+    @media (max-width: 767.98px) {
+
+        .committee-dashboard {
+            padding-top: 18px;
+        }
+
+
+        .committee-hero {
+            padding: 24px 20px;
+
+            margin-bottom: 18px;
+
+            border-radius: 18px;
+        }
+
+
+        .committee-role-wrap {
+            text-align: left !important;
+        }
+
+
+        .committee-role-badge {
+            margin-top: 2px;
+        }
+
+
+        .committee-stats {
+            margin-bottom: 23px;
+        }
+
+
+        .committee-stat-card {
+            padding: 17px;
+        }
+
+
+        .committee-panel-header {
+            padding: 18px;
+        }
+
+
+        .committee-panel-header-inner {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+
+        .committee-profile-content {
+            padding: 0 18px 18px;
+        }
+
+    }
+
+
+    /* ==========================================================
+       SMALL MOBILE
+    ========================================================== */
+
+    @media (max-width: 575.98px) {
+
+        .committee-dashboard {
+            padding-top: 14px;
+        }
+
+
+        .committee-hero {
+            padding: 21px 17px;
+
+            border-radius: 16px;
+        }
+
+
+        .committee-hero-title {
+            font-size: 1.55rem;
+        }
+
+
+        .committee-hero-description {
+            font-size: .8rem;
+        }
+
+
+        .committee-stat-card {
+            padding: 15px;
+
+            border-radius: 14px;
+        }
+
+
+        .committee-stat-icon {
+            width: 39px;
+            height: 39px;
+        }
+
+
+        .committee-panel {
+            border-radius: 16px;
+        }
+
+
+        .committee-panel-header {
+            padding: 16px;
+        }
+
+
+        .committee-mobile-events {
+            padding: 11px;
+        }
+
+
+        .committee-mobile-event {
+            padding: 15px;
+        }
+
+
+        .committee-access-card {
+            padding: 15px;
+        }
+
+
+        .committee-profile-card {
+            border-radius: 16px;
+        }
+
+    }
+
+
+    @media (max-width: 374.98px) {
+
+        .committee-hero-title {
+            font-size: 1.42rem;
+        }
+
+
+        .committee-access-layout {
+            flex-direction: column;
+        }
+
+    }
+
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .committee-stat-card {
+            transition: none;
+        }
+
+
+        .committee-stat-card:hover {
+            transform: none;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="committee-dashboard">
+
+    <div class="container">
+
+
+        <!-- =====================================================
+             HERO
+        ====================================================== -->
+
+        <section class="committee-hero">
+
+            <div class="committee-hero-content">
+
+                <div class="row align-items-center g-4">
+
+                    <div class="col-lg-8">
+
+                        <div class="committee-hero-label">
+
+                            <i class="bi bi-people-fill"></i>
+
+                            Event Operations
+
+                        </div>
+
+
+                        <h1 class="committee-hero-title">
+
+                            Welcome,
+
+                            {% if request.user.core_committee_profile %}
+
+                                {{ request.user.core_committee_profile.full_name }}
+
+                            {% else %}
+
+                                {{ request.user.username }}
+
+                            {% endif %}
+
+                        </h1>
+
+
+                        <p class="committee-hero-description">
+
+                            Track your assigned events, event duties
+                            and attendance operations from the
+                            CampusX committee workspace.
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="col-lg-4 text-lg-end committee-role-wrap">
+
+                        <span class="committee-role-badge">
+
+                            <i class="bi bi-shield-check"></i>
+
+                            {{ request.user.get_role_display }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             STATISTICS
+        ====================================================== -->
+
+        <section class="committee-stats">
+
+            <div class="row g-3">
+
+
+                <div class="col-12 col-sm-4">
+
+                    <div class="committee-stat-card">
+
+                        <div class="committee-stat-top">
+
+                            <div class="committee-stat-label">
+                                Assigned Events
+                            </div>
+
+                            <div class="committee-stat-icon">
+                                <i class="bi bi-calendar-event"></i>
+                            </div>
+
+                        </div>
+
+
+                        <div class="committee-stat-number">
+                            {{ total_events }}
+                        </div>
+
+                        <div class="committee-stat-description">
+                            Events assigned to you
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-12 col-sm-4">
+
+                    <div class="committee-stat-card">
+
+                        <div class="committee-stat-top">
+
+                            <div class="committee-stat-label">
+                                Assigned Duties
+                            </div>
+
+                            <div class="committee-stat-icon purple">
+                                <i class="bi bi-list-check"></i>
+                            </div>
+
+                        </div>
+
+
+                        <div class="committee-stat-number">
+                            {{ total_duties }}
+                        </div>
+
+                        <div class="committee-stat-description">
+                            Operational responsibilities
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-12 col-sm-4">
+
+                    <div class="committee-stat-card">
+
+                        <div class="committee-stat-top">
+
+                            <div class="committee-stat-label">
+                                Attendance Verified
+                            </div>
+
+                            <div class="committee-stat-icon green">
+                                <i class="bi bi-qr-code-scan"></i>
+                            </div>
+
+                        </div>
+
+
+                        <div class="committee-stat-number">
+                            {{ attendance_verified }}
+                        </div>
+
+                        <div class="committee-stat-description">
+                            Student check-ins verified by you
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             MAIN CONTENT
+        ====================================================== -->
+
+        <div class="row g-4">
+
+
+            <!-- ASSIGNED EVENTS -->
+
+            <div class="col-xl-8">
+
+                <div class="committee-panel">
+
+
+                    <div class="committee-panel-header">
+
+                        <div class="committee-panel-header-inner">
+
+                            <div>
+
+                                <h2 class="committee-section-title">
+                                    Assigned Events & Duties
+                                </h2>
+
+                                <p class="committee-section-description">
+
+                                    Your event responsibilities and
+                                    operational assignments.
+
+                                </p>
+
+                            </div>
+
+
+                            <span class="committee-count-badge">
+
+                                <i class="bi bi-list-check"></i>
+
+                                {{ total_duties }}
+                                Dut{{ total_duties|pluralize:"y,ies" }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    {% if assignments %}
+
+
+                        <!-- DESKTOP TABLE -->
+
+                        <div class="table-responsive committee-desktop-events">
+
+                            <table class="table committee-event-table align-middle">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th class="ps-4">
+                                            Event
+                                        </th>
+
+                                        <th>
+                                            Duty
+                                        </th>
+
+                                        <th>
+                                            Schedule
+                                        </th>
+
+                                        <th>
+                                            Status
+                                        </th>
+
+                                        <th class="text-end pe-4">
+                                            Action
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    {% for assignment in assignments %}
+
+                                        <tr>
+
+
+                                            <td class="ps-4">
+
+                                                <div class="committee-event-title">
+                                                    {{ assignment.event.title }}
+                                                </div>
+
+
+                                                <div class="committee-event-location">
+
+                                                    <i class="bi bi-geo-alt"></i>
+
+                                                    <span>
+                                                        {{ assignment.event.venue }}
+                                                    </span>
+
+                                                </div>
+
+
+                                                {% if assignment.event.category %}
+
+                                                    <span class="committee-category">
+                                                        {{ assignment.event.category.name }}
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </td>
+
+
+                                            <td>
+
+                                                <span class="committee-duty-badge">
+
+                                                    <i class="bi bi-person-check"></i>
+
+                                                    {{ assignment.get_team_role_display }}
+
+                                                </span>
+
+
+                                                {% if assignment.responsibility %}
+
+                                                    <div class="committee-responsibility">
+
+                                                        {{ assignment.responsibility|truncatechars:85 }}
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                            </td>
+
+
+                                            <td>
+
+                                                <div class="committee-event-meta">
+
+                                                    <i class="bi bi-calendar3"></i>
+
+                                                    <span>
+                                                        {{ assignment.event.start_datetime|date:"d M Y" }}
+                                                    </span>
+
+                                                </div>
+
+
+                                                <div class="committee-event-meta">
+
+                                                    <i class="bi bi-clock"></i>
+
+                                                    <span>
+                                                        {{ assignment.event.start_datetime|date:"h:i A" }}
+                                                    </span>
+
+                                                </div>
+
+                                            </td>
+
+
+                                            <td>
+
+                                                {% if assignment.event.status == "PUBLISHED" %}
+
+                                                    <span class="committee-status committee-published">
+
+                                                        <i class="bi bi-broadcast"></i>
+
+                                                        Published
+
+                                                    </span>
+
+                                                {% elif assignment.event.status == "DRAFT" %}
+
+                                                    <span class="committee-status committee-draft">
+
+                                                        <i class="bi bi-pencil"></i>
+
+                                                        Draft
+
+                                                    </span>
+
+                                                {% elif assignment.event.status == "CANCELLED" %}
+
+                                                    <span class="committee-status committee-cancelled">
+
+                                                        <i class="bi bi-x-circle"></i>
+
+                                                        Cancelled
+
+                                                    </span>
+
+                                                {% elif assignment.event.status == "COMPLETED" %}
+
+                                                    <span class="committee-status committee-completed">
+
+                                                        <i class="bi bi-check2-circle"></i>
+
+                                                        Completed
+
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span class="committee-status committee-draft">
+
+                                                        {{ assignment.event.get_status_display }}
+
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </td>
+
+
+                                            <td class="text-end pe-4">
+
+                                                <a
+                                                    href="{% url 'event_detail' assignment.event.id %}"
+                                                    class="btn btn-outline-primary btn-sm px-3"
+                                                >
+                                                    Open
+
+                                                    <i class="bi bi-arrow-right ms-1"></i>
+                                                </a>
+
+                                            </td>
+
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <!-- MOBILE / TABLET CARDS -->
+
+                        <div class="committee-mobile-events">
+
+                            {% for assignment in assignments %}
+
+                                <article class="committee-mobile-event">
+
+
+                                    <div class="committee-mobile-event-title">
+                                        {{ assignment.event.title }}
+                                    </div>
+
+
+                                    {% if assignment.event.category %}
+
+                                        <span class="committee-category">
+                                            {{ assignment.event.category.name }}
+                                        </span>
+
+                                    {% endif %}
+
+
+                                    <div class="committee-mobile-badges">
+
+                                        <span class="committee-duty-badge">
+
+                                            <i class="bi bi-person-check"></i>
+
+                                            {{ assignment.get_team_role_display }}
+
+                                        </span>
+
+
+                                        {% if assignment.event.status == "PUBLISHED" %}
+
+                                            <span class="committee-status committee-published">
+
+                                                <i class="bi bi-broadcast"></i>
+
+                                                Published
+
+                                            </span>
+
+                                        {% elif assignment.event.status == "DRAFT" %}
+
+                                            <span class="committee-status committee-draft">
+
+                                                <i class="bi bi-pencil"></i>
+
+                                                Draft
+
+                                            </span>
+
+                                        {% elif assignment.event.status == "CANCELLED" %}
+
+                                            <span class="committee-status committee-cancelled">
+
+                                                <i class="bi bi-x-circle"></i>
+
+                                                Cancelled
+
+                                            </span>
+
+                                        {% elif assignment.event.status == "COMPLETED" %}
+
+                                            <span class="committee-status committee-completed">
+
+                                                <i class="bi bi-check2-circle"></i>
+
+                                                Completed
+
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="committee-status committee-draft">
+
+                                                {{ assignment.event.get_status_display }}
+
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <div class="committee-mobile-meta">
+
+                                        <div class="committee-event-meta">
+
+                                            <i class="bi bi-calendar3"></i>
+
+                                            <span>
+                                                {{ assignment.event.start_datetime|date:"d M Y" }}
+                                            </span>
+
+                                        </div>
+
+
+                                        <div class="committee-event-meta">
+
+                                            <i class="bi bi-clock"></i>
+
+                                            <span>
+                                                {{ assignment.event.start_datetime|date:"h:i A" }}
+                                            </span>
+
+                                        </div>
+
+
+                                        <div class="committee-event-meta">
+
+                                            <i class="bi bi-geo-alt"></i>
+
+                                            <span>
+                                                {{ assignment.event.venue }}
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {% if assignment.responsibility %}
+
+                                        <div class="committee-mobile-responsibility">
+
+                                            <strong>
+                                                Responsibility
+                                            </strong>
+
+                                            {{ assignment.responsibility }}
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    <a
+                                        href="{% url 'event_detail' assignment.event.id %}"
+                                        class="btn btn-outline-primary btn-sm"
+                                    >
+                                        Open Event
+
+                                        <i class="bi bi-arrow-right ms-1"></i>
+                                    </a>
+
+
+                                </article>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                    {% else %}
+
+
+                        <div class="committee-empty">
+
+                            <div class="committee-empty-icon">
+                                <i class="bi bi-clipboard-x"></i>
+                            </div>
+
+
+                            <div class="committee-empty-title">
+                                No Duties Assigned
+                            </div>
+
+
+                            <p class="committee-empty-text">
+
+                                Events and responsibilities assigned
+                                by an organizer will appear here.
+
+                            </p>
+
+                        </div>
+
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <!-- ACCESS INFORMATION -->
+
+                <div class="committee-access-card">
+
+                    <div class="committee-access-layout">
+
+                        <div class="committee-access-icon">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+
+
+                        <div>
+
+                            <div class="committee-access-title">
+                                Committee Access
+                            </div>
+
+
+                            <div class="committee-access-text">
+
+                                Your permissions depend on your assigned
+                                event duty. Attendance Team and Event
+                                Coordinator assignments can access QR
+                                attendance verification where permitted.
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 MEMBER PROFILE
+            ================================================== -->
+
+            <div class="col-xl-4">
+
+                <div class="committee-profile-card">
+
+
+                    <div class="committee-profile-cover"></div>
+
+
+                    <div class="committee-profile-content">
+
+
+                        {% if request.user.core_committee_profile %}
+
+
+                            <div class="committee-profile-avatar">
+
+                                {% if request.user.core_committee_profile.profile_photo %}
+
+                                    <img
+                                        src="{{ request.user.core_committee_profile.profile_photo.url }}"
+                                        alt="{{ request.user.core_committee_profile.full_name }}"
+                                    >
+
+                                {% else %}
+
+                                    {{ request.user.core_committee_profile.full_name|first|upper }}
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="committee-profile-name">
+
+                                {{ request.user.core_committee_profile.full_name }}
+
+                            </div>
+
+
+                            <div class="committee-profile-role">
+
+                                {{ request.user.core_committee_profile.position|default:"Core Committee Member" }}
+
+                            </div>
+
+
+                            <div class="committee-profile-divider"></div>
+
+
+                            <!-- MEMBER ID -->
+
+                            <div class="committee-profile-info">
+
+                                <div class="committee-profile-info-icon">
+                                    <i class="bi bi-person-vcard"></i>
+                                </div>
+
+
+                                <div class="committee-profile-info-content">
+
+                                    <div class="committee-profile-info-label">
+                                        Member ID
+                                    </div>
+
+                                    <div class="committee-profile-info-value">
+                                        {{ request.user.core_committee_profile.member_id }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- DEPARTMENT -->
+
+                            <div class="committee-profile-info">
+
+                                <div class="committee-profile-info-icon">
+                                    <i class="bi bi-building"></i>
+                                </div>
+
+
+                                <div class="committee-profile-info-content">
+
+                                    <div class="committee-profile-info-label">
+                                        Department
+                                    </div>
+
+                                    <div class="committee-profile-info-value">
+
+                                        {{ request.user.core_committee_profile.department|default:"Not provided" }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- EMAIL -->
+
+                            <div class="committee-profile-info">
+
+                                <div class="committee-profile-info-icon">
+                                    <i class="bi bi-envelope"></i>
+                                </div>
+
+
+                                <div class="committee-profile-info-content">
+
+                                    <div class="committee-profile-info-label">
+                                        Email
+                                    </div>
+
+                                    <div class="committee-profile-info-value">
+                                        {{ request.user.email }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- PHONE -->
+
+                            <div class="committee-profile-info">
+
+                                <div class="committee-profile-info-icon">
+                                    <i class="bi bi-telephone"></i>
+                                </div>
+
+
+                                <div class="committee-profile-info-content">
+
+                                    <div class="committee-profile-info-label">
+                                        Phone
+                                    </div>
+
+                                    <div class="committee-profile-info-value">
+
+                                        {{ request.user.core_committee_profile.phone_number|default:"Not provided" }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        {% else %}
+
+
+                            <div class="pt-4">
+
+                                <div class="alert alert-warning mb-0">
+
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+
+                                    Core Committee profile has not
+                                    been created.
+
+                                </div>
+
+                            </div>
+
+
+                        {% endif %}
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
